@@ -201,16 +201,16 @@ export default function ManageDirectory() {
                               <th className="p-4 text-right">Actions</th>
                             </tr>
                           </thead>
-                          <tbody className="divide-y divide-indigo-50/60 dark:divide-slate-800/60 font-medium">
+                           <tbody className="divide-y divide-indigo-50/60 dark:divide-slate-800/60 font-medium">
                             {courses.map((c) => (
-                              <tr key={c.id} className="text-xs text-slate-700 dark:text-slate-300 hover:bg-indigo-50/30">
+                              <tr key={c.id || c._id} className="text-xs text-slate-700 dark:text-slate-300 hover:bg-indigo-50/30">
                                 <td className="p-4 font-black text-indigo-600 dark:text-indigo-400">
                                   {c.code}
                                 </td>
                                 <td className="p-4 font-bold">{c.name}</td>
                                 <td className="p-4 text-right">
                                   <button
-                                    onClick={() => handleDeleteCourse(c.id)}
+                                    onClick={() => handleDeleteCourse(c.id || c._id)}
                                     className="p-2.5 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/20 dark:hover:bg-rose-950/50 text-rose-500 border border-rose-100 dark:border-rose-900/40 rounded-xl transition cursor-pointer"
                                     title="Delete this course"
                                   >
@@ -274,15 +274,15 @@ export default function ManageDirectory() {
                               <th className="p-4 text-right">Actions</th>
                             </tr>
                           </thead>
-                          <tbody className="divide-y divide-indigo-50/60 dark:divide-slate-800/60 font-medium">
+                           <tbody className="divide-y divide-indigo-50/60 dark:divide-slate-800/60 font-medium">
                             {faculty.map((f) => (
-                              <tr key={f.id} className="text-xs text-slate-700 dark:text-slate-300 hover:bg-indigo-50/30">
+                              <tr key={f.id || f._id} className="text-xs text-slate-700 dark:text-slate-300 hover:bg-indigo-50/30">
                                 <td className="p-4 font-bold text-slate-800 dark:text-slate-100">
                                   {f.name}
                                 </td>
                                 <td className="p-4 text-right">
                                   <button
-                                    onClick={() => handleDeleteFaculty(f.id)}
+                                    onClick={() => handleDeleteFaculty(f.id || f._id)}
                                     className="p-2.5 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/20 dark:hover:bg-rose-950/50 text-rose-500 border border-rose-100 dark:border-rose-900/40 rounded-xl transition cursor-pointer"
                                     title="Delete this faculty member"
                                   >
