@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-const MONGO_URI = 'mongodb+srv://alokyadav83956_db_user:tlfq@cluster0.1fuevhc.mongodb.net/tlfq';
+const MONGO_URI = process.env.MONGO_URI || process.env.MONGODB_URI || 'mongodb+srv://alokyadav83956_db_user:tlfq@cluster0.1fuevhc.mongodb.net/tlfq';
 
 const inMemoryStore = {
   User: [],
