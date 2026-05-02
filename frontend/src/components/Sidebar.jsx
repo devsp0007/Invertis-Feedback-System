@@ -8,8 +8,7 @@ export default function Sidebar() {
   const location = useLocation();
 
   const studentLinks = [
-    { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { to: '/courses', label: 'All Courses', icon: BookOpen }
+    { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard }
   ];
 
   const adminLinks = [

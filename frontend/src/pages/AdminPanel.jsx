@@ -135,7 +135,7 @@ export default function AdminPanel() {
                       >
                         <option value="">Choose Course</option>
                         {courses.map((c) => (
-                          <option key={c.id} value={c.id}>
+                          <option key={c.id || c._id} value={c.id || c._id}>
                             [{c.code}] {c.name}
                           </option>
                         ))}
@@ -153,7 +153,7 @@ export default function AdminPanel() {
                       >
                         <option value="">Choose Instructor</option>
                         {faculty.map((f) => (
-                          <option key={f.id} value={f.id}>
+                          <option key={f.id || f._id} value={f.id || f._id}>
                             {f.name}
                           </option>
                         ))}

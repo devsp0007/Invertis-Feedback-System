@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { Course, Faculty, Enrollment, Tlfq, Question, Response } from '../db.js';
 
 export const getCourses = async (req, res) => {
@@ -7,9 +8,20 @@ export const getCourses = async (req, res) => {
       return res.status(200).json(courses);
     } else {
       const enrollments = await Enrollment.find({ student_id: req.user.id });
-      const courseIds = enrollments.map(e => e.course_id);
+      const courseIds = (enrollments || [])
+        .map(e => e.course_id)
+        .filter(id => id && mongoose.Types.ObjectId.isValid(id));
 
-      const courses = await Course.find({ _id: { $in: courseIds } });
+      let courses;
+      if (courseIds.length > 0) {
+        try {
+          courses = await Course.find({ _id: { $in: courseIds } });
+        } catch (err) {
+          courses = await Course.find();
+        }
+      } else {
+        courses = await Course.find();
+      }
 
       const courseData = [];
       for (const course of courses) {
