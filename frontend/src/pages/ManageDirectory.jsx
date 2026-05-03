@@ -3,7 +3,7 @@ import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import api from '../services/api';
 import { motion } from 'framer-motion';
-import { BookOpen, Users, Plus, Trash2, Shield, Settings, Compass } from 'lucide-react';
+import { BookOpen, Users, Plus, Trash2, Shield, Settings, Compass, Database, Download, Upload, RefreshCw } from 'lucide-react';
 
 export default function ManageDirectory() {
   const [activeTab, setActiveTab] = useState('courses');
@@ -16,6 +16,10 @@ export default function ManageDirectory() {
   const [courseName, setCourseName] = useState('');
   const [courseCode, setCourseCode] = useState('');
   const [facultyName, setFacultyName] = useState('');
+
+  // Sync state
+  const [syncMode, setSyncMode] = useState('merge');
+  const [importFile, setImportFile] = useState(null);
 
   const loadData = async () => {
     try {
@@ -81,6 +85,59 @@ export default function ManageDirectory() {
     }
   };
 
+  const handleExportData = async () => {
+    try {
+      const res = await api.get('/sync/export');
+      const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(res.data, null, 2))}`;
+      const link = document.createElement('a');
+      link.href = jsonString;
+      link.download = `tlfq-data-sync-${new Date().toISOString().slice(0, 10)}.json`;
+      link.click();
+    } catch (err) {
+      console.error(err);
+      alert('Failed to export platform data. Please try again.');
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) setImportFile(file);
+  };
+
+  const handleImportData = async () => {
+    if (!importFile) return;
+
+    if (syncMode === 'overwrite') {
+      const confirmed = window.confirm(
+        'WARNING: This will completely erase all current data and restore exactly what is in the file. Are you absolutely sure?'
+      );
+      if (!confirmed) return;
+    }
+
+    try {
+      const fileReader = new FileReader();
+      fileReader.onload = async (e) => {
+        try {
+          const parsedData = JSON.parse(e.target.result);
+          await api.post('/sync/import', {
+            data: parsedData,
+            mode: syncMode
+          });
+          alert(`Data synchronized successfully using mode: ${syncMode}!`);
+          setImportFile(null);
+          loadData();
+        } catch (err) {
+          console.error(err);
+          alert('Failed to parse the file. Ensure it is a valid backup JSON.');
+        }
+      };
+      fileReader.readAsText(importFile);
+    } catch (err) {
+      console.error(err);
+      alert('Failed to synchronize data. Verify file contents.');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-300">
       <Navbar />
@@ -131,6 +188,16 @@ export default function ManageDirectory() {
                 }`}
               >
                 <Users size={16} /> Faculty Management
+              </button>
+              <button
+                onClick={() => setActiveTab('sync')}
+                className={`py-3 px-6 font-bold text-sm border-b-2 transition flex items-center gap-2 ${
+                  activeTab === 'sync'
+                    ? 'border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400'
+                    : 'border-transparent text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400'
+                }`}
+              >
+                <Database size={16} /> Data Synchronization
               </button>
             </div>
 
@@ -201,7 +268,7 @@ export default function ManageDirectory() {
                               <th className="p-4 text-right">Actions</th>
                             </tr>
                           </thead>
-                           <tbody className="divide-y divide-indigo-50/60 dark:divide-slate-800/60 font-medium">
+                          <tbody className="divide-y divide-indigo-50/60 dark:divide-slate-800/60 font-medium">
                             {courses.map((c) => (
                               <tr key={c.id || c._id} className="text-xs text-slate-700 dark:text-slate-300 hover:bg-indigo-50/30">
                                 <td className="p-4 font-black text-indigo-600 dark:text-indigo-400">
@@ -274,7 +341,7 @@ export default function ManageDirectory() {
                               <th className="p-4 text-right">Actions</th>
                             </tr>
                           </thead>
-                           <tbody className="divide-y divide-indigo-50/60 dark:divide-slate-800/60 font-medium">
+                          <tbody className="divide-y divide-indigo-50/60 dark:divide-slate-800/60 font-medium">
                             {faculty.map((f) => (
                               <tr key={f.id || f._id} className="text-xs text-slate-700 dark:text-slate-300 hover:bg-indigo-50/30">
                                 <td className="p-4 font-bold text-slate-800 dark:text-slate-100">
@@ -293,6 +360,89 @@ export default function ManageDirectory() {
                             ))}
                           </tbody>
                         </table>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'sync' && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {/* Export Card */}
+                    <div className="glass p-6 rounded-3xl border border-indigo-50 dark:border-slate-800 flex flex-col gap-4">
+                      <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-extrabold text-base">
+                        <Download size={20} />
+                        <h3>Export System Data</h3>
+                      </div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                        Export all system tables (Users, Courses, Faculty, Enrollments, TLFQs, Questions, and Responses) as a single JSON file. This serves as a full backup that can be synchronized later.
+                      </p>
+                      <button
+                        onClick={handleExportData}
+                        className="mt-2 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-4 rounded-xl text-xs transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer select-none"
+                      >
+                        <Download size={16} /> Export & Download Backup JSON
+                      </button>
+                    </div>
+
+                    {/* Import/Sync Card */}
+                    <div className="glass p-6 rounded-3xl border border-indigo-50 dark:border-slate-800 flex flex-col gap-4">
+                      <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-extrabold text-base">
+                        <Upload size={20} />
+                        <h3>Import / Synchronize Data</h3>
+                      </div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                        Upload a previously exported data file to synchronize with the current database.
+                      </p>
+
+                      <div className="flex flex-col gap-3">
+                        <input
+                          type="file"
+                          accept="application/json"
+                          onChange={handleFileChange}
+                          className="text-xs bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-slate-600 dark:text-slate-400 cursor-pointer focus:outline-none"
+                        />
+                        <div className="flex flex-col gap-2">
+                          <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                            Choose Sync Mode
+                          </label>
+                          <div className="grid grid-cols-2 gap-3">
+                            <button
+                              type="button"
+                              onClick={() => setSyncMode('merge')}
+                              className={`py-3 px-4 rounded-xl border text-xs font-black transition cursor-pointer select-none ${
+                                syncMode === 'merge'
+                                  ? 'bg-indigo-50 dark:bg-indigo-950/40 border-indigo-500 text-indigo-600 dark:text-indigo-300'
+                                  : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
+                              }`}
+                            >
+                              Merge Import (Default)
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setSyncMode('overwrite')}
+                              className={`py-3 px-4 rounded-xl border text-xs font-black transition cursor-pointer select-none ${
+                                syncMode === 'overwrite'
+                                  ? 'bg-indigo-50 dark:bg-indigo-950/40 border-indigo-500 text-indigo-600 dark:text-indigo-300'
+                                  : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
+                              }`}
+                            >
+                              Full Overwrite Sync
+                            </button>
+                          </div>
+                        </div>
+
+                        <button
+                          onClick={handleImportData}
+                          disabled={!importFile}
+                          className={`mt-2 w-full font-bold py-3.5 px-4 rounded-xl text-xs transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer select-none ${
+                            importFile
+                              ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                              : 'bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700 cursor-not-allowed'
+                          }`}
+                        >
+                          <RefreshCw size={16} className={importFile ? 'animate-pulse' : ''} />
+                          {syncMode === 'merge' ? 'Merge & Synchronize Data' : 'Full Sync Overwrite'}
+                        </button>
                       </div>
                     </div>
                   </div>

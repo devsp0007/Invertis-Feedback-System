@@ -1,11 +1,24 @@
 import mongoose from 'mongoose';
 import { Course, Faculty, Enrollment, Tlfq, Question, Response } from '../db.js';
 
+function serialize(doc) {
+  if (!doc) return doc;
+  if (typeof doc.toJSON === 'function') {
+    try {
+      return doc.toJSON();
+    } catch (e) {
+      return { ...doc };
+    }
+  }
+  return { ...doc };
+}
+
 export const getCourses = async (req, res) => {
   try {
     if (req.user.role === 'admin') {
       const courses = await Course.find();
-      return res.status(200).json(courses);
+      const serialized = (courses || []).map(serialize);
+      return res.status(200).json(serialized);
     } else {
       const enrollments = await Enrollment.find({ student_id: req.user.id });
       const courseIds = (enrollments || [])
@@ -33,7 +46,7 @@ export const getCourses = async (req, res) => {
         }
 
         courseData.push({
-          ...course.toJSON(),
+          ...serialize(course),
           completed
         });
       }
@@ -59,10 +72,10 @@ export const getCourseTlfq = async (req, res) => {
     const questions = await Question.find({ tlfq_id: tlfq._id });
 
     return res.status(200).json({
-      ...tlfq.toJSON(),
+      ...serialize(tlfq),
       faculty_name: faculty ? faculty.name : 'Unknown',
       course_name: course ? course.name : 'Unknown',
-      questions: questions.map(q => q.toJSON())
+      questions: (questions || []).map(serialize)
     });
   } catch (err) {
     console.error(err);
@@ -81,7 +94,7 @@ export const getCourseEvaluations = async (req, res) => {
       const resp = await Response.findOne({ student_id: req.user.id, tlfq_id: tlfq._id });
 
       evaluations.push({
-        ...tlfq.toJSON(),
+        ...serialize(tlfq),
         faculty_name: faculty ? faculty.name : 'Unknown',
         completed: !!resp
       });
@@ -107,10 +120,10 @@ export const getSpecificEvaluation = async (req, res) => {
     const questions = await Question.find({ tlfq_id: tlfq._id });
 
     return res.status(200).json({
-      ...tlfq.toJSON(),
+      ...serialize(tlfq),
       faculty_name: faculty ? faculty.name : 'Unknown',
       course_name: course ? course.name : 'Unknown',
-      questions: questions.map(q => q.toJSON())
+      questions: (questions || []).map(serialize)
     });
   } catch (err) {
     console.error(err);
@@ -118,11 +131,11 @@ export const getSpecificEvaluation = async (req, res) => {
   }
 };
 
-
 export const getAllFaculty = async (req, res) => {
   try {
     const facultyList = await Faculty.find();
-    return res.status(200).json(facultyList);
+    const serialized = (facultyList || []).map(serialize);
+    return res.status(200).json(serialized);
   } catch (err) {
     return res.status(500).json({ message: 'Internal Server Error' });
   }
@@ -133,7 +146,7 @@ export const createCourse = async (req, res) => {
     const { name, code } = req.body;
     if (!name || !code) return res.status(400).json({ message: 'Name and code required' });
     const result = await Course.create({ name, code });
-    return res.status(201).json(result.toJSON());
+    return res.status(201).json(serialize(result));
   } catch (err) {
     return res.status(500).json({ message: 'Internal Server Error' });
   }
@@ -144,7 +157,7 @@ export const createFaculty = async (req, res) => {
     const { name } = req.body;
     if (!name) return res.status(400).json({ message: 'Name is required' });
     const result = await Faculty.create({ name });
-    return res.status(201).json(result.toJSON());
+    return res.status(201).json(serialize(result));
   } catch (err) {
     return res.status(500).json({ message: 'Internal Server Error' });
   }
@@ -165,7 +178,7 @@ export const createTlfq = async (req, res) => {
         }
       }
     }
-    return res.status(201).json({ id: result.id, message: 'TLFQ created successfully' });
+    return res.status(201).json({ id: result.id || result._id?.toString(), message: 'TLFQ created successfully' });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: 'Internal Server Error' });
@@ -177,7 +190,7 @@ export const createQuestion = async (req, res) => {
     const { tlfq_id, question_text } = req.body;
     if (!tlfq_id || !question_text) return res.status(400).json({ message: 'tlfq_id and text required' });
     const result = await Question.create({ tlfq_id, question_text });
-    return res.status(201).json(result.toJSON());
+    return res.status(201).json(serialize(result));
   } catch (err) {
     return res.status(500).json({ message: 'Internal Server Error' });
   }
@@ -202,4 +215,3 @@ export const deleteFaculty = async (req, res) => {
     return res.status(500).json({ message: 'Internal Server Error' });
   }
 };
-

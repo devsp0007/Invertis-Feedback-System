@@ -6,6 +6,7 @@ import { initDb } from './db.js';
 import authRoutes from './routes/authRoutes.js';
 import tlfqRoutes from './routes/tlfqRoutes.js';
 import responseRoutes from './routes/responseRoutes.js';
+import syncRoutes from './routes/syncRoutes.js';
 
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -28,6 +29,8 @@ app.get('/api', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/tlfq', tlfqRoutes);
 app.use('/api/responses', responseRoutes);
+app.use('/api/sync', syncRoutes);
+
 
 // Serve frontend static files in production
 if (process.env.NODE_ENV === 'production') {

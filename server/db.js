@@ -23,9 +23,11 @@ function createDoc(modelName, obj) {
     _id,
     id: _id.toString(),
     toJSON() {
-      const ret = { ...this };
-      ret.id = this._id.toString();
+      const ret = { ...doc };
+      ret.id = _id.toString();
       delete ret._id;
+      delete ret.toJSON;
+      delete ret.toObject;
       return ret;
     },
     toObject() {
@@ -34,6 +36,7 @@ function createDoc(modelName, obj) {
   };
   return doc;
 }
+
 
 function filterMatches(item, query) {
   if (!query || Object.keys(query).length === 0) return true;
