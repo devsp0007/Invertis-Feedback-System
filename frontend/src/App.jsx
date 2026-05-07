@@ -7,6 +7,7 @@ import TLFQPage from './pages/TLFQPage';
 import AdminPanel from './pages/AdminPanel';
 import Analytics from './pages/Analytics';
 import ManageDirectory from './pages/ManageDirectory';
+import HODDashboard from './pages/HODDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 
 export default function App() {
@@ -14,76 +15,51 @@ export default function App() {
     <AuthProvider>
       <Router>
         <Routes>
-          {/* Public Routes */}
+          {/* Public */}
           <Route path="/login" element={<Login />} />
-
-          {/* Fallback base redirect */}
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
-          {/* Common Dashboard for both student and admin roles */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute allowedRoles={['student', 'admin']}>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
+          {/* Student routes */}
+          <Route path="/dashboard" element={
+            <ProtectedRoute allowedRoles={['student', 'admin', 'hod']}>
+              <Dashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/courses/:id" element={
+            <ProtectedRoute allowedRoles={['student']}>
+              <CoursePage />
+            </ProtectedRoute>
+          } />
+          <Route path="/courses/:id/tlfq/:tlfqId" element={
+            <ProtectedRoute allowedRoles={['student']}>
+              <TLFQPage />
+            </ProtectedRoute>
+          } />
 
-          {/* Student Protected Evaluation Routes */}
-          <Route
-            path="/courses/:id"
-            element={
-              <ProtectedRoute allowedRoles={['student']}>
-                <CoursePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/courses/:id/tlfq"
-            element={
-              <ProtectedRoute allowedRoles={['student']}>
-                <TLFQPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/courses/:id/tlfq/:tlfqId"
-            element={
-              <ProtectedRoute allowedRoles={['student']}>
-                <TLFQPage />
-              </ProtectedRoute>
-            }
-          />
+          {/* HOD routes */}
+          <Route path="/hod/analytics" element={
+            <ProtectedRoute allowedRoles={['hod', 'admin']}>
+              <HODDashboard />
+            </ProtectedRoute>
+          } />
 
+          {/* Admin routes */}
+          <Route path="/admin/courses" element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <AdminPanel />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/analytics" element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <Analytics />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/directory" element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <ManageDirectory />
+            </ProtectedRoute>
+          } />
 
-          {/* Admin Protected Operations Routes */}
-          <Route
-            path="/admin/courses"
-            element={
-              <ProtectedRoute allowedRoles={['admin']}>
-                <AdminPanel />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/analytics"
-            element={
-              <ProtectedRoute allowedRoles={['admin']}>
-                <Analytics />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/directory"
-            element={
-              <ProtectedRoute allowedRoles={['admin']}>
-                <ManageDirectory />
-              </ProtectedRoute>
-            }
-          />
-
-          {/* Fallback fallback route */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </Router>

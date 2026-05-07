@@ -5,6 +5,7 @@ const MONGO_URI = process.env.MONGO_URI || process.env.MONGODB_URI || 'mongodb+s
 
 const inMemoryStore = {
   User: [],
+  Department: [],
   Course: [],
   Faculty: [],
   Enrollment: [],
@@ -37,7 +38,6 @@ function createDoc(modelName, obj) {
   return doc;
 }
 
-
 function filterMatches(item, query) {
   if (!query || Object.keys(query).length === 0) return true;
   return Object.entries(query).every(([key, value]) => {
@@ -50,9 +50,7 @@ function filterMatches(item, query) {
 }
 
 class MockQuery {
-  constructor(data) {
-    this.data = data;
-  }
+  constructor(data) { this.data = data; }
   select() { return this; }
   sort(criteria) {
     if (this.data && Array.isArray(this.data) && criteria && criteria.submitted_at === -1) {
@@ -60,12 +58,8 @@ class MockQuery {
     }
     return this;
   }
-  then(resolve, reject) {
-    return Promise.resolve(this.data).then(resolve, reject);
-  }
-  catch(reject) {
-    return Promise.resolve(this.data).catch(reject);
-  }
+  then(resolve, reject) { return Promise.resolve(this.data).then(resolve, reject); }
+  catch(reject) { return Promise.resolve(this.data).catch(reject); }
 }
 
 function createModelWrapper(modelName, realModel) {
@@ -123,6 +117,17 @@ function createModelWrapper(modelName, realModel) {
             return Promise.resolve(null);
           };
         }
+        if (prop === 'findByIdAndUpdate') {
+          return (id, update) => {
+            const index = inMemoryStore[modelName].findIndex(item => item.id === id?.toString() || item._id?.toString() === id?.toString());
+            if (index !== -1) {
+              const updateData = update.$set || update;
+              Object.assign(inMemoryStore[modelName][index], updateData);
+              return Promise.resolve(inMemoryStore[modelName][index]);
+            }
+            return Promise.resolve(null);
+          };
+        }
       }
       return Reflect.get(target, prop, receiver);
     }
@@ -138,25 +143,38 @@ const transform = {
   }
 };
 
-// Original Schemas & Models setup
+// ─── SCHEMAS ───────────────────────────────────────────────────────────────────
+
+const deptSchema = new mongoose.Schema({
+  name: { type: String, required: true, unique: true },
+  code: { type: String, required: true, unique: true }
+}, { toJSON: transform, toObject: transform });
+const rDepartment = mongoose.model('Department', deptSchema);
+export const Department = createModelWrapper('Department', rDepartment);
+
+// role: 'admin' | 'hod' | 'student'
 const uSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  role: { type: String, required: true, enum: ['admin', 'student'] }
+  role: { type: String, required: true, enum: ['admin', 'hod', 'student'] },
+  department_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Department', default: null }
 }, { toJSON: transform, toObject: transform });
 const rUser = mongoose.model('User', uSchema);
 export const User = createModelWrapper('User', rUser);
 
 const cSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  code: { type: String, required: true, unique: true }
+  code: { type: String, required: true, unique: true },
+  department_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Department', required: true }
 }, { toJSON: transform, toObject: transform });
 const rCourse = mongoose.model('Course', cSchema);
 export const Course = createModelWrapper('Course', rCourse);
 
+// Faculty = data entity (not a user)
 const fSchema = new mongoose.Schema({
-  name: { type: String, required: true }
+  name: { type: String, required: true },
+  department_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Department', required: true }
 }, { toJSON: transform, toObject: transform });
 const rFaculty = mongoose.model('Faculty', fSchema);
 export const Faculty = createModelWrapper('Faculty', rFaculty);
@@ -171,7 +189,8 @@ export const Enrollment = createModelWrapper('Enrollment', rEnrollment);
 const tlfqSchema = new mongoose.Schema({
   course_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Course', required: true },
   faculty_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Faculty', required: true },
-  title: { type: String, required: true }
+  title: { type: String, required: true },
+  is_active: { type: Boolean, default: true }
 }, { toJSON: transform, toObject: transform });
 const rTlfq = mongoose.model('Tlfq', tlfqSchema);
 export const Tlfq = createModelWrapper('Tlfq', rTlfq);
@@ -183,6 +202,7 @@ const qSchema = new mongoose.Schema({
 const rQuestion = mongoose.model('Question', qSchema);
 export const Question = createModelWrapper('Question', rQuestion);
 
+// Anonymous — student_id used only for one-submission enforcement, never exposed in reports
 const respSchema = new mongoose.Schema({
   student_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   tlfq_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Tlfq', required: true },
@@ -195,14 +215,15 @@ export const Response = createModelWrapper('Response', rResponse);
 const aSchema = new mongoose.Schema({
   response_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Response', required: true },
   question_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Question', required: true },
-  rating: { type: Number, required: true }
+  rating: { type: Number, required: true, min: 1, max: 7 }
 }, { toJSON: transform, toObject: transform });
 const rAnswer = mongoose.model('Answer', aSchema);
 export const Answer = createModelWrapper('Answer', rAnswer);
 
+// ─── SEED ──────────────────────────────────────────────────────────────────────
+
 export const initDb = async () => {
   try {
-    // Attempt real connection
     console.log('Attempting connection to MongoDB Atlas...');
     await mongoose.connect(MONGO_URI, { serverSelectionTimeoutMS: 2000 });
     console.log('Connected to MongoDB via Mongoose successfully.');
@@ -214,9 +235,9 @@ export const initDb = async () => {
 
   console.log('Seeding initial data...');
 
-  // Clear everything unconditionally
   await Promise.all([
     User.deleteMany({}),
+    Department.deleteMany({}),
     Course.deleteMany({}),
     Faculty.deleteMany({}),
     Enrollment.deleteMany({}),
@@ -226,164 +247,129 @@ export const initDb = async () => {
     Answer.deleteMany({})
   ]);
 
-  const hashedAdmin = await bcrypt.hash('admin123', 10);
-  const hashedStudent1 = await bcrypt.hash('student123', 10);
-  const hashedStudent2 = await bcrypt.hash('student123', 10);
-  const hashedStudent3 = await bcrypt.hash('student123', 10);
+  // ── Departments
+  const deptCS = await Department.create({ name: 'Computer Science & Engineering', code: 'CSE' });
+  const deptEC = await Department.create({ name: 'Electronics & Communication', code: 'ECE' });
 
-  // Users
+  // ── Users: 1 admin, 2 HODs, 3 students
+  const [hAdmin, hHod1, hHod2, hS1, hS2, hS3] = await Promise.all([
+    bcrypt.hash('admin123', 10),
+    bcrypt.hash('hod123', 10),
+    bcrypt.hash('hod123', 10),
+    bcrypt.hash('student123', 10),
+    bcrypt.hash('student123', 10),
+    bcrypt.hash('student123', 10),
+  ]);
+
   const adminUser = await User.create({
-    name: 'Admin User',
+    name: 'System Administrator',
     email: 'admin@invertis.edu.in',
-    password: hashedAdmin,
-    role: 'admin'
+    password: hAdmin,
+    role: 'admin',
+    department_id: null
+  });
+
+  const hod1 = await User.create({
+    name: 'Dr. Priya Sharma (HOD CSE)',
+    email: 'hod.cse@invertis.edu.in',
+    password: hHod1,
+    role: 'hod',
+    department_id: deptCS._id
+  });
+
+  const hod2 = await User.create({
+    name: 'Dr. Rajesh Kumar (HOD ECE)',
+    email: 'hod.ece@invertis.edu.in',
+    password: hHod2,
+    role: 'hod',
+    department_id: deptEC._id
   });
 
   const s1 = await User.create({
-    name: 'Student One',
+    name: 'Alok Yadav',
     email: 'student1@invertis.edu.in',
-    password: hashedStudent1,
-    role: 'student'
+    password: hS1,
+    role: 'student',
+    department_id: deptCS._id
   });
 
   const s2 = await User.create({
-    name: 'Student Two',
+    name: 'Priya Patel',
     email: 'student2@invertis.edu.in',
-    password: hashedStudent2,
-    role: 'student'
+    password: hS2,
+    role: 'student',
+    department_id: deptCS._id
   });
 
   const s3 = await User.create({
-    name: 'Student Three',
+    name: 'Ravi Verma',
     email: 'student3@invertis.edu.in',
-    password: hashedStudent3,
-    role: 'student'
+    password: hS3,
+    role: 'student',
+    department_id: deptEC._id
   });
 
-  // Add faculty
-  const f1 = await Faculty.create({ name: 'Dr. Alan Turing' });
-  const f2 = await Faculty.create({ name: 'Dr. Grace Hopper' });
-  const f3 = await Faculty.create({ name: 'Dr. Richard Feynman' });
-  const f4 = await Faculty.create({ name: 'Dr. Ada Lovelace' });
+  // ── Faculty (data entities, not users)
+  const f1 = await Faculty.create({ name: 'Dr. Alan Turing', department_id: deptCS._id });
+  const f2 = await Faculty.create({ name: 'Dr. Grace Hopper', department_id: deptCS._id });
+  const f3 = await Faculty.create({ name: 'Dr. Richard Feynman', department_id: deptEC._id });
+  const f4 = await Faculty.create({ name: 'Dr. Ada Lovelace', department_id: deptCS._id });
 
-  // Add courses
-  const c1 = await Course.create({ name: 'Advanced Algorithms', code: 'CS401' });
-  const c2 = await Course.create({ name: 'Database Systems & Cloud', code: 'CS302' });
-  const c3 = await Course.create({ name: 'Applied AI & Ethics', code: 'CS405' });
-  const c4 = await Course.create({ name: 'Quantum Computing Foundations', code: 'CS501' });
+  // ── Courses
+  const c1 = await Course.create({ name: 'Advanced Algorithms', code: 'CS401', department_id: deptCS._id });
+  const c2 = await Course.create({ name: 'Database Systems & Cloud', code: 'CS302', department_id: deptCS._id });
+  const c3 = await Course.create({ name: 'Applied AI & Ethics', code: 'CS405', department_id: deptCS._id });
+  const c4 = await Course.create({ name: 'Signal Processing', code: 'EC301', department_id: deptEC._id });
 
-  // Enrollments for Student 1
+  // ── Enrollments
   await Enrollment.create({ student_id: s1._id, course_id: c1._id });
   await Enrollment.create({ student_id: s1._id, course_id: c2._id });
   await Enrollment.create({ student_id: s1._id, course_id: c3._id });
-  await Enrollment.create({ student_id: s1._id, course_id: c4._id });
-
-  // Enrollments for Student 2
   await Enrollment.create({ student_id: s2._id, course_id: c1._id });
   await Enrollment.create({ student_id: s2._id, course_id: c2._id });
+  await Enrollment.create({ student_id: s3._id, course_id: c4._id });
 
-  // Enrollments for Student 3
-  await Enrollment.create({ student_id: s3._id, course_id: c1._id });
-  await Enrollment.create({ student_id: s3._id, course_id: c2._id });
-  await Enrollment.create({ student_id: s3._id, course_id: c3._id });
-
-  // Create TLFQs
-  const t1 = await Tlfq.create({
-    course_id: c1._id,
-    faculty_id: f1._id,
-    title: 'Spring Course Evaluation for CS401'
-  });
-  const t1_alt = await Tlfq.create({
-    course_id: c1._id,
-    faculty_id: f4._id,
-    title: 'Autumn Course Evaluation for CS401'
-  });
-  const t2 = await Tlfq.create({
-    course_id: c2._id,
-    faculty_id: f2._id,
-    title: 'Mid-Semester Feedback for CS302'
-  });
-  const t3 = await Tlfq.create({
-    course_id: c3._id,
-    faculty_id: f3._id,
-    title: 'Winter Evaluation for CS405'
-  });
-  const t4 = await Tlfq.create({
-    course_id: c4._id,
-    faculty_id: f4._id,
-    title: 'Fall Assessment for CS501'
-  });
-
-  // Questions for evaluations
+  // ── TLFQs
   const qs = [
-    "The instructor explains course material clearly and effectively.",
-    "The instructor is responsive to questions during and outside of class.",
-    "The assignments and projects contribute significantly to learning.",
-    "The course stimulated my interest in the subject matter.",
-    "Overall, I would rate this instructor's effectiveness as high."
+    'The instructor explains course material clearly and effectively.',
+    'The instructor is responsive to questions during and outside of class.',
+    'The assignments and projects contribute significantly to learning.',
+    'The course stimulated my interest in the subject matter.',
+    'Overall, I would rate this instructor\'s effectiveness as high.'
   ];
 
-  const qObjects1 = [];
-  const qObjects2 = [];
-  const qObjects3 = [];
-  const qObjects4 = [];
+  const createTlfqWithQuestions = async (courseId, facultyId, title) => {
+    const tlfq = await Tlfq.create({ course_id: courseId, faculty_id: facultyId, title, is_active: true });
+    const questions = [];
+    for (const qText of qs) {
+      const q = await Question.create({ tlfq_id: tlfq._id, question_text: qText });
+      questions.push(q);
+    }
+    return { tlfq, questions };
+  };
 
-  for (const qText of qs) {
-    const q1 = await Question.create({ tlfq_id: t1._id, question_text: qText });
-    await Question.create({ tlfq_id: t1_alt._id, question_text: qText });
-    const q2 = await Question.create({ tlfq_id: t2._id, question_text: qText });
-    const q3 = await Question.create({ tlfq_id: t3._id, question_text: qText });
-    const q4 = await Question.create({ tlfq_id: t4._id, question_text: qText });
-    qObjects1.push(q1);
-    qObjects2.push(q2);
-    qObjects3.push(q3);
-    qObjects4.push(q4);
-  }
+  const { tlfq: t1, questions: q1s } = await createTlfqWithQuestions(c1._id, f1._id, 'Spring Evaluation – Advanced Algorithms (CS401)');
+  const { tlfq: t2, questions: q2s } = await createTlfqWithQuestions(c2._id, f2._id, 'Spring Evaluation – Database Systems (CS302)');
+  const { tlfq: t3, questions: q3s } = await createTlfqWithQuestions(c3._id, f4._id, 'Spring Evaluation – Applied AI (CS405)');
+  const { tlfq: t4, questions: q4s } = await createTlfqWithQuestions(c4._id, f3._id, 'Spring Evaluation – Signal Processing (EC301)');
 
-  // Seeding test responses
+  // ── Seed responses (student1 submits for t1, student2 submits for t2)
   const r1 = await Response.create({
-    student_id: s1._id,
-    tlfq_id: t1._id,
+    student_id: s1._id, tlfq_id: t1._id,
     submitted_at: new Date().toISOString(),
     comment: 'Excellent course and deep conceptual teaching.'
   });
-
-  for (const q of qObjects1) {
-    await Answer.create({
-      response_id: r1._id,
-      question_id: q._id,
-      rating: 6
-    });
+  for (const q of q1s) {
+    await Answer.create({ response_id: r1._id, question_id: q._id, rating: 6 });
   }
 
   const r2 = await Response.create({
-    student_id: s2._id,
-    tlfq_id: t2._id,
+    student_id: s2._id, tlfq_id: t2._id,
     submitted_at: new Date().toISOString(),
     comment: 'Great explanations of cloud and storage topics.'
   });
-
-  for (const q of qObjects2) {
-    await Answer.create({
-      response_id: r2._id,
-      question_id: q._id,
-      rating: 7
-    });
-  }
-
-  const r3 = await Response.create({
-    student_id: s3._id,
-    tlfq_id: t3._id,
-    submitted_at: new Date().toISOString(),
-    comment: 'Interesting ethics case studies and interactive discussions.'
-  });
-
-  for (const q of qObjects3) {
-    await Answer.create({
-      response_id: r3._id,
-      question_id: q._id,
-      rating: 5
-    });
+  for (const q of q2s) {
+    await Answer.create({ response_id: r2._id, question_id: q._id, rating: 7 });
   }
 
   console.log('Seeding completed successfully.');

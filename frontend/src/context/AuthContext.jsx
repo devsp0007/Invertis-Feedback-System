@@ -6,9 +6,8 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [theme, setTheme] = useState(localStorage.getItem('tlfq_theme') || 'light');
+  const [theme, setTheme] = useState(localStorage.getItem('tlfq_theme') || 'dark');
 
-  // Load theme preference on mount
   useEffect(() => {
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
@@ -20,19 +19,14 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('tlfq_theme', theme);
   }, [theme]);
 
-  // Load user data on mount
   useEffect(() => {
     const checkAuth = async () => {
       const token = localStorage.getItem('tlfq_token');
-      if (!token) {
-        setLoading(false);
-        return;
-      }
+      if (!token) { setLoading(false); return; }
       try {
         const res = await api.get('/auth/me');
         setUser(res.data.user);
       } catch (err) {
-        console.error('Auth verification failed', err);
         logout();
       } finally {
         setLoading(false);
@@ -48,22 +42,15 @@ export const AuthProvider = ({ children }) => {
     return res.data.user;
   };
 
-  const register = async (name, email, password, role) => {
-    const res = await api.post('/auth/register', { name, email, password, role });
-    return res.data;
-  };
-
   const logout = () => {
     localStorage.removeItem('tlfq_token');
     setUser(null);
   };
 
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
-  };
+  const toggleTheme = () => setTheme(prev => prev === 'light' ? 'dark' : 'light');
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, theme, toggleTheme }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, theme, toggleTheme }}>
       {children}
     </AuthContext.Provider>
   );

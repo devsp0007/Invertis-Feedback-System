@@ -5,7 +5,7 @@ import { roleMiddleware } from '../middleware/roleMiddleware.js';
 
 const router = express.Router();
 
-router.post('/', authMiddleware, submitResponse);
-router.get('/analytics', authMiddleware, roleMiddleware(['admin']), getAnalytics);
+router.post('/submit', authMiddleware, roleMiddleware(['student']), submitResponse);
+router.get('/analytics', authMiddleware, roleMiddleware(['admin', 'hod']), getAnalytics);
 
 export default router;
