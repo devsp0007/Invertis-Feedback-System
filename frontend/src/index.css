@@ -1,39 +1,175 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
 @layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
   body {
-    @apply bg-slate-50 text-slate-900 font-sans select-none antialiased transition-colors duration-200;
+    @apply bg-[#080c14] text-slate-100 antialiased select-none;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-feature-settings: 'cv11', 'ss01';
   }
-  
-  body.dark {
-    @apply bg-slate-950 text-slate-100;
-  }
+
+  ::selection { @apply bg-indigo-600/50 text-white; }
 }
 
-.glass {
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+/* ── Scrollbars ─────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { @apply bg-slate-700 rounded-full; }
+::-webkit-scrollbar-thumb:hover { @apply bg-slate-600; }
+
+/* ── Glass ──────────────────────────────────────────────────────────────── */
+.glass-card {
+  background: rgba(15, 20, 35, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 1rem;
 }
 
-.dark .glass {
-  background: rgba(15, 23, 42, 0.65);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.glass-light {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0.75rem;
 }
 
-/* Custom scrollbars */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+/* ── Gradient Text ──────────────────────────────────────────────────────── */
+.gradient-text {
+  @apply bg-gradient-to-r from-indigo-400 via-violet-400 to-purple-400 bg-clip-text text-transparent;
 }
-::-webkit-scrollbar-track {
-  background: transparent;
+
+.gradient-text-emerald {
+  @apply bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent;
 }
-::-webkit-scrollbar-thumb {
-  @apply bg-indigo-300 dark:bg-indigo-900 rounded-full hover:bg-indigo-400 dark:hover:bg-indigo-800;
+
+/* ── Glow Effects ───────────────────────────────────────────────────────── */
+.glow-indigo { box-shadow: 0 0 40px -10px rgba(99, 102, 241, 0.45); }
+.glow-emerald { box-shadow: 0 0 40px -10px rgba(16, 185, 129, 0.45); }
+.glow-rose    { box-shadow: 0 0 40px -10px rgba(244, 63, 94, 0.45); }
+.glow-blue    { box-shadow: 0 0 40px -10px rgba(59, 130, 246, 0.45); }
+
+/* ── Input Base ─────────────────────────────────────────────────────────── */
+.input-base {
+  @apply w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5
+    text-sm text-slate-200 placeholder-slate-500
+    focus:outline-none focus:ring-2 focus:ring-indigo-500/60 focus:border-indigo-500/40
+    hover:border-white/20 transition-all duration-200;
+}
+
+.select-base {
+  @apply w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5
+    text-sm text-slate-200
+    focus:outline-none focus:ring-2 focus:ring-indigo-500/60 focus:border-indigo-500/40
+    hover:border-white/20 transition-all duration-200 cursor-pointer;
+}
+
+/* ── Buttons ────────────────────────────────────────────────────────────── */
+.btn-primary {
+  @apply flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold
+    bg-indigo-600 hover:bg-indigo-500 text-white
+    shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30
+    transition-all duration-200 cursor-pointer disabled:opacity-50;
+}
+
+.btn-secondary {
+  @apply flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold
+    bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10
+    hover:border-white/20 transition-all duration-200 cursor-pointer;
+}
+
+.btn-danger {
+  @apply flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold
+    bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20
+    hover:border-rose-500/40 transition-all duration-200 cursor-pointer;
+}
+
+.btn-success {
+  @apply flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold
+    bg-emerald-600 hover:bg-emerald-500 text-white
+    shadow-lg shadow-emerald-500/20 transition-all duration-200 cursor-pointer;
+}
+
+/* ── Cards ──────────────────────────────────────────────────────────────── */
+.card {
+  background: linear-gradient(135deg, rgba(15, 20, 35, 0.9) 0%, rgba(10, 15, 28, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 1rem;
+}
+
+/* card-hover uses plain CSS only — not @apply card — to avoid PostCSS error */
+.card-hover {
+  background: linear-gradient(135deg, rgba(15, 20, 35, 0.9) 0%, rgba(10, 15, 28, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 1rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.card-hover:hover {
+  border-color: rgba(255, 255, 255, 0.14);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* ── Sidebar Nav Item ───────────────────────────────────────────────────── */
+.nav-item {
+  @apply flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-[13px] font-semibold
+    transition-all duration-200 text-slate-400 hover:text-slate-100 hover:bg-white/5;
+}
+
+.nav-item.active {
+  @apply text-indigo-300 bg-indigo-500/10 border border-indigo-500/20;
+}
+
+/* ── Tab Pills ──────────────────────────────────────────────────────────── */
+.tab-pill {
+  @apply flex items-center gap-2 px-4 py-2 text-[11px] font-bold rounded-lg
+    transition-all duration-200 text-slate-500 hover:text-slate-200 hover:bg-white/5 cursor-pointer;
+}
+
+.tab-pill.active {
+  @apply text-white bg-indigo-600 shadow-lg shadow-indigo-500/25;
+}
+
+/* ── Status Badges ──────────────────────────────────────────────────────── */
+.badge-open    { @apply text-emerald-400 bg-emerald-400/10 border border-emerald-400/20 text-xs font-bold px-2.5 py-1 rounded-lg; }
+.badge-closed  { @apply text-amber-400 bg-amber-400/10 border border-amber-400/20 text-xs font-bold px-2.5 py-1 rounded-lg; }
+.badge-expired { @apply text-slate-500 bg-slate-500/10 border border-slate-500/20 text-xs font-bold px-2.5 py-1 rounded-lg; }
+.badge-pending { @apply text-amber-400 bg-amber-400/10 border border-amber-400/20 text-xs font-bold px-2.5 py-1 rounded-lg; }
+.badge-active  { @apply text-emerald-400 bg-emerald-400/10 border border-emerald-400/20 text-xs font-bold px-2.5 py-1 rounded-lg; }
+.badge-role    { @apply text-violet-300 bg-violet-500/10 border border-violet-500/20 text-xs font-bold px-2.5 py-1 rounded-lg; }
+
+/* ── Mesh Background ────────────────────────────────────────────────────── */
+.mesh-bg {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(139, 92, 246, 0.06) 0%, transparent 60%),
+    #080c14;
+}
+
+/* ── Monospace Font ─────────────────────────────────────────────────────── */
+.font-mono-styled { font-family: 'JetBrains Mono', 'Fira Code', monospace; }
+
+/* ── Skeleton Shimmer ───────────────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(30, 40, 60, 0.5) 25%,
+    rgba(50, 65, 90, 0.5) 50%,
+    rgba(30, 40, 60, 0.5) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 1rem;
 }

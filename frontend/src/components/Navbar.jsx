@@ -1,60 +1,59 @@
 import { useAuth } from '../context/AuthContext';
-import { Sun, Moon, LogOut, Shield, Building2, GraduationCap } from 'lucide-react';
+import { LogOut, Shield, Building2, GraduationCap, Users, Bell } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const ROLE_COLORS = {
-  admin: 'bg-violet-900/50 text-violet-300 border-violet-800',
-  hod:   'bg-blue-900/50 text-blue-300 border-blue-800',
-  student: 'bg-emerald-900/50 text-emerald-300 border-emerald-800',
+const ROLE_CONFIG = {
+  super_admin: { label: 'Super Admin',  icon: Shield,       color: 'text-rose-300',   bg: 'bg-rose-500/10 border-rose-500/25' },
+  coordinator: { label: 'Coordinator',  icon: Users,        color: 'text-violet-300', bg: 'bg-violet-500/10 border-violet-500/25' },
+  hod:         { label: 'Head of Dept', icon: Building2,    color: 'text-blue-300',   bg: 'bg-blue-500/10 border-blue-500/25' },
+  student:     { label: 'Student',      icon: GraduationCap,color: 'text-emerald-300',bg: 'bg-emerald-500/10 border-emerald-500/25' },
 };
-const ROLE_ICONS = { admin: Shield, hod: Building2, student: GraduationCap };
 
 export default function Navbar() {
-  const { user, logout, theme, toggleTheme } = useAuth();
-  const RoleIcon = ROLE_ICONS[user?.role] || GraduationCap;
+  const { user, logout } = useAuth();
+  const role = ROLE_CONFIG[user?.role] || ROLE_CONFIG.student;
+  const RoleIcon = role.icon;
 
   return (
     <motion.nav
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className="sticky top-0 z-50 flex items-center justify-between px-6 py-3.5 bg-slate-900 border-b border-slate-800 select-none backdrop-blur-md"
+      transition={{ duration: 0.4 }}
+      className="sticky top-0 z-50 flex items-center justify-between px-5 py-3 border-b border-white/[0.06] select-none"
+      style={{ background: 'rgba(8,12,20,0.85)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
     >
+      {/* Brand */}
       <div className="flex items-center gap-3">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold text-sm shadow-lg shadow-indigo-950">
-          TL
+        <div className="relative flex h-9 w-9 items-center justify-center rounded-xl flex-shrink-0"
+          style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)', boxShadow: '0 0 20px rgba(99,102,241,0.4)' }}>
+          <span className="text-white font-black text-xs tracking-tight">IF</span>
         </div>
-        <div>
-          <h1 className="text-sm font-bold text-slate-100 leading-none">Invertis TLFQ Platform</h1>
-          <p className="text-xs text-slate-500 mt-0.5">Teaching-Learning Feedback System</p>
+        <div className="hidden sm:block">
+          <div className="text-[13px] font-bold text-white leading-none">Invertis Feedback</div>
+          <div className="text-[10px] text-slate-500 mt-0.5 leading-none">Teaching-Learning Feedback System</div>
         </div>
       </div>
 
-      <div className="flex items-center gap-3">
+      {/* Right section */}
+      <div className="flex items-center gap-2">
         {user && (
-          <div className="hidden md:flex items-center gap-2.5">
+          <div className="hidden md:flex items-center gap-3 mr-1">
             <div className="text-right">
-              <div className="text-xs font-bold text-slate-200">{user.name}</div>
-              <div className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full border ${ROLE_COLORS[user.role]}`}>
-                <RoleIcon size={10} />
-                {user.role === 'hod' ? 'Head of Department' : user.role.charAt(0).toUpperCase() + user.role.slice(1)}
-              </div>
+              <div className="text-xs font-bold text-slate-200 leading-none">{user.name}</div>
+              {user.student_id && <div className="text-[10px] text-slate-500 mt-0.5 font-mono-styled">{user.student_id}</div>}
+            </div>
+            <div className={`flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1.5 rounded-lg border ${role.bg} ${role.color}`}>
+              <RoleIcon size={10} />
+              {role.label}
             </div>
           </div>
         )}
 
         <button
-          onClick={toggleTheme}
-          className="p-2 rounded-xl bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200 transition-all border border-slate-700"
-          title={theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-        >
-          {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
-        </button>
-
-        <button
           onClick={logout}
-          className="flex items-center gap-1.5 rounded-xl bg-slate-800 hover:bg-rose-900/40 border border-slate-700 hover:border-rose-800 px-3 py-2 text-xs font-semibold text-slate-400 hover:text-rose-400 transition-all cursor-pointer"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-bold text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 border border-white/8 hover:border-rose-500/25 transition-all duration-200 cursor-pointer"
         >
-          <LogOut size={15} />
+          <LogOut size={14} />
           <span className="hidden sm:inline">Logout</span>
         </button>
       </div>

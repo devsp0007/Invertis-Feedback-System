@@ -24,6 +24,9 @@ export default function AdminPanel() {
   const [courseId, setCourseId] = useState('');
   const [facultyId, setFacultyId] = useState('');
   const [title, setTitle] = useState('');
+  const [semester, setSemester] = useState('1');
+  const [section, setSection] = useState('A');
+  const [closingTime, setClosingTime] = useState('');
   const [questions, setQuestions] = useState([...DEFAULT_QUESTIONS]);
 
   const loadData = async () => {
@@ -49,12 +52,20 @@ export default function AdminPanel() {
   const handleCreateTlfq = async (e) => {
     e.preventDefault();
     setError(''); setSuccess('');
-    if (!courseId || !facultyId || !title) { setError('Please fill in all required fields.'); return; }
+    if (!courseId || !facultyId || !title || !closingTime) { setError('Please fill in all required fields.'); return; }
     const filteredQs = questions.filter(q => q.trim());
     if (filteredQs.length === 0) { setError('Add at least 1 question.'); return; }
     try {
-      await api.post('/tlfq', { course_id: courseId, faculty_id: facultyId, title, question_texts: filteredQs });
-      setTitle(''); setCourseId(''); setFacultyId(''); setQuestions([...DEFAULT_QUESTIONS]);
+      await api.post('/tlfq', { 
+        course_id: courseId, 
+        faculty_id: facultyId, 
+        title, 
+        semester: parseInt(semester),
+        section,
+        closing_time: closingTime,
+        question_texts: filteredQs 
+      });
+      setTitle(''); setCourseId(''); setFacultyId(''); setSemester('1'); setSection('A'); setClosingTime(''); setQuestions([...DEFAULT_QUESTIONS]);
       setSuccess('TLFQ evaluation created and published successfully!');
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to create TLFQ.');
@@ -106,11 +117,13 @@ export default function AdminPanel() {
                     >
                       <option value="">Choose Course…</option>
                       {Object.values(coursesByDept).map(({ name, courses: dCourses }) => (
-                        <optgroup key={name} label={`── ${name}`}>
-                          {dCourses.map(c => (
-                            <option key={c.id} value={c.id}>[{c.code}] {c.name}</option>
-                          ))}
-                        </optgroup>
+                        dCourses.length > 0 && (
+                          <optgroup key={name} label={`── ${name}`}>
+                            {dCourses.map(c => (
+                              <option key={c.id} value={c.id}>[{c.code}] {c.name}</option>
+                            ))}
+                          </optgroup>
+                        )
                       ))}
                     </select>
                   </div>
@@ -130,10 +143,43 @@ export default function AdminPanel() {
                 </div>
 
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Evaluation Title / Semester</label>
+                  <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Evaluation Title</label>
                   <input
                     type="text" value={title} onChange={e => setTitle(e.target.value)}
-                    placeholder="E.g. Spring 2025 – Advanced Algorithms (CS401)"
+                    placeholder="E.g. Advanced Algorithms (CS401) Feedback"
+                    className="bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Semester</label>
+                    <select
+                      value={semester} onChange={e => setSemester(e.target.value)}
+                      className="bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-3 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+                    >
+                      {[1, 2, 3, 4, 5, 6, 7, 8].map(sem => (
+                        <option key={sem} value={sem}>Semester {sem}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Section</label>
+                    <select
+                      value={section} onChange={e => setSection(e.target.value)}
+                      className="bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-3 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+                    >
+                      {['A', 'B', 'C', 'D'].map(sec => (
+                        <option key={sec} value={sec}>Section {sec}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Closing Time</label>
+                  <input
+                    type="datetime-local" value={closingTime} onChange={e => setClosingTime(e.target.value)}
                     className="bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>

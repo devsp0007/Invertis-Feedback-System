@@ -1,73 +1,68 @@
-import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { BookOpen, BarChart2, PlusCircle, LayoutDashboard, Settings, Building2, GraduationCap, Shield } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { NavLink } from 'react-router-dom';
+import { LayoutDashboard, GraduationCap, BarChart2, Trophy, Shield, Users, Layers, Building2 } from 'lucide-react';
 
-const ROLE_LINKS = {
-  admin: [
-    { to: '/dashboard', label: 'Overview', icon: LayoutDashboard },
-    { to: '/admin/courses', label: 'Create Evaluation', icon: PlusCircle },
-    { to: '/admin/analytics', label: 'Analytics', icon: BarChart2 },
-    { to: '/admin/directory', label: 'Directory', icon: Settings },
-  ],
-  hod: [
-    { to: '/dashboard', label: 'Overview', icon: LayoutDashboard },
-    { to: '/hod/analytics', label: 'Dept. Analytics', icon: BarChart2 },
-  ],
-  student: [
-    { to: '/dashboard', label: 'My Courses', icon: GraduationCap },
-  ],
-};
-
-const ROLE_BADGES = {
-  admin: { label: 'System Admin', icon: Shield, colors: 'bg-violet-900/40 text-violet-300 border-violet-800' },
-  hod: { label: 'Head of Dept.', icon: Building2, colors: 'bg-blue-900/40 text-blue-300 border-blue-800' },
-  student: { label: 'Student', icon: GraduationCap, colors: 'bg-emerald-900/40 text-emerald-300 border-emerald-800' },
-};
+const NAV_ITEM = ({ to, icon: Icon, label, end = false }) => (
+  <NavLink to={to} end={end}>
+    {({ isActive }) => (
+      <div className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-[12.5px] font-semibold transition-all duration-200 cursor-pointer ${
+        isActive
+          ? 'text-indigo-200 bg-indigo-500/12 border border-indigo-500/20 shadow-sm'
+          : 'text-slate-500 hover:text-slate-200 hover:bg-white/5 border border-transparent'
+      }`}>
+        <Icon size={15} className={isActive ? 'text-indigo-400' : ''} />
+        <span>{label}</span>
+        {isActive && <div className="ml-auto h-1.5 w-1.5 rounded-full bg-indigo-400" />}
+      </div>
+    )}
+  </NavLink>
+);
 
 export default function Sidebar() {
   const { user } = useAuth();
-  const location = useLocation();
-  const links = ROLE_LINKS[user?.role] || ROLE_LINKS.student;
-  const badge = ROLE_BADGES[user?.role];
+  const role = user?.role;
+
+  const sections = {
+    student: [
+      { to: '/dashboard', icon: LayoutDashboard, label: 'My Courses', end: true },
+      { to: '/leaderboard', icon: Trophy, label: 'Leaderboard' },
+    ],
+    hod: [
+      { to: '/hod', icon: LayoutDashboard, label: 'Dashboard', end: true },
+      { to: '/analytics', icon: BarChart2, label: 'Analytics' },
+      { to: '/leaderboard', icon: Trophy, label: 'Leaderboard' },
+    ],
+    coordinator: [
+      { to: '/coordinator', icon: Layers, label: 'Coordinator Panel', end: true },
+      { to: '/leaderboard', icon: Trophy, label: 'Leaderboard' },
+    ],
+    super_admin: [
+      { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', end: true },
+      { to: '/superadmin', icon: Shield, label: 'User Management' },
+      { to: '/coordinator', icon: Users, label: 'Coordinator Panel' },
+      { to: '/analytics', icon: BarChart2, label: 'Analytics' },
+      { to: '/leaderboard', icon: Trophy, label: 'Leaderboard' },
+    ],
+  };
+
+  const links = sections[role] || sections.student;
 
   return (
-    <div className="w-full md:w-60 bg-slate-900 border-r border-slate-800 p-4 flex flex-col gap-2 min-h-[calc(100vh-65px)] select-none">
-      {/* Role badge */}
-      {badge && (
-        <div className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-bold mb-2 ${badge.colors}`}>
-          <badge.icon size={14} />
-          {badge.label}
-        </div>
-      )}
-
-      <div className="flex flex-col gap-1 flex-1">
-        {links.map((link) => {
-          const Icon = link.icon;
-          const isActive = location.pathname === link.to;
-          return (
-            <Link to={link.to} key={link.to}>
-              <motion.div
-                whileHover={{ x: 4 }}
-                className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl cursor-pointer text-sm font-semibold transition-all border ${
-                  isActive
-                    ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-950/40'
-                    : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800 border-transparent'
-                }`}
-              >
-                <Icon size={17} className={isActive ? 'text-white' : 'text-slate-500'} />
-                {link.label}
-              </motion.div>
-            </Link>
-          );
-        })}
+    <aside
+      className="w-full md:w-52 shrink-0 border-b md:border-b-0 md:border-r border-white/[0.06] p-3 flex flex-row md:flex-col gap-1 overflow-x-auto md:overflow-visible"
+      style={{ background: 'rgba(8,12,20,0.5)' }}
+    >
+      {/* Role indicator */}
+      <div className="hidden md:flex items-center gap-2 px-3 py-2 mb-2">
+        <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50 animate-pulse" />
+        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+          {role?.replace('_', ' ')}
+        </span>
       </div>
 
-      <div className="bg-slate-800 border border-slate-700 rounded-2xl p-4 mt-auto">
-        <p className="text-xs text-slate-500 leading-relaxed">
-          All feedback is <span className="text-slate-300 font-semibold">anonymous</span>. Student identities are never disclosed in reports.
-        </p>
-      </div>
-    </div>
+      {links.map(item => (
+        <NAV_ITEM key={item.to} {...item} />
+      ))}
+    </aside>
   );
 }

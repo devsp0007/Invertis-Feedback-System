@@ -1,171 +1,197 @@
-import { Faculty, Tlfq, Question, Response, Answer, Course, Enrollment, Department, User } from '../db.js';
+import { Department, Section, SectionFaculty, Course, Faculty, Tlfq, Question, Response, Answer, User, Enrollment } from '../db.js';
 
-function serialize(doc) {
-  if (!doc) return doc;
-  if (typeof doc.toJSON === 'function') {
-    try { return doc.toJSON(); } catch (e) { return { ...doc }; }
-  }
-  return { ...doc };
-}
-
-// ── POST /api/responses/submit  [student only]
-export const submitResponse = async (req, res) => {
+// ── Student: GET courses + TLFQs for their section ─────────────────────────
+export const getStudentCourses = async (req, res) => {
   try {
-    const { tlfqId, answers, comment } = req.body;
-    const student_id = req.user.id;
+    const { id: userId, department_id } = req.user;
+    const student = await User.findById(userId).lean();
+    if (!student) return res.status(404).json({ message: 'Student not found' });
 
-    if (!tlfqId || !answers) {
-      return res.status(400).json({ message: 'tlfqId and answers are required' });
+    const dept = await Department.findById(department_id).lean();
+    if (dept && !dept.portal_open) {
+      return res.status(200).json({ portal_closed: true, message: 'The feedback portal is currently closed by your HOD.' });
     }
 
-    const existing = await Response.findOne({ student_id, tlfq_id: tlfqId });
-    if (existing) {
-      return res.status(400).json({ message: 'Evaluation already submitted. Edits are not allowed.' });
+    const now = new Date();
+    const section_id = student.section_id;
+    if (!section_id) return res.json([]);
+
+    // Get all active, non-expired TLFQs for this section
+    const tlfqs = await Tlfq.find({
+      section_id,
+      is_active: true,
+      closing_time: { $gt: now }
+    }).lean();
+
+    // Group by course
+    const courseMap = {};
+    for (const tlfq of tlfqs) {
+      const courseId = tlfq.course_id.toString();
+      if (!courseMap[courseId]) {
+        const course = await Course.findById(tlfq.course_id).lean();
+        courseMap[courseId] = { ...course, id: courseId, tlfqs: [], pending_count: 0, completed_count: 0 };
+      }
+      const faculty = await Faculty.findById(tlfq.faculty_id).lean();
+      const resp = await Response.findOne({ student_id: userId, tlfq_id: tlfq._id }).lean();
+      const entry = {
+        ...tlfq, id: tlfq._id.toString(),
+        faculty_name: faculty?.name || 'Unknown',
+        completed: !!resp,
+        closing_time: tlfq.closing_time
+      };
+      courseMap[courseId].tlfqs.push(entry);
+      if (resp) courseMap[courseId].completed_count++;
+      else courseMap[courseId].pending_count++;
     }
-
-    const resp = await Response.create({
-      student_id,
-      tlfq_id: tlfqId,
-      submitted_at: new Date().toISOString(),
-      comment: comment || ''
-    });
-
-    for (const [question_id, rating] of Object.entries(answers)) {
-      await Answer.create({
-        response_id: resp._id,
-        question_id,
-        rating: parseInt(rating)
-      });
-    }
-
-    return res.status(201).json({ message: 'Evaluation submitted successfully. Thank you!' });
+    return res.json(Object.values(courseMap));
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
-// ── GET /api/responses/analytics  [admin + hod]
-//    HOD sees only their department's data
-export const getAnalytics = async (req, res) => {
+// ── GET specific evaluation form ───────────────────────────────────────────
+export const getEvaluation = async (req, res) => {
   try {
-    const { role, department_id } = req.user;
-    const isHod = role === 'hod';
-
-    // ── 1. Faculty avg ratings
-    const facultyQuery = isHod ? { department_id } : {};
-    const facultyList = await Faculty.find(facultyQuery);
-    const avgRatingPerFaculty = [];
-
-    for (const f of facultyList || []) {
-      const tlfqs = await Tlfq.find({ faculty_id: f._id });
-      const tlfqIds = (tlfqs || []).map(t => t._id);
-      const responses = await Response.find({ tlfq_id: { $in: tlfqIds } });
-      const responseIds = (responses || []).map(r => r._id);
-      const answers = await Answer.find({ response_id: { $in: responseIds } });
-      const sum = (answers || []).reduce((acc, cur) => acc + cur.rating, 0);
-      const count = (answers || []).length;
-      const dept = await Department.findById(f.department_id);
-
-      avgRatingPerFaculty.push({
-        id: f.id,
-        name: f.name,
-        department_name: dept ? dept.name : 'Unknown',
-        avg_rating: count > 0 ? parseFloat((sum / count).toFixed(2)) : 0,
-        total_responses: (responses || []).length
-      });
+    const tlfq = await Tlfq.findById(req.params.tlfqId).lean();
+    if (!tlfq) return res.status(404).json({ message: 'Form not found.' });
+    if (!tlfq.is_active || new Date(tlfq.closing_time) < new Date()) {
+      return res.status(403).json({ message: 'This evaluation is closed or expired.' });
     }
-    avgRatingPerFaculty.sort((a, b) => b.avg_rating - a.avg_rating);
-
-    // ── 2. Course submission rates
-    const courseQuery = isHod ? { department_id } : {};
-    const courses = await Course.find(courseQuery);
-    const submissionRates = [];
-
-    for (const course of courses || []) {
-      const enrolledCount = await Enrollment.countDocuments({ course_id: course._id });
-      const tlfqs = await Tlfq.find({ course_id: course._id });
-      let submittedCount = 0;
-      for (const tlfq of tlfqs || []) {
-        submittedCount += await Response.countDocuments({ tlfq_id: tlfq._id });
-      }
-      const rate = enrolledCount > 0 ? (submittedCount / enrolledCount) * 100 : 0;
-      const dept = await Department.findById(course.department_id);
-
-      submissionRates.push({
-        course_id: course.id,
-        course_name: course.name,
-        course_code: course.code,
-        department_name: dept ? dept.name : 'Unknown',
-        enrolled: enrolledCount,
-        submitted: submittedCount,
-        rate: Math.min(100, Math.round(rate))
-      });
-    }
-
-    // ── 3. Department-level overview
-    const deptQuery = isHod ? { _id: department_id } : {};
-    const departments = await Department.find(deptQuery);
-    const deptOverview = [];
-
-    for (const dept of departments || []) {
-      const deptCourses = await Course.find({ department_id: dept._id });
-      const deptFaculty = await Faculty.find({ department_id: dept._id });
-      const deptStudents = await User.find({ role: 'student', department_id: dept._id });
-
-      let totalRatings = 0, ratingCount = 0;
-      for (const c of deptCourses || []) {
-        const tlfqs = await Tlfq.find({ course_id: c._id });
-        for (const t of tlfqs || []) {
-          const responses = await Response.find({ tlfq_id: t._id });
-          const responseIds = (responses || []).map(r => r._id);
-          const answers = await Answer.find({ response_id: { $in: responseIds } });
-          totalRatings += (answers || []).reduce((a, c) => a + c.rating, 0);
-          ratingCount += (answers || []).length;
-        }
-      }
-
-      deptOverview.push({
-        id: dept.id,
-        name: dept.name,
-        code: dept.code,
-        course_count: (deptCourses || []).length,
-        faculty_count: (deptFaculty || []).length,
-        student_count: (deptStudents || []).length,
-        avg_rating: ratingCount > 0 ? parseFloat((totalRatings / ratingCount).toFixed(2)) : 0
-      });
-    }
-
-    // ── 4. Recent anonymous comments (HOD/Admin)
-    const recentComments = [];
-    const responses = await Response.find().sort({ submitted_at: -1 });
-    for (const r of (responses || []).slice(0, 20)) {
-      const tlfq = await Tlfq.findById(r.tlfq_id);
-      if (!tlfq) continue;
-      if (isHod) {
-        const course = await Course.findById(tlfq.course_id);
-        if (!course || course.department_id?.toString() !== department_id?.toString()) continue;
-      }
-      const faculty = await Faculty.findById(tlfq.faculty_id);
-      const course = await Course.findById(tlfq.course_id);
-      if (r.comment && r.comment.trim()) {
-        recentComments.push({
-          comment: r.comment,
-          faculty_name: faculty ? faculty.name : 'Unknown',
-          course_name: course ? course.name : 'Unknown',
-          submitted_at: r.submitted_at
-        });
-      }
-    }
-
-    return res.status(200).json({
-      avgRatingPerFaculty,
-      submissionRates,
-      deptOverview,
-      recentComments
+    const faculty   = await Faculty.findById(tlfq.faculty_id).lean();
+    const course    = await Course.findById(tlfq.course_id).lean();
+    const section   = await Section.findById(tlfq.section_id).lean();
+    const questions = await Question.find({ tlfq_id: tlfq._id }).lean();
+    return res.json({
+      ...tlfq, id: tlfq._id.toString(),
+      faculty_name: faculty?.name || 'Unknown',
+      course_name:  course?.name  || 'Unknown',
+      course_code:  course?.code  || '',
+      section_name: section?.name || '',
+      questions: questions.map(q => ({ ...q, id: q._id.toString() }))
     });
+  } catch { return res.status(500).json({ message: 'Internal Server Error' }); }
+};
+
+// ── POST /api/student/submit ────────────────────────────────────────────────
+export const submitResponse = async (req, res) => {
+  try {
+    const { id: student_id, department_id } = req.user;
+    const { tlfq_id, answers, comment } = req.body;
+
+    const dept = await Department.findById(department_id).lean();
+    if (dept && !dept.portal_open) {
+      return res.status(403).json({ message: 'The feedback portal is currently closed.' });
+    }
+
+    const tlfq = await Tlfq.findById(tlfq_id).lean();
+    if (!tlfq || !tlfq.is_active || new Date(tlfq.closing_time) < new Date()) {
+      return res.status(403).json({ message: 'This evaluation form is closed or expired.' });
+    }
+
+    const existing = await Response.findOne({ student_id, tlfq_id }).lean();
+    if (existing) return res.status(400).json({ message: 'Evaluation already submitted.' });
+
+    const resp = await Response.create({ student_id, tlfq_id, submitted_at: new Date().toISOString(), comment: comment || '' });
+    if (answers && Array.isArray(answers)) {
+      for (const { question_id, rating } of answers) {
+        await Answer.create({ response_id: resp._id, question_id, rating: Number(rating) });
+      }
+    }
+    await User.findByIdAndUpdate(student_id, { $inc: { points: 10 } });
+    return res.status(201).json({ message: 'Feedback submitted successfully. +10 points!' });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: 'Internal Server Error' });
   }
+};
+
+// ── Analytics (super_admin) ─────────────────────────────────────────────────
+export const getAnalytics = async (req, res) => {
+  try {
+    const { department_id } = req.query;
+    const deptFilter = department_id ? { department_id } : {};
+
+    // Fetch all depts for overview
+    const allDepts = await Department.find().lean();
+
+    // Responses and answers
+    const allResponses = await Response.find().lean();
+    const responseIds  = allResponses.map(r => r._id);
+    const allAnswers   = await Answer.find({ response_id: { $in: responseIds } }).lean();
+
+    // Build avg rating per faculty (filtered by dept if selected)
+    const facultyFilter = department_id ? { department_id } : {};
+    const allFaculty    = await Faculty.find(facultyFilter).lean();
+    const allTlfqs      = await Tlfq.find().lean();
+
+    const facultyMap = {};
+    for (const f of allFaculty) {
+      facultyMap[f._id.toString()] = { id: f._id.toString(), name: f.name, department_id: f.department_id.toString(), total_responses: 0, total_rating: 0 };
+    }
+
+    for (const tlfq of allTlfqs) {
+      const fId = tlfq.faculty_id.toString();
+      if (!facultyMap[fId]) continue;
+      const tlfqResponses = allResponses.filter(r => r.tlfq_id.toString() === tlfq._id.toString());
+      for (const resp of tlfqResponses) {
+        const respAnswers = allAnswers.filter(a => a.response_id.toString() === resp._id.toString());
+        if (respAnswers.length > 0) {
+          const avg = respAnswers.reduce((s, a) => s + a.rating, 0) / respAnswers.length;
+          facultyMap[fId].total_rating += avg;
+          facultyMap[fId].total_responses++;
+        }
+      }
+    }
+
+    const avgRatingPerFaculty = Object.values(facultyMap)
+      .filter(f => f.total_responses > 0)
+      .map(f => ({ ...f, avg_rating: parseFloat((f.total_rating / f.total_responses).toFixed(2)) }))
+      .sort((a, b) => b.avg_rating - a.avg_rating);
+
+    // Recent comments (filtered by dept)
+    const filteredTlfqIds = allTlfqs
+      .filter(t => !department_id || allFaculty.some(f => f._id.toString() === t.faculty_id.toString()))
+      .map(t => t._id.toString());
+    const recentResponses = allResponses.filter(r => r.comment && filteredTlfqIds.includes(r.tlfq_id.toString())).slice(-20);
+    const recentComments  = await Promise.all(recentResponses.map(async r => {
+      const tlfq    = allTlfqs.find(t => t._id.toString() === r.tlfq_id.toString());
+      const faculty  = tlfq ? allFaculty.find(f => f._id.toString() === tlfq.faculty_id.toString()) : null;
+      const course   = tlfq ? await Course.findById(tlfq.course_id).lean() : null;
+      const section  = tlfq ? await Section.findById(tlfq.section_id).lean() : null;
+      const deptObj  = faculty ? allDepts.find(d => d._id.toString() === faculty.department_id.toString()) : null;
+      return {
+        comment: r.comment, submitted_at: r.submitted_at,
+        faculty_name: faculty?.name, course_name: course?.name,
+        section_name: section?.name,
+        department_id: deptObj?._id?.toString()
+      };
+    }));
+
+    const deptOverview = allDepts.map(d => ({
+      id: d._id.toString(), name: d.name, code: d.code, portal_open: d.portal_open
+    }));
+
+    return res.json({ avgRatingPerFaculty, recentComments, deptOverview });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+// ── Leaderboard ─────────────────────────────────────────────────────────────
+export const getLeaderboard = async (req, res) => {
+  try {
+    const { role, department_id } = req.user;
+    const query = { role: 'student', points: { $gt: 0 } };
+    if (role === 'hod') query.department_id = department_id;
+    const students = await User.find(query).sort({ points: -1 }).limit(50).lean();
+    return res.json(students.map((s, i) => ({
+      rank: i + 1,
+      unique_feedback_id: s.unique_feedback_id || 'ANO-?????',
+      points: s.points, batch: s.batch,
+      name: role === 'super_admin' ? s.name : null,
+      student_id: role === 'super_admin' ? s.student_id : null,
+    })));
+  } catch { return res.status(500).json({ message: 'Internal Server Error' }); }
 };
