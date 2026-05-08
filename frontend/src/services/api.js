@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || (import.meta.env.MODE === 'production' ? '/api' : 'http://localhost:5000/api'),
+  baseURL: import.meta.env.VITE_API_URL || (import.meta.env.MODE === 'production' ? 'https://invertis-feedback-system-1.onrender.com/api' : 'http://localhost:5000/api'),
 });
 
 // Auto-attach the token from local storage
