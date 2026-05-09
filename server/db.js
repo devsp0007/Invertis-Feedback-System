@@ -42,7 +42,7 @@ const uSchema = new mongoose.Schema({
   name:               { type: String, required: true },
   email:              { type: String, default: null },
   password:           { type: String, default: null },
-  role:               { type: String, required: true, enum: ['super_admin', 'coordinator', 'hod', 'student'] },
+  role:               { type: String, required: true, enum: ['supreme', 'super_admin', 'coordinator', 'hod', 'student'] },
   status:             { type: String, enum: ['pending', 'active'], default: 'active' },
   department_id:      { type: mongoose.Schema.Types.ObjectId, ref: 'Department', default: null }, // HOD only
   section_id:         { type: mongoose.Schema.Types.ObjectId, ref: 'Section', default: null },    // Student only
@@ -63,7 +63,8 @@ export const Course = mongoose.model('Course', cSchema);
 
 const fSchema = new mongoose.Schema({
   name:          { type: String, required: true },
-  department_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Department', required: true }
+  department_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Department', required: true },
+  teacher_type:  { type: String, enum: ['college_faculty', 'trainer'], default: 'college_faculty' }
 }, { toJSON: transform, toObject: transform });
 export const Faculty = mongoose.model('Faculty', fSchema);
 
@@ -116,7 +117,7 @@ export const Answer = mongoose.model('Answer', aSchema);
 
 // ─── SEED ──────────────────────────────────────────────────────────────────────
 
-export const initDb = async () => {
+export const initDb = async (force = false) => {
   try {
     console.log('Attempting connection to MongoDB Atlas...');
     await mongoose.connect(MONGO_URI, { serverSelectionTimeoutMS: 10000 });
@@ -126,13 +127,26 @@ export const initDb = async () => {
     process.exit(1);
   }
 
-  const existingUsers = await User.countDocuments();
-  if (existingUsers > 0) {
-    console.log(`ℹ️  Database already seeded (${existingUsers} users found). Skipping seed.`);
+  const userCount = await User.countDocuments();
+  if (userCount > 0 && !force) {
+    console.log(`ℹ️  Database already seeded (${userCount} users found). Skipping seed.`);
     return;
   }
 
-  console.log('🌱 Seeding initial data...');
+  if (force) {
+    console.log('⚠️  Force re-seeding enabled. Wiping existing data...');
+    await Department.deleteMany({});
+    await Section.deleteMany({});
+    await Course.deleteMany({});
+    await Faculty.deleteMany({});
+    await Tlfq.deleteMany({});
+    await Question.deleteMany({});
+    await User.deleteMany({});
+    await Response.deleteMany({});
+    await Answer.deleteMany({});
+  }
+
+  console.log('🌱 Seeding database...');
 
   // ── Departments ────────────────────────────────────────────────────────────
   const deptBTAI = await Department.create({ name: 'B.Tech Artificial Intelligence', code: 'BTAI', portal_open: true });
@@ -140,6 +154,12 @@ export const initDb = async () => {
   const deptBTEC = await Department.create({ name: 'B.Tech Electronics & Communication', code: 'BTEC', portal_open: true });
   const deptBTME = await Department.create({ name: 'B.Tech Mechanical Engineering',  code: 'BTME', portal_open: true });
   const deptBTCE = await Department.create({ name: 'B.Tech Civil Engineering',       code: 'BTCE', portal_open: true });
+
+  // ── Supreme Authority (3 predefined hardcoded accounts) ─────────────────
+  const supPassword = await bcrypt.hash('Super@123', 10);
+  await User.create({ name: 'SUPAdmin1', email: 'supauth1@invertis.edu.in', password: supPassword, role: 'supreme', status: 'active' });
+  await User.create({ name: 'SUPAdmin2', email: 'supauth2@invertis.edu.in', password: supPassword, role: 'supreme', status: 'active' });
+  await User.create({ name: 'SUPAdmin3', email: 'supauth3@invertis.edu.in', password: supPassword, role: 'supreme', status: 'active' });
 
   // ── Super Admin ────────────────────────────────────────────────────────────
   await User.create({
@@ -167,19 +187,19 @@ export const initDb = async () => {
   await User.create({ name: 'Dr. Suresh Mishra',     email: 'hod.btme@invertis.edu.in', password: hodPassword, role: 'hod', department_id: deptBTME._id, status: 'active' });
   await User.create({ name: 'Dr. Kavita Verma',      email: 'hod.btce@invertis.edu.in', password: hodPassword, role: 'hod', department_id: deptBTCE._id, status: 'active' });
 
-  // ── Faculty ────────────────────────────────────────────────────────────────
-  const fAI1 = await Faculty.create({ name: 'Dr. Alan Turing',     department_id: deptBTAI._id });
-  const fAI2 = await Faculty.create({ name: 'Dr. Yoshua Bengio',   department_id: deptBTAI._id });
-  const fAI3 = await Faculty.create({ name: 'Dr. Fei-Fei Li',      department_id: deptBTAI._id });
-  const fCS1 = await Faculty.create({ name: 'Dr. Grace Hopper',    department_id: deptBCS._id  });
-  const fCS2 = await Faculty.create({ name: 'Dr. Ada Lovelace',    department_id: deptBCS._id  });
-  const fCS3 = await Faculty.create({ name: 'Dr. Dennis Ritchie',  department_id: deptBCS._id  });
-  const fEC1 = await Faculty.create({ name: 'Dr. Richard Feynman', department_id: deptBTEC._id });
-  const fEC2 = await Faculty.create({ name: 'Dr. Nikola Tesla',    department_id: deptBTEC._id });
-  const fME1 = await Faculty.create({ name: 'Dr. Isaac Newton',    department_id: deptBTME._id });
-  const fME2 = await Faculty.create({ name: 'Dr. Marie Curie',     department_id: deptBTME._id });
-  const fCE1 = await Faculty.create({ name: 'Dr. Ratan Tata',      department_id: deptBTCE._id });
-  const fCE2 = await Faculty.create({ name: 'Dr. Sunita Williams',  department_id: deptBTCE._id });
+  // ── Faculty (mix of college_faculty and trainer as per plan) ────────────
+  const fAI1 = await Faculty.create({ name: 'Dr. Alan Turing',     department_id: deptBTAI._id, teacher_type: 'college_faculty' });
+  const fAI2 = await Faculty.create({ name: 'Dr. Yoshua Bengio',   department_id: deptBTAI._id, teacher_type: 'trainer'         });
+  const fAI3 = await Faculty.create({ name: 'Dr. Fei-Fei Li',      department_id: deptBTAI._id, teacher_type: 'college_faculty' });
+  const fCS1 = await Faculty.create({ name: 'Dr. Grace Hopper',    department_id: deptBCS._id,  teacher_type: 'college_faculty' });
+  const fCS2 = await Faculty.create({ name: 'Dr. Ada Lovelace',    department_id: deptBCS._id,  teacher_type: 'trainer'         });
+  const fCS3 = await Faculty.create({ name: 'Dr. Dennis Ritchie',  department_id: deptBCS._id,  teacher_type: 'college_faculty' });
+  const fEC1 = await Faculty.create({ name: 'Dr. Richard Feynman', department_id: deptBTEC._id, teacher_type: 'college_faculty' });
+  const fEC2 = await Faculty.create({ name: 'Dr. Nikola Tesla',    department_id: deptBTEC._id, teacher_type: 'trainer'         });
+  const fME1 = await Faculty.create({ name: 'Dr. Isaac Newton',    department_id: deptBTME._id, teacher_type: 'college_faculty' });
+  const fME2 = await Faculty.create({ name: 'Dr. Marie Curie',     department_id: deptBTME._id, teacher_type: 'trainer'         });
+  const fCE1 = await Faculty.create({ name: 'Dr. Ratan Tata',      department_id: deptBTCE._id, teacher_type: 'college_faculty' });
+  const fCE2 = await Faculty.create({ name: 'Dr. Sunita Williams',  department_id: deptBTCE._id, teacher_type: 'trainer'         });
 
   // ── Courses ────────────────────────────────────────────────────────────────
   const cAI1 = await Course.create({ name: 'Machine Learning Fundamentals',   code: 'BTAI301', department_id: deptBTAI._id });
@@ -330,6 +350,7 @@ export const initDb = async () => {
   const sfList = await SectionFaculty.find().lean();
   for (const sf of sfList) {
     const section = await Section.findById(sf.section_id).lean();
+    if (!section) continue;
     const course  = await Course.findById(sf.course_id).lean();
     const faculty = await Faculty.findById(sf.faculty_id).lean();
     const dept    = await Department.findById(section.department_id).lean();

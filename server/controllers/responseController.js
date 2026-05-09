@@ -127,7 +127,12 @@ export const getAnalytics = async (req, res) => {
 
     const facultyMap = {};
     for (const f of allFaculty) {
-      facultyMap[f._id.toString()] = { id: f._id.toString(), name: f.name, department_id: f.department_id.toString(), total_responses: 0, total_rating: 0 };
+      facultyMap[f._id.toString()] = {
+        id: f._id.toString(), name: f.name,
+        department_id: f.department_id.toString(),
+        teacher_type: f.teacher_type || 'college_faculty',
+        total_responses: 0, total_rating: 0
+      };
     }
 
     for (const tlfq of allTlfqs) {

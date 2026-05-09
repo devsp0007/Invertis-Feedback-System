@@ -8,6 +8,7 @@ import Analytics        from './pages/Analytics';
 import HODPanel         from './pages/HODPanel';
 import CoordinatorPanel from './pages/CoordinatorPanel';
 import SuperAdminPanel  from './pages/SuperAdminPanel';
+import SupremePanel     from './pages/SupremePanel';
 import Leaderboard      from './pages/Leaderboard';
 import ProtectedRoute   from './components/ProtectedRoute';
 
@@ -59,8 +60,15 @@ export default function App() {
 
           {/* Super Admin */}
           <Route path="/superadmin/*" element={
-            <ProtectedRoute allowedRoles={['super_admin']}>
+            <ProtectedRoute allowedRoles={['super_admin', 'supreme']}>
               <SuperAdminPanel />
+            </ProtectedRoute>
+          } />
+
+          {/* Supreme Authority */}
+          <Route path="/supreme" element={
+            <ProtectedRoute allowedRoles={['supreme']}>
+              <SupremePanel />
             </ProtectedRoute>
           } />
 

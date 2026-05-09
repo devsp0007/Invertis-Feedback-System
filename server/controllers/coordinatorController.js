@@ -126,9 +126,11 @@ export const getFaculty = async (req, res) => {
 
 export const createFaculty = async (req, res) => {
   try {
-    const { name, department_id } = req.body;
+    const { name, department_id, teacher_type } = req.body;
     if (!name || !department_id) return res.status(400).json({ message: 'name and department_id required' });
-    const faculty = await Faculty.create({ name, department_id });
+    const validTypes = ['college_faculty', 'trainer'];
+    const type = validTypes.includes(teacher_type) ? teacher_type : 'college_faculty';
+    const faculty = await Faculty.create({ name, department_id, teacher_type: type });
     return res.status(201).json({ ...faculty.toJSON() });
   } catch { return res.status(500).json({ message: 'Internal Server Error' }); }
 };

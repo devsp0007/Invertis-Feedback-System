@@ -1,6 +1,6 @@
 import { useAuth } from '../context/AuthContext';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, GraduationCap, BarChart2, Trophy, Shield, Users, Layers, Building2 } from 'lucide-react';
+import { LayoutDashboard, GraduationCap, BarChart2, Trophy, Shield, Users, Layers, Building2, Crown } from 'lucide-react';
 
 const NAV_ITEM = ({ to, icon: Icon, label, end = false }) => (
   <NavLink to={to} end={end}>
@@ -40,6 +40,12 @@ export default function Sidebar() {
       { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', end: true },
       { to: '/superadmin', icon: Shield, label: 'User Management' },
       { to: '/coordinator', icon: Users, label: 'Coordinator Panel' },
+      { to: '/analytics', icon: BarChart2, label: 'Analytics' },
+      { to: '/leaderboard', icon: Trophy, label: 'Leaderboard' },
+    ],
+    supreme: [
+      { to: '/supreme', icon: Crown, label: 'Supreme Panel', end: true },
+      { to: '/superadmin', icon: Shield, label: 'User Management' },
       { to: '/analytics', icon: BarChart2, label: 'Analytics' },
       { to: '/leaderboard', icon: Trophy, label: 'Leaderboard' },
     ],

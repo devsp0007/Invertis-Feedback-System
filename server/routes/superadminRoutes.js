@@ -1,9 +1,13 @@
 import express from 'express';
 import { authenticate, authorize } from '../middleware/auth.js';
-import { createHod, createCoordinator, getStaff, updateUser, deleteUser } from '../controllers/superadminController.js';
+import { createSuperAdmin, createHod, createCoordinator, getStaff, updateUser, deleteUser } from '../controllers/superadminController.js';
 
 const router = express.Router();
-const guard = [authenticate, authorize('super_admin')];
+const guard        = [authenticate, authorize('super_admin')];
+const supremeGuard = [authenticate, authorize('supreme')];
+
+// Only Supreme Authority can create Super Admin accounts
+router.post('/superadmins',       supremeGuard, createSuperAdmin);
 
 router.post('/hods',              guard, createHod);
 router.post('/coordinators',      guard, createCoordinator);

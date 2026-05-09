@@ -12,7 +12,7 @@ export default function Leaderboard() {
   const { user } = useAuth();
   
   useEffect(() => {
-    api.get('/tlfq/leaderboard')
+    api.get('/student/leaderboard')
       .then(res => setStudents(res.data))
       .catch(err => console.error(err))
       .finally(() => setLoading(false));

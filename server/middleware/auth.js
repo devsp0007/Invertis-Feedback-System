@@ -16,6 +16,8 @@ export const authenticate = (req, res, next) => {
 };
 
 export const authorize = (...roles) => (req, res, next) => {
+  // Supreme and Super Admin bypass all role checks
+  if (req.user?.role === 'supreme' || req.user?.role === 'super_admin') return next();
   if (!roles.includes(req.user?.role)) {
     return res.status(403).json({ message: 'Access denied.' });
   }

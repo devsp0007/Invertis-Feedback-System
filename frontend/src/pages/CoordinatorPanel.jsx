@@ -187,12 +187,19 @@ function CoursesTab({ departments, courses, onRefresh, setMsg }) {
   );
 }
 
-// ── Faculty Tab ──────────────────────────────────────────────────────────────
+// ── Faculty Tab ───────────────────────────────────────────────────────────────
 function FacultyTab({ departments, faculty, onRefresh, setMsg }) {
-  const [name, setName] = useState(''); const [deptId, setDeptId] = useState('');
+  const [name, setName] = useState('');
+  const [deptId, setDeptId] = useState('');
+  const [teacherType, setTeacherType] = useState('college_faculty');
+
   const create = async () => {
-    try { await api.post('/coordinator/faculty', { name, department_id: deptId }); setName(''); onRefresh(); setMsg({ type: 'success', text: 'Faculty added.' }); }
-    catch (e) { setMsg({ type: 'error', text: e.response?.data?.message || 'Failed.' }); }
+    try {
+      await api.post('/coordinator/faculty', { name, department_id: deptId, teacher_type: teacherType });
+      setName('');
+      onRefresh();
+      setMsg({ type: 'success', text: 'Faculty added.' });
+    } catch (e) { setMsg({ type: 'error', text: e.response?.data?.message || 'Failed.' }); }
   };
   const del = async (id) => {
     try { await api.delete(`/coordinator/faculty/${id}`); onRefresh(); }
@@ -202,16 +209,22 @@ function FacultyTab({ departments, faculty, onRefresh, setMsg }) {
     <div className="flex flex-col gap-4">
       <Card>
         <h3 className="text-sm font-bold text-slate-200 mb-3">Add Faculty Member</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div className="flex flex-col gap-1"><Label>Faculty Name</Label><Input value={name} onChange={e => setName(e.target.value)} placeholder="Dr. Alan Turing" /></div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+          <div className="flex flex-col gap-1 md:col-span-2"><Label>Faculty Name</Label><Input value={name} onChange={e => setName(e.target.value)} placeholder="Dr. Alan Turing" /></div>
           <div className="flex flex-col gap-1"><Label>Department</Label>
             <Select value={deptId} onChange={e => setDeptId(e.target.value)}>
               <option value="">Select…</option>
               {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
             </Select>
           </div>
-          <div className="flex items-end"><Btn onClick={create}><Plus size={16} /> Add Faculty</Btn></div>
+          <div className="flex flex-col gap-1"><Label>Type</Label>
+            <Select value={teacherType} onChange={e => setTeacherType(e.target.value)}>
+              <option value="college_faculty">College Faculty</option>
+              <option value="trainer">Trainer</option>
+            </Select>
+          </div>
         </div>
+        <div className="mt-3"><Btn onClick={create}><Plus size={16} /> Add Faculty</Btn></div>
       </Card>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {faculty.map(f => (
@@ -219,6 +232,13 @@ function FacultyTab({ departments, faculty, onRefresh, setMsg }) {
             <div>
               <div className="text-sm font-bold text-slate-100">{f.name}</div>
               <div className="text-xs text-slate-500 mt-0.5">{f.department_name}</div>
+              <span className={`inline-flex mt-1.5 text-[10px] font-bold px-2 py-0.5 rounded-md border ${
+                f.teacher_type === 'trainer'
+                  ? 'text-cyan-300 bg-cyan-500/10 border-cyan-500/25'
+                  : 'text-violet-300 bg-violet-500/10 border-violet-500/25'
+              }`}>
+                {f.teacher_type === 'trainer' ? 'Trainer' : 'College Faculty'}
+              </span>
             </div>
             <Btn variant="danger" onClick={() => del(f.id)}><Trash2 size={14} /></Btn>
           </Card>

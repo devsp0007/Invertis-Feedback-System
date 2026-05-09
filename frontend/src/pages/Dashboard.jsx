@@ -291,10 +291,17 @@ function StudentDashboard() {
 }
 
 // ── MAIN ─────────────────────────────────────────────────────────────────────
+function SupremeRedirect() {
+  const navigate = useNavigate();
+  useEffect(() => { navigate('/supreme'); }, [navigate]);
+  return null;
+}
+
 export default function Dashboard() {
   const { user } = useAuth();
 
   const content = {
+    supreme:     <SupremeRedirect />,
     super_admin: <AdminDashboard />,
     hod:         <HODOverview />,
     coordinator: <CoordinatorRedirect />,

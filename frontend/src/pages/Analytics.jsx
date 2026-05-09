@@ -15,6 +15,7 @@ export default function Analytics() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('faculty');
   const [selectedDeptId, setSelectedDeptId] = useState('all');
+  const [teacherTypeFilter, setTeacherTypeFilter] = useState('all'); // 'all' | 'college_faculty' | 'trainer'
 
   useEffect(() => {
     api.get('/responses/analytics')
@@ -23,9 +24,13 @@ export default function Analytics() {
       .finally(() => setLoading(false));
   }, []);
 
-  const filteredAvgRatingPerFaculty = selectedDeptId === 'all' 
-    ? [] 
+  const deptFiltered = selectedDeptId === 'all'
+    ? (data?.avgRatingPerFaculty || [])
     : (data?.avgRatingPerFaculty || []).filter(f => f.department_id === selectedDeptId);
+
+  const filteredAvgRatingPerFaculty = teacherTypeFilter === 'all'
+    ? deptFiltered
+    : deptFiltered.filter(f => f.teacher_type === teacherTypeFilter);
 
   const filteredSubmissionRates = selectedDeptId === 'all'
     ? []
@@ -69,19 +74,35 @@ export default function Analytics() {
               </div>
 
               {data && data.deptOverview && data.deptOverview.length > 0 && (
-                <div className="flex items-center gap-3 w-full md:w-auto bg-slate-950/50 p-1.5 rounded-2xl border border-slate-800/80">
-                  <div className="pl-3 text-slate-500"><Filter size={16} /></div>
-                  <select
-                    value={selectedDeptId}
-                    onChange={e => setSelectedDeptId(e.target.value)}
-                    className="bg-transparent pl-1 pr-10 py-2.5 text-sm font-bold text-slate-200 focus:outline-none cursor-pointer appearance-none w-full md:w-64"
-                    style={{ backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center', backgroundSize: '16px' }}
-                  >
-                    <option value="all" className="bg-slate-900">Choose a Department...</option>
-                    {data.deptOverview.map(d => (
-                      <option key={d.id} value={d.id} className="bg-slate-900">{d.name}</option>
+                <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                  {/* Dept filter */}
+                  <div className="flex items-center gap-3 bg-slate-950/50 p-1.5 rounded-2xl border border-slate-800/80">
+                    <div className="pl-3 text-slate-500"><Filter size={16} /></div>
+                    <select
+                      value={selectedDeptId}
+                      onChange={e => setSelectedDeptId(e.target.value)}
+                      className="bg-transparent pl-1 pr-10 py-2.5 text-sm font-bold text-slate-200 focus:outline-none cursor-pointer appearance-none w-full md:w-52"
+                      style={{ backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center', backgroundSize: '16px' }}
+                    >
+                      <option value="all" className="bg-slate-900">Choose a Department...</option>
+                      {data.deptOverview.map(d => (
+                        <option key={d.id} value={d.id} className="bg-slate-900">{d.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  {/* Teacher type filter */}
+                  <div className="flex items-center gap-1 bg-slate-950/50 p-1.5 rounded-2xl border border-slate-800/80">
+                    {[['all','All Types'],['college_faculty','Faculty'],['trainer','Trainer']].map(([val, lbl]) => (
+                      <button key={val} onClick={() => setTeacherTypeFilter(val)}
+                        className={`px-3 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
+                          teacherTypeFilter === val
+                            ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20'
+                            : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
+                        }`}>
+                        {lbl}
+                      </button>
                     ))}
-                  </select>
+                  </div>
                 </div>
               )}
             </div>
@@ -166,7 +187,16 @@ export default function Analytics() {
                               </div>
                               <div className="flex-1">
                                 <div className="text-base font-bold text-slate-100">{f.name}</div>
-                                <div className="text-xs text-slate-400 font-medium mt-0.5">{f.total_responses} detailed responses</div>
+                                <div className="flex items-center gap-2 mt-1">
+                                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${
+                                    f.teacher_type === 'trainer'
+                                      ? 'text-cyan-300 bg-cyan-500/10 border-cyan-500/25'
+                                      : 'text-violet-300 bg-violet-500/10 border-violet-500/25'
+                                  }`}>
+                                    {f.teacher_type === 'trainer' ? 'Trainer' : 'College Faculty'}
+                                  </span>
+                                  <span className="text-xs text-slate-400 font-medium">{f.total_responses} responses</span>
+                                </div>
                               </div>
                               <div className="flex items-center gap-1.5 bg-slate-950/50 px-3 py-1.5 rounded-lg border border-slate-800">
                                 <Star size={16} className="text-amber-400 fill-amber-400" />

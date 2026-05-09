@@ -134,3 +134,28 @@ export const getMe = async (req, res) => {
     return res.status(500).json({ message: 'Internal Server Error' });
   }
 };
+
+// ── Change Password (allowed for all roles except student — coordinator handles that) ──
+export const changePassword = async (req, res) => {
+  try {
+    const { current_password, new_password } = req.body;
+    if (!current_password || !new_password) {
+      return res.status(400).json({ message: 'current_password and new_password are required.' });
+    }
+    if (new_password.length < 8) {
+      return res.status(400).json({ message: 'New password must be at least 8 characters.' });
+    }
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ message: 'User not found.' });
+
+    const isValid = await bcrypt.compare(current_password, user.password);
+    if (!isValid) return res.status(401).json({ message: 'Current password is incorrect.' });
+
+    user.password = await bcrypt.hash(new_password, 10);
+    await user.save();
+    return res.json({ message: 'Password changed successfully.' });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
+};

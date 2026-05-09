@@ -1,6 +1,23 @@
 import { User } from '../db.js';
 import bcrypt from 'bcryptjs';
 
+// ── Create Super Admin (only Supreme Authority can do this) ──────────────
+export const createSuperAdmin = async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: 'name, email, password required' });
+    }
+    if (password.length < 8) return res.status(400).json({ message: 'Password must be at least 8 characters.' });
+    const hashed = await bcrypt.hash(password, 10);
+    const admin = await User.create({ name, email: email.toLowerCase(), password: hashed, role: 'super_admin', status: 'active' });
+    return res.status(201).json({ id: admin._id.toString(), name: admin.name, email: admin.email, role: 'super_admin' });
+  } catch (err) {
+    if (err.code === 11000) return res.status(400).json({ message: 'Email already in use.' });
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
 // ── Create HOD ─────────────────────────────────────────────────────────────
 export const createHod = async (req, res) => {
   try {
