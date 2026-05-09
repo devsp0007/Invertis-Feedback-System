@@ -191,12 +191,13 @@ export const getLeaderboard = async (req, res) => {
     const query = { role: 'student', points: { $gt: 0 } };
     if (role === 'hod') query.department_id = department_id;
     const students = await User.find(query).sort({ points: -1 }).limit(50).lean();
+    // ALWAYS return only anonymous data on the leaderboard.
+    // Real identity is ONLY available via the SuperAdmin identity lookup panel.
     return res.json(students.map((s, i) => ({
       rank: i + 1,
       unique_feedback_id: s.unique_feedback_id || 'ANO-?????',
-      points: s.points, batch: s.batch,
-      name: role === 'super_admin' ? s.name : null,
-      student_id: role === 'super_admin' ? s.student_id : null,
+      points: s.points,
+      batch: s.batch,
     })));
   } catch { return res.status(500).json({ message: 'Internal Server Error' }); }
 };

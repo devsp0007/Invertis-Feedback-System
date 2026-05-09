@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { LogOut, Shield, Building2, GraduationCap, Users, Crown, KeyRound, X, Check, Eye, EyeOff } from 'lucide-react';
+import { LogOut, Shield, Building2, GraduationCap, Users, Crown, KeyRound, X, Check, Eye, EyeOff, Sun, Moon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../services/api';
 
@@ -142,7 +142,7 @@ function ChangePasswordModal({ onClose }) {
 }
 
 export default function Navbar() {
-  const { user, logout } = useAuth();
+  const { user, logout, theme, toggleTheme } = useAuth();
   const [showChangePwd, setShowChangePwd] = useState(false);
   const role = ROLE_CONFIG[user?.role] || ROLE_CONFIG.student;
   const RoleIcon = role.icon;
@@ -182,6 +182,15 @@ export default function Navbar() {
               </div>
             </div>
           )}
+
+          {/* Theme Toggle Button */}
+          <button
+            onClick={toggleTheme}
+            title="Toggle Theme"
+            className="flex items-center justify-center p-2 rounded-xl text-slate-400 hover:text-amber-400 hover:bg-amber-500/10 border border-white/8 hover:border-amber-500/25 transition-all duration-200 cursor-pointer"
+          >
+            {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
+          </button>
 
           {/* Change password button — only for allowed roles */}
           {CAN_CHANGE_PASSWORD.includes(user?.role) && (

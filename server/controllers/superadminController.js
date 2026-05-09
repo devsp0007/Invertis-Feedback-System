@@ -53,7 +53,7 @@ export const createCoordinator = async (req, res) => {
 // ── Get all staff ──────────────────────────────────────────────────────────
 export const getStaff = async (req, res) => {
   try {
-    const staff = await User.find({ role: { $in: ['hod', 'coordinator'] } }).lean();
+    const staff = await User.find({ role: { $in: ['super_admin', 'hod', 'coordinator'] } }).lean();
     return res.json(staff.map(s => ({ id: s._id.toString(), name: s.name, email: s.email, role: s.role, department_id: s.department_id?.toString() || null })));
   } catch { return res.status(500).json({ message: 'Internal Server Error' }); }
 };

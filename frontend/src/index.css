@@ -12,6 +12,12 @@
     @apply bg-[#030712] text-slate-100 antialiased select-none;
     font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
     font-feature-settings: 'cv11', 'ss01';
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* Light mode overrides */
+  body:not(.dark) {
+    @apply bg-slate-100 text-slate-900;
   }
 
   ::selection { @apply bg-fuchsia-600/40 text-white; }
@@ -214,3 +220,38 @@
 }
 
 }
+
+/* ── Light Mode Component Overrides ─────────────────────────────────────── */
+body:not(.dark) .mesh-bg {
+  background-color: #f1f5f9;
+  background-image:
+    radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.08), transparent 50%),
+    radial-gradient(circle at 85% 30%, rgba(217, 70, 239, 0.08), transparent 50%),
+    radial-gradient(circle at 50% 80%, rgba(14, 165, 233, 0.08), transparent 50%);
+}
+
+body:not(.dark) .glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.08);
+}
+
+body:not(.dark) .card {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(241, 245, 249, 0.95) 100%);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 16px -4px rgba(0, 0, 0, 0.06);
+}
+
+body:not(.dark) .card-hover:hover {
+  border-color: rgba(99, 102, 241, 0.3);
+  box-shadow: 0 8px 24px -8px rgba(99, 102, 241, 0.15);
+}
+
+body:not(.dark) .input-base {
+  @apply bg-white border-slate-200 text-slate-900 placeholder-slate-400;
+}
+
+body:not(.dark) .btn-primary {
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+}
+

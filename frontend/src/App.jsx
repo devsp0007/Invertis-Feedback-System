@@ -23,12 +23,12 @@ export default function App() {
 
           {/* All logged-in users */}
           <Route path="/dashboard" element={
-            <ProtectedRoute allowedRoles={['student', 'coordinator', 'hod', 'super_admin']}>
+            <ProtectedRoute allowedRoles={['student', 'coordinator', 'hod', 'super_admin', 'supreme']}>
               <Dashboard />
             </ProtectedRoute>
           } />
           <Route path="/leaderboard" element={
-            <ProtectedRoute allowedRoles={['student', 'coordinator', 'hod', 'super_admin']}>
+            <ProtectedRoute allowedRoles={['student', 'coordinator', 'hod', 'super_admin', 'supreme']}>
               <Leaderboard />
             </ProtectedRoute>
           } />
@@ -46,14 +46,14 @@ export default function App() {
 
           {/* Coordinator */}
           <Route path="/coordinator/*" element={
-            <ProtectedRoute allowedRoles={['coordinator', 'super_admin']}>
+            <ProtectedRoute allowedRoles={['coordinator', 'super_admin', 'supreme']}>
               <CoordinatorPanel />
             </ProtectedRoute>
           } />
 
           {/* Analytics (HOD + Super Admin) */}
           <Route path="/analytics" element={
-            <ProtectedRoute allowedRoles={['super_admin', 'hod']}>
+            <ProtectedRoute allowedRoles={['super_admin', 'hod', 'supreme']}>
               <Analytics />
             </ProtectedRoute>
           } />

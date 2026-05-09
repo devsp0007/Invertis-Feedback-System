@@ -46,6 +46,7 @@ export default function Sidebar() {
     supreme: [
       { to: '/supreme', icon: Crown, label: 'Supreme Panel', end: true },
       { to: '/superadmin', icon: Shield, label: 'User Management' },
+      { to: '/coordinator', icon: Users, label: 'Coordinator Panel' },
       { to: '/analytics', icon: BarChart2, label: 'Analytics' },
       { to: '/leaderboard', icon: Trophy, label: 'Leaderboard' },
     ],

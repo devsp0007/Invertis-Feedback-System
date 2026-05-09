@@ -3,12 +3,13 @@ import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import api from '../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, Building2, Users, Plus, Trash2, Check, X, Eye, EyeOff } from 'lucide-react';
+import { Shield, Building2, Users, Plus, Trash2, Check, X, Eye, EyeOff, GraduationCap, Search, UserCheck, Hash } from 'lucide-react';
 
 const TABS = [
   { id: 'departments', label: 'Departments', icon: Building2 },
   { id: 'hods',        label: 'HODs',        icon: Users },
   { id: 'coordinators',label: 'Coordinators',icon: Users },
+  { id: 'students',    label: 'Student Lookup', icon: GraduationCap },
 ];
 
 function Input({ ...props }) {
@@ -28,6 +29,7 @@ export default function SuperAdminPanel() {
   const [msg,          setMsg]          = useState(null);
   const [departments,  setDepartments]  = useState([]);
   const [staff,        setStaff]        = useState([]);
+  const [students,     setStudents]     = useState([]);
 
   // Department form
   const [deptName, setDeptName] = useState('');
@@ -46,14 +48,20 @@ export default function SuperAdminPanel() {
   const [coordPass,  setCoordPass]  = useState('');
   const [showCoordPass, setShowCoordPass] = useState(false);
 
+  // Student search
+  const [searchQuery, setSearchQuery] = useState('');
+  const [revealedIds, setRevealedIds] = useState(new Set());
+
   const loadAll = async () => {
     try {
-      const [rD, rS] = await Promise.all([
+      const [rD, rS, rStud] = await Promise.all([
         api.get('/coordinator/departments'),
         api.get('/superadmin/staff'),
+        api.get('/coordinator/students'),
       ]);
       setDepartments(rD.data);
       setStaff(rS.data);
+      setStudents(rStud.data);
     } catch {}
   };
 
@@ -96,8 +104,27 @@ export default function SuperAdminPanel() {
     catch { showMsg('error', 'Failed to delete.'); }
   };
 
+  const toggleReveal = (id) => {
+    setRevealedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
   const hods  = staff.filter(s => s.role === 'hod');
   const coords = staff.filter(s => s.role === 'coordinator');
+
+  // Filter students — search by ANO ID (unique_feedback_id) OR real name
+  const q = searchQuery.trim().toUpperCase();
+  const filteredStudents = q
+    ? students.filter(s =>
+        (s.unique_feedback_id || '').toUpperCase().includes(q) ||
+        s.name?.toUpperCase().includes(q) ||
+        (s.student_id || '').toUpperCase().includes(q)
+      )
+    : students;
 
   return (
     <div className="min-h-screen mesh-bg text-slate-100 flex flex-col">
@@ -109,9 +136,9 @@ export default function SuperAdminPanel() {
             <div className="h-10 w-10 bg-gradient-to-br from-rose-500 to-pink-600 rounded-xl flex items-center justify-center shadow-lg shadow-rose-500/20">
               <Shield size={20} className="text-white" />
             </div>
-            <div>
+            <div className="flex-1">
               <h1 className="text-2xl font-black text-slate-100">Super Admin Panel</h1>
-              <p className="text-sm text-slate-400">Manage departments, HODs and coordinators</p>
+              <p className="text-sm text-slate-400">Manage departments, HODs, coordinators & view student identities</p>
             </div>
           </div>
 
@@ -124,7 +151,7 @@ export default function SuperAdminPanel() {
           )}
 
           {/* Tabs */}
-          <div className="flex gap-1.5 p-1.5 card rounded-2xl mb-6 w-fit">
+          <div className="flex gap-1.5 p-1.5 card rounded-2xl mb-6 w-fit flex-wrap">
             {TABS.map(({ id, label, icon: Icon }) => (
               <button key={id} onClick={() => setTab(id)}
                 className={`flex items-center gap-2 px-5 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${tab === id ? 'bg-rose-600 text-white shadow-lg shadow-rose-500/20' : 'text-slate-500 hover:text-slate-200 hover:bg-white/5'}`}>
@@ -248,6 +275,107 @@ export default function SuperAdminPanel() {
                   </div>
                 </div>
               )}
+
+              {/* STUDENT LOOKUP — Search by Unique ID & Reveal Identity */}
+              {tab === 'students' && (
+                <div className="flex flex-col gap-4">
+                  {/* Search bar */}
+                  <div className="card rounded-2xl p-5 border border-emerald-500/20 bg-emerald-950/10">
+                    <div className="flex items-center gap-3 mb-3">
+                      <Search size={18} className="text-emerald-400" />
+                      <h3 className="text-lg font-bold text-emerald-100">Student Identity Lookup</h3>
+                    </div>
+                    <p className="text-xs text-slate-400 mb-4">
+                      Search by <span className="text-indigo-300 font-bold">Anonymous ID</span> (e.g. <span className="font-mono text-emerald-400">ANO-A3F2B1</span>) — the ID shown on leaderboards and feedback — to reveal the real student identity.
+                      Student identities are hidden from everyone else. Only Super Admin and Supreme Authority can see them.
+                    </p>
+                    <div className="relative">
+                      <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
+                      <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={e => setSearchQuery(e.target.value)}
+                        placeholder="Search by Anonymous ID (ANO-XXXXXX) or real name..."
+                        className="w-full bg-slate-900/80 border border-white/10 rounded-xl pl-11 pr-4 py-3 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all"
+                      />
+                      {searchQuery && (
+                        <button onClick={() => setSearchQuery('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 cursor-pointer">
+                          <X size={14} />
+                        </button>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-3 mt-3 text-xs text-slate-500">
+                      <span className="flex items-center gap-1.5"><Hash size={12} /> Total Students: <span className="text-slate-300 font-bold">{students.length}</span></span>
+                      {q && <span className="flex items-center gap-1.5"><UserCheck size={12} /> Matches: <span className="text-emerald-400 font-bold">{filteredStudents.length}</span></span>}
+                    </div>
+                  </div>
+
+                  {/* Student grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {filteredStudents.map(s => {
+                      const isRevealed = revealedIds.has(s.id);
+                      return (
+                        <motion.div key={s.id} layout className="card rounded-2xl p-4 flex flex-col gap-2 border border-slate-800/60 hover:border-emerald-500/30 transition-colors">
+                          {/* Anonymous ID — always visible to everyone */}
+                          <div className="flex items-center justify-between">
+                            <div className="flex flex-col gap-0.5">
+                              <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Anonymous ID (Public)</span>
+                              <span className="text-sm font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
+                                {s.unique_feedback_id || 'ANO-?????'}
+                              </span>
+                            </div>
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase ${s.status === 'active' ? 'bg-indigo-500/10 text-indigo-300' : 'bg-amber-500/10 text-amber-300'}`}>{s.status}</span>
+                          </div>
+
+                          {/* Real identity — hidden by default, revealed by admin */}
+                          <div className="flex items-start justify-between gap-2 mt-1 pt-2 border-t border-white/5">
+                            {isRevealed ? (
+                              <div className="flex flex-col gap-1">
+                                <div className="text-[9px] font-bold text-amber-400 uppercase tracking-widest">Real Identity</div>
+                                <div className="text-sm font-bold text-slate-100">{s.name}</div>
+                                <div className="text-xs font-mono text-rose-300 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20 w-fit">
+                                  Roll: {s.student_id || '—'}
+                                </div>
+                                {s.email && <div className="text-[10px] text-slate-500">{s.email}</div>}
+                              </div>
+                            ) : (
+                              <div className="flex flex-col gap-0.5">
+                                <div className="text-[9px] font-bold text-slate-600 uppercase tracking-widest">Real Identity</div>
+                                <div className="text-sm font-bold text-slate-600 italic">Hidden — Click 👁 to Reveal</div>
+                              </div>
+                            )}
+                            <button
+                              onClick={() => toggleReveal(s.id)}
+                              title={isRevealed ? 'Hide Identity' : 'Reveal Identity'}
+                              className={`p-2 rounded-lg transition-all cursor-pointer flex-shrink-0 ${
+                                isRevealed
+                                  ? 'bg-amber-500/15 text-amber-400 hover:bg-amber-500/25'
+                                  : 'bg-white/5 text-slate-500 hover:text-slate-300 hover:bg-white/10'
+                              }`}
+                            >
+                              {isRevealed ? <EyeOff size={14} /> : <Eye size={14} />}
+                            </button>
+                          </div>
+
+                          {/* Section info */}
+                          <div className="text-[10px] text-slate-500 font-medium flex items-center gap-2">
+                            <span>{s.section_name || 'No section'}</span>
+                            {s.semester && <span>• Sem {s.semester}</span>}
+                          </div>
+                        </motion.div>
+                      );
+                    })}
+                    {filteredStudents.length === 0 && (
+                      <div className="col-span-full card rounded-2xl p-10 text-center">
+                        <GraduationCap size={32} className="text-slate-600 mx-auto mb-3" />
+                        <p className="text-slate-400 text-sm font-semibold">{q ? 'No students match your search.' : 'No students found.'}</p>
+                        {q && <p className="text-slate-600 text-xs mt-1">Try searching with a different ID or name.</p>}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
             </motion.div>
           </AnimatePresence>
         </main>

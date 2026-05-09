@@ -176,6 +176,7 @@ export const getStudents = async (req, res) => {
         id: s._id.toString(), name: s.name, email: s.email,
         student_id: s.student_id, status: s.status, semester: s.semester,
         batch: s.batch, points: s.points,
+        unique_feedback_id: s.unique_feedback_id || null,
         section_name: section?.name || '—',
         section_id: s.section_id?.toString() || null
       };
