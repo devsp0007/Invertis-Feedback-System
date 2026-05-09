@@ -58,6 +58,38 @@ export const getStaff = async (req, res) => {
   } catch { return res.status(500).json({ message: 'Internal Server Error' }); }
 };
 
+// ── Reveal student identity by anonymous ID ───────────────────────────
+export const revealStudentByAnonId = async (req, res) => {
+  try {
+    const { anon_id } = req.query;
+    if (!anon_id) return res.status(400).json({ message: 'anon_id query parameter is required.' });
+    const student = await User.findOne({ unique_feedback_id: anon_id.trim().toUpperCase(), role: 'student' }).lean();
+    if (!student) return res.status(404).json({ message: 'No student found with that Anonymous ID.' });
+    // Populate section name
+    let section_name = null;
+    if (student.section_id) {
+      const { Section } = await import('../db.js');
+      const sec = await Section.findById(student.section_id).lean();
+      section_name = sec?.name || null;
+    }
+    return res.json({
+      id:                 student._id.toString(),
+      name:               student.name,
+      email:              student.email,
+      student_id:         student.student_id,
+      unique_feedback_id: student.unique_feedback_id,
+      status:             student.status,
+      semester:           student.semester,
+      batch:              student.batch,
+      points:             student.points,
+      section_name,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
 // ── Update user ────────────────────────────────────────────────────────────
 export const updateUser = async (req, res) => {
   try {

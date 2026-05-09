@@ -10,6 +10,7 @@ import CoordinatorPanel from './pages/CoordinatorPanel';
 import SuperAdminPanel  from './pages/SuperAdminPanel';
 import SupremePanel     from './pages/SupremePanel';
 import Leaderboard      from './pages/Leaderboard';
+import IdentityReveal   from './pages/IdentityReveal';
 import ProtectedRoute   from './components/ProtectedRoute';
 
 export default function App() {
@@ -69,6 +70,13 @@ export default function App() {
           <Route path="/supreme" element={
             <ProtectedRoute allowedRoles={['supreme']}>
               <SupremePanel />
+            </ProtectedRoute>
+          } />
+
+          {/* Identity Reveal — Super Admin + Supreme only */}
+          <Route path="/reveal" element={
+            <ProtectedRoute allowedRoles={['super_admin', 'supreme']}>
+              <IdentityReveal />
             </ProtectedRoute>
           } />
 
