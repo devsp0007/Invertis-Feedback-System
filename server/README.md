@@ -1,25 +1,32 @@
-# TLFQ Server
+# Invertis Feedback System — Server
 
-This directory contains the Node.js/Express backend for the TLFQ Platform.
+Node.js/Express backend powering the Invertis TLFQ Platform.
 
-## 🚀 Quick Start
+## Routes
 
-1. Install dependencies: `npm install`
-2. Configure `.env` (see `.env.example`)
-3. Start server: `npm run dev`
+| Prefix | Description |
+|--------|-------------|
+| `/api/auth` | 2-step student auth + staff login |
+| `/api/coordinator` | Sections, courses, faculty, students (university-wide) |
+| `/api/superadmin` | HOD & coordinator creation |
+| `/api/hod` | Form creation, portal control (dept-scoped) |
+| `/api/student` | Course listing, TLFQ fetch, submission |
+| `/api/responses/analytics` | Analytics (super_admin + hod) |
 
-## ⚙️ Key Modules
-- **db.js**: Handles MongoDB connection via Mongoose and provides an in-memory fallback store if the database is unreachable.
-- **routes/**: API endpoint definitions for Auth, TLFQ management, and Response handling.
-- **controllers/**: Business logic for handling requests.
+## Quick Start
 
-## 📡 API Endpoints
-- `/api/auth`: Login and authentication.
-- `/api/tlfq`: Management of courses, faculty, and questionnaires.
-- `/api/responses`: Handling student feedback submissions.
-- `/api/sync`: Data synchronization utilities.
+```bash
+npm install
+cp .env.example .env
+# Add MONGO_URI and JWT_SECRET to .env
+npm start
+```
 
----
+## Re-seed database
 
-> [!NOTE]
-> For full project documentation and setup instructions, please refer to the [Root README](../README.md).
+```bash
+node drop_db.js   # drop everything
+npm start         # auto-seeds on startup
+```
+
+> See [Root README](../README.md) for full documentation.

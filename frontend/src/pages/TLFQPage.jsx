@@ -42,7 +42,7 @@ export default function TLFQPage() {
   }, [answers, comment, tlfqId]);
 
   useEffect(() => {
-    api.get(`/tlfq/courses/${id}/evaluation/${tlfqId}`)
+    api.get(`/student/tlfq/${tlfqId}`)
       .then(r => { setEvaluation(r.data); setQuestions(r.data.questions || []); })
       .catch(err => setError(err.response?.data?.message || 'Failed to load evaluation.'))
       .finally(() => setLoading(false));
@@ -85,9 +85,9 @@ export default function TLFQPage() {
     }
     setSubmitting(true);
     try {
-      await api.post('/responses/submit', {
-        tlfqId: evaluation.id || evaluation._id,
-        answers,
+      await api.post('/student/submit', {
+        tlfq_id: evaluation.id || evaluation._id,
+        answers: Object.entries(answers).map(([question_id, rating]) => ({ question_id, rating })),
         comment
       });
       clearDraft();

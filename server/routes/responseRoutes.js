@@ -1,11 +1,13 @@
 import express from 'express';
-import { submitResponse, getAnalytics } from '../controllers/responseController.js';
-import { authMiddleware } from '../middleware/authMiddleware.js';
-import { roleMiddleware } from '../middleware/roleMiddleware.js';
+import { authenticate, authorize } from '../middleware/auth.js';
+import { getStudentCourses, getEvaluation, submitResponse, getAnalytics, getLeaderboard } from '../controllers/responseController.js';
 
 const router = express.Router();
 
-router.post('/submit', authMiddleware, roleMiddleware(['student']), submitResponse);
-router.get('/analytics', authMiddleware, roleMiddleware(['admin', 'hod']), getAnalytics);
+router.get('/courses',         authenticate, authorize('student'), getStudentCourses);
+router.get('/tlfq/:tlfqId',    authenticate, authorize('student'), getEvaluation);
+router.post('/submit',         authenticate, authorize('student'), submitResponse);
+router.get('/analytics',       authenticate, authorize('super_admin', 'hod'), getAnalytics);
+router.get('/leaderboard',     authenticate, getLeaderboard);
 
 export default router;

@@ -34,6 +34,21 @@ export default function HODDashboard() {
       .finally(() => setLoading(false));
   }, []);
 
+  const handleTogglePortal = async (deptId, currentStatus) => {
+    try {
+      const res = await api.put(`/tlfq/departments/${deptId}/portal`, { open: !currentStatus });
+      setData(prev => ({
+        ...prev,
+        deptOverview: prev.deptOverview.map(d =>
+          d.id === deptId ? { ...d, portal_open: res.data.portal_open } : d
+        )
+      }));
+    } catch (err) {
+      console.error(err);
+      alert('Failed to toggle portal status');
+    }
+  };
+
   const tabs = [
     { id: 'overview', label: 'Overview', icon: Building2 },
     { id: 'faculty', label: 'Faculty Rankings', icon: Award },
@@ -92,7 +107,19 @@ export default function HODDashboard() {
                       <div key={dept.id} className="bg-slate-800 border border-slate-700 rounded-2xl p-6">
                         <div className="flex items-start justify-between mb-4">
                           <div>
-                            <h3 className="text-lg font-bold text-slate-100">{dept.name}</h3>
+                            <div className="flex items-center gap-3">
+                              <h3 className="text-lg font-bold text-slate-100">{dept.name}</h3>
+                              <button
+                                onClick={() => handleTogglePortal(dept.id, dept.portal_open)}
+                                className={`px-2 py-0.5 rounded text-xs font-bold transition-all cursor-pointer ${
+                                  dept.portal_open
+                                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/30'
+                                    : 'bg-rose-500/20 text-rose-400 border border-rose-500/30 hover:bg-rose-500/30'
+                                }`}
+                              >
+                                {dept.portal_open ? '● Forms Open' : '○ Forms Closed'}
+                              </button>
+                            </div>
                             <span className="text-xs text-slate-500 font-mono">{dept.code}</span>
                           </div>
                           <RatingBadge value={dept.avg_rating} />
