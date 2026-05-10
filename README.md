@@ -1,20 +1,27 @@
 # 🎓 Invertis Feedback System
 
-> A production-grade, university-wide **Teaching-Learning Feedback System (TLFQ)** built for **Invertis University**. Enables structured, anonymous student feedback collection — department-wise, section-wise, and semester-wise — with full role-based access control.
+> A production-grade, university-wide **Teaching-Learning Feedback System (TLFQ)** built for **Invertis University, Lucknow**.
+> Enables structured, **fully anonymous** student feedback collection — department-wise, section-wise, and semester-wise — with a complete 5-tier role-based access control hierarchy.
+
+[![Node.js](https://img.shields.io/badge/Node.js-18%2B-green)](https://nodejs.org)
+[![React](https://img.shields.io/badge/React-18-blue)](https://react.dev)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-brightgreen)](https://mongodb.com)
+[![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
 
 ---
 
-## 🌐 Live Architecture Overview
+## 🏗️ System Architecture
 
 ```
-┌─────────────────────────────────────────────────────┐
-│                 Invertis Feedback System              │
-│                                                       │
-│  Super Admin → Creates Departments, HODs, Coordinators│
-│  Coordinator → Manages Sections, Faculty, Students   │
-│  HOD         → Creates & Opens Evaluation Forms       │
-│  Student     → Submits Feedback (Section-Filtered)    │
-└─────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────┐
+│               Invertis Feedback System                    │
+│                                                           │
+│  👑 Supreme Authority  →  Manage Super Admins             │
+│  🛡️  Super Admin       →  Manage Departments, HODs, Coords│
+│  📋 Coordinator        →  Manage Sections, Faculty, Students│
+│  🏛️  HOD               →  Create & Open Evaluation Forms  │
+│  🎓 Student            →  Submit Feedback (Anonymously)   │
+└──────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -22,29 +29,56 @@
 ## 👥 Role Hierarchy
 
 | Role | Access Level | Key Responsibilities |
-|------|-------------|---------------------|
-| **Super Admin** | University-wide | Create departments, HODs, and Coordinators |
-| **Coordinator** | University-wide (all depts) | Manage sections, courses, faculty, student pre-enrollment |
-| **HOD** | Own department only | Create TLFQ forms, set deadlines, open/close portal |
-| **Student** | Own section only | View and submit feedback for their assigned faculty |
+|------|-------------|----------------------|
+| 👑 **Supreme Authority** | Global | Create/manage Super Admin accounts, access all panels, reveal student identities |
+| 🛡️ **Super Admin** | University-wide | Create departments, HODs, Coordinators; reveal anonymous student identities |
+| 📋 **Coordinator** | University-wide | Manage sections, courses, faculty (College/Trainer), pre-enroll students |
+| 🏛️ **HOD** | Own department | Create TLFQ forms, set deadlines, open/close feedback portal |
+| 🎓 **Student** | Own section only | Submit anonymous feedback for assigned faculty; view leaderboard |
+
+---
+
+## ✨ Key Features
+
+### 🔒 Student Anonymity System
+- Every student is assigned a **computer-generated Anonymous ID** (`ANO-XXXXXX`) at enrollment
+- The Leaderboard and all analytics show **only the Anonymous ID** — never the real name
+- **Only Super Admin and Supreme Authority** can reveal a student's real identity
+- Dedicated **"Identity Reveal"** page — requires typing the ANO- ID and a confirmation step before showing real name, roll number, email, and section
+
+### 🗳️ Feedback Engine
+- HODs create **TLFQ forms** per section × course × faculty with configurable deadlines
+- Students can only see forms for **their exact section and semester**
+- Each submission is **one-time only** (duplicate prevention)
+- Students earn **points** per submission — shown anonymously on the Leaderboard
+- HOD can **instantly close** the entire department's feedback portal
+
+### 📊 Analytics & Leaderboard
+- Dept-wise faculty rating charts with **College Faculty vs Trainer** filter
+- Super Admin sees university-wide analytics across all departments
+- **Anonymous Leaderboard** — shows top contributing students by ANO- ID and points
+
+### 🌙 Dark / Light Mode
+- Global theme toggle (Sun/Moon) in the Navbar — persists across sessions
+
+### 🔑 Change Password
+- In-app password change modal for Supreme, Super Admin, and HOD roles
 
 ---
 
 ## 🔑 Authentication Flow
 
-**Single unified login page** (`/login`) for all roles:
-
 ```
-┌─ Enter Email or Student ID ─────────────────────────────┐
-│                                                          │
-│  Email (staff)     →  Enter Password  →  Dashboard       │
-│                                                          │
-│  Student ID (PENDING) → Set Email + Password → Login     │
-│  Student ID (ACTIVE)  → Enter Password → Dashboard       │
-└──────────────────────────────────────────────────────────┘
+┌─ Login at /login ────────────────────────────────────────┐
+│                                                           │
+│  Staff  →  Enter Email  →  Enter Password  →  Dashboard  │
+│                                                           │
+│  Student (Active)   →  Enter Student ID  →  Password  →  Dashboard │
+│  Student (Pending)  →  Enter Student ID  →  Set Email + Password   │
+└───────────────────────────────────────────────────────────┘
 ```
 
-The system **auto-detects** whether the identifier is an email (staff) or a Student ID (student) and adjusts the flow accordingly.
+The system **auto-detects** the identifier type (email vs Student ID) and adapts the flow.
 
 ---
 
@@ -53,12 +87,13 @@ The system **auto-detects** whether the identifier is an email (staff) or a Stud
 ### Prerequisites
 - Node.js ≥ 18
 - MongoDB Atlas cluster (or local MongoDB)
+- Git
 
 ### Setup
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/yourusername/invertis-feedback-system.git
+git clone https://github.com/alokydv9045/invertis-feedback-system.git
 cd invertis-feedback-system
 
 # 2. Backend setup
@@ -72,8 +107,8 @@ cd ../frontend
 npm install
 
 # 4. Start both (in separate terminals)
-cd server && npm start       # → http://localhost:5000
-cd frontend && npm run dev   # → http://localhost:5173
+cd server && npm start       # API → http://localhost:5000
+cd frontend && npm run dev   # UI  → http://localhost:5173
 ```
 
 ### Environment Variables (`server/.env`)
@@ -84,35 +119,23 @@ JWT_SECRET=your_super_secret_jwt_key_here
 PORT=5000
 ```
 
+> ⚠️ The database is **auto-seeded** on first startup. All demo accounts (see `CREDENTIALS.example.md`) are created automatically.
+
 ---
 
-## 🧪 Demo Accounts (Auto-seeded)
+## 🔐 Credentials
 
-> **Single Login Page** at `/login` — enter Email (staff) or Student ID (students)
+Login credentials for all seeded accounts are stored in **`CREDENTIALS.md`** (local only, gitignored).
 
-### 👨‍💼 Staff Accounts
+For a safe password-free template, see [`CREDENTIALS.example.md`](./CREDENTIALS.example.md).
 
-| Role | Email | Password |
-|------|-------|----------|
-| Super Admin | `admin@invertis.edu.in` | `Admin@2025` |
-| Coordinator | `coordinator@invertis.edu.in` | `Coord@2025` |
-| HOD – B.Tech AI | `hod.btai@invertis.edu.in` | `Hod@2025` |
-| HOD – B.Tech CS | `hod.bcs@invertis.edu.in` | `Hod@2025` |
-| HOD – Electronics | `hod.btec@invertis.edu.in` | `Hod@2025` |
-| HOD – Mechanical | `hod.btme@invertis.edu.in` | `Hod@2025` |
-| HOD – Civil | `hod.btce@invertis.edu.in` | `Hod@2025` |
+To create your local credentials file:
+```bash
+cp CREDENTIALS.example.md CREDENTIALS.md
+# Then fill in the actual passwords from the seed script
+```
 
-### 🎓 Student Accounts
-
-| Student ID | Email (after activation) | Password | Section | Status |
-|-----------|--------------------------|----------|---------|--------|
-| `BTAI2025_01` | `btai2025.01@iu.edu.in` | `Student@2025` | BTAI-3A, Sem 3 | Active |
-| `BCS2025_01` | `bcs2025.01@iu.edu.in` | `Student@2025` | BCS-3A, Sem 3 | Active |
-| `BTEC2025_01` | `btec2025.01@iu.edu.in` | `Student@2025` | BTEC-3A, Sem 3 | Active |
-| `BTAI2025_02` | _(not set yet)_ | — | BTAI-3A, Sem 3 | **Pending** — triggers registration |
-| `BCS2025_02` | _(not set yet)_ | — | BCS-3A, Sem 3 | **Pending** — triggers registration |
-
-> **Note:** Each section has one pre-activated demo student. All other students in that section are `pending` — enter their Student ID on the login page to trigger the account activation flow.
+> ⚠️ **`CREDENTIALS.md` is in `.gitignore` — it will never be committed or pushed.**
 
 ---
 
@@ -122,37 +145,40 @@ PORT=5000
 | Method | Endpoint | Access | Description |
 |--------|----------|--------|-------------|
 | POST | `/auth/check-student` | Public | Check if student ID exists & return status |
-| POST | `/auth/complete-registration` | Public | Activate pending student: set email + password |
-| POST | `/auth/login` | Public | Unified login — accepts **email** or **student_id** + password |
+| POST | `/auth/complete-registration` | Public | Activate pending student account |
+| POST | `/auth/login` | Public | Unified login (email or student_id + password) |
 | GET | `/auth/me` | Authenticated | Get current user profile |
+| PUT | `/auth/change-password` | supreme, super_admin, hod | Change own password |
 
 ### Coordinator (`/api/coordinator`)
 | Method | Endpoint | Access | Description |
 |--------|----------|--------|-------------|
-| GET/POST | `/coordinator/departments` | coordinator, super_admin | List / create departments |
-| GET/POST | `/coordinator/sections` | coordinator, super_admin | List / create sections |
-| GET/POST | `/coordinator/courses` | coordinator, super_admin | List / create courses |
-| GET/POST | `/coordinator/faculty` | coordinator, super_admin | List / add faculty |
-| POST | `/coordinator/assignments` | coordinator, super_admin | Assign faculty to section+course |
-| GET/POST | `/coordinator/students` | coordinator, super_admin | List / pre-create student records |
+| GET/POST | `/coordinator/departments` | coordinator, super_admin, supreme | List / create departments |
+| GET/POST | `/coordinator/sections` | coordinator, super_admin, supreme | List / create sections |
+| GET/POST | `/coordinator/courses` | coordinator, super_admin, supreme | List / create courses |
+| GET/POST | `/coordinator/faculty` | coordinator, super_admin, supreme | List / add faculty (with teacher_type) |
+| POST/DELETE | `/coordinator/assignments` | coordinator, super_admin, supreme | Assign / remove faculty from section |
+| GET/POST | `/coordinator/students` | coordinator, super_admin, supreme | List / pre-enroll students |
 | PUT | `/coordinator/students/:id/reset-password` | coordinator, super_admin | Reset student password |
 
 ### Super Admin (`/api/superadmin`)
 | Method | Endpoint | Access | Description |
 |--------|----------|--------|-------------|
-| POST | `/superadmin/hods` | super_admin | Create HOD account |
-| POST | `/superadmin/coordinators` | super_admin | Create Coordinator account |
-| GET | `/superadmin/staff` | super_admin | List all HODs & coordinators |
-| PUT/DELETE | `/superadmin/users/:id` | super_admin | Update / delete user |
+| POST | `/superadmin/superadmins` | supreme | Create Super Admin account |
+| POST | `/superadmin/hods` | super_admin, supreme | Create HOD account |
+| POST | `/superadmin/coordinators` | super_admin, supreme | Create Coordinator account |
+| GET | `/superadmin/staff` | super_admin, supreme | List all staff (super_admin, hod, coordinator) |
+| PUT/DELETE | `/superadmin/users/:id` | super_admin, supreme | Update / delete user |
+| GET | `/superadmin/reveal?anon_id=ANO-XXXX` | super_admin, supreme | Reveal student identity by Anonymous ID |
 
 ### HOD (`/api/hod`)
 | Method | Endpoint | Access | Description |
 |--------|----------|--------|-------------|
 | GET | `/hod/sections` | hod | View sections in own dept |
-| GET | `/hod/section-faculty` | hod | Get faculty assignments for a section |
+| GET | `/hod/section-faculty` | hod | Faculty assignments for a section |
 | GET | `/hod/stats` | hod | Department statistics |
 | POST | `/hod/tlfq` | hod | Create evaluation form |
-| GET | `/hod/tlfq` | hod | List own created forms |
+| GET | `/hod/tlfq` | hod | List own forms |
 | PUT | `/hod/tlfq/:id/toggle` | hod | Open / close a form |
 | PUT | `/hod/tlfq/:id/deadline` | hod | Extend form deadline |
 | GET/PUT | `/hod/portal` | hod | View / toggle department portal |
@@ -162,9 +188,9 @@ PORT=5000
 |--------|----------|--------|-------------|
 | GET | `/student/courses` | student | Get section-specific courses + TLFQs |
 | GET | `/student/tlfq/:tlfqId` | student | Get specific evaluation form |
-| POST | `/student/submit` | student | Submit feedback response |
-| GET | `/student/analytics` | super_admin, hod | Department analytics |
-| GET | `/student/leaderboard` | all | Anonymized leaderboard |
+| POST | `/student/submit` | student | Submit feedback (one-time per TLFQ) |
+| GET | `/student/analytics` | super_admin, hod, supreme | Dept analytics |
+| GET | `/student/leaderboard` | all | Anonymous leaderboard (ANO- IDs only) |
 
 ---
 
@@ -172,13 +198,17 @@ PORT=5000
 
 ```
 invertis-feedback-system/
+├── .gitignore                  # Excludes .env, node_modules, CREDENTIALS.md
+├── CREDENTIALS.example.md      # Safe credentials template (committed)
+├── CREDENTIALS.md              # Real credentials (LOCAL ONLY — gitignored)
+│
 ├── server/
 │   ├── controllers/
-│   │   ├── authController.js        # 2-step student auth
-│   │   ├── coordinatorController.js # Section/faculty/student management
-│   │   ├── hodController.js         # Form creation & portal control
-│   │   ├── superadminController.js  # HOD/Coordinator creation
-│   │   └── responseController.js    # Feedback submission & analytics
+│   │   ├── authController.js           # 2-step auth, JWT, password change
+│   │   ├── coordinatorController.js    # Sections, faculty, students
+│   │   ├── hodController.js            # TLFQ forms, portal control
+│   │   ├── superadminController.js     # Staff management, identity reveal
+│   │   └── responseController.js       # Feedback submission, analytics, leaderboard
 │   ├── routes/
 │   │   ├── authRoutes.js
 │   │   ├── coordinatorRoutes.js
@@ -186,64 +216,78 @@ invertis-feedback-system/
 │   │   ├── superadminRoutes.js
 │   │   └── responseRoutes.js
 │   ├── middleware/
-│   │   └── auth.js                  # JWT authenticate + role authorize
-│   ├── db.js                        # Mongoose schemas + seed data
-│   └── server.js                    # Express app entry point
+│   │   ├── auth.js             # JWT authenticate + role authorize
+│   │   └── roleMiddleware.js   # Role-based middleware
+│   ├── db.js                   # Mongoose schemas + full seed data
+│   ├── drop_db.js              # Utility: drop all collections
+│   └── server.js               # Express app entry point
 │
 └── frontend/
     └── src/
         ├── pages/
-        │   ├── Login.jsx            # Unified login (all roles — email or student ID)
-        │   ├── Dashboard.jsx        # Role-aware dashboard hub
-        │   ├── HODPanel.jsx         # HOD: form creation & portal management
+        │   ├── Login.jsx           # Unified login (all roles)
+        │   ├── Dashboard.jsx       # Role-aware hub (redirects by role)
+        │   ├── SupremePanel.jsx    # Supreme: manage Super Admins
+        │   ├── SuperAdminPanel.jsx # Super Admin: departments, HODs, coordinators, student lookup
+        │   ├── IdentityReveal.jsx  # 🔍 Reveal student identity by ANO- ID (super+supreme)
         │   ├── CoordinatorPanel.jsx # 6-tab: sections, courses, faculty, students
-        │   ├── SuperAdminPanel.jsx  # User & department management
-        │   ├── Analytics.jsx        # Dept-wise analytics (charts)
-        │   ├── TLFQPage.jsx         # Student feedback evaluation form
-        │   └── Leaderboard.jsx      # Anonymized faculty leaderboard
+        │   ├── HODPanel.jsx        # HOD: form creation & portal management
+        │   ├── Analytics.jsx       # Dept-wise analytics with faculty/trainer filter
+        │   ├── Leaderboard.jsx     # Anonymous leaderboard (ANO- IDs only)
+        │   └── TLFQPage.jsx        # Student feedback evaluation form
         ├── components/
-        │   ├── Navbar.jsx           # Glassmorphism topbar with role badge
-        │   ├── Sidebar.jsx          # Role-filtered navigation
-        │   └── ProtectedRoute.jsx   # JWT + role guard
+        │   ├── Navbar.jsx          # Glassmorphism topbar, role badge, theme toggle, password change
+        │   ├── Sidebar.jsx         # Role-filtered navigation
+        │   └── ProtectedRoute.jsx  # JWT + role guard
         ├── context/
-        │   └── AuthContext.jsx      # Global auth: login, logout, token
+        │   └── AuthContext.jsx     # Global auth + theme state
         └── services/
-            └── api.js               # Axios instance with auto token injection
+            └── api.js              # Axios instance with auto token injection
 ```
 
 ---
 
 ## 🛡️ Security Model
 
-- **JWT Authentication** — all protected routes require valid tokens
-- **Role-Based Authorization** — middleware checks role before every sensitive operation
+- **JWT Authentication** — all protected routes require a valid Bearer token
+- **5-Tier RBAC** — Supreme → Super Admin → Coordinator → HOD → Student; each tier strictly scoped
+- **Student Anonymity** — `unique_feedback_id` (`ANO-XXXXXX`) is the only public identifier; real identity (name, roll no., email) requires explicit admin reveal with confirmation
 - **Section Isolation** — students only see TLFQs matching their exact `section_id` and `semester`
-- **Portal Gate** — HOD can disable all feedback submission for entire department instantly
-- **Form Expiry** — each TLFQ has a `closing_time`; expired forms are auto-hidden from students
-- **Anonymous Feedback** — student identity is never included in analytics or comment exports
+- **Portal Gate** — HOD can disable all feedback submission for their department instantly
+- **Form Expiry** — TLFQs auto-expire past `closing_time` (no manual action needed)
+- **One-time Submission** — duplicate `(student_id, tlfq_id)` submissions are rejected
+- **Password Security** — bcryptjs hashing (cost factor 10) for all passwords
 
 ---
 
 ## 🧩 Data Model
 
 ```
-Department → Sections (semester + label: A/B/C)
-           ↓
-Section ←→ SectionFaculty (Faculty + Course per Section)
-           ↓
-TLFQ (Evaluation Form: section_id + course_id + faculty_id + closing_time)
-           ↓
-Response (student_id + tlfq_id) → Answers (question_id + rating 1-7)
+Department ──► Sections (code, semester, label A/B/C)
+                  │
+                  ├──► SectionFaculty (Faculty × Course per Section)
+                  │          │
+                  │          └──► TLFQ (Form: section + course + faculty + deadline)
+                  │                    │
+                  │                    └──► Response (student_id + tlfq_id + comment)
+                  │                              └──► Answers (question_id + rating 1–7)
+                  │
+                  └──► Enrollments (student_id × course_id)
+
+User (roles: supreme | super_admin | coordinator | hod | student)
+  ├── student_id         → official roll number (e.g. BCS2025_01) — confidential
+  └── unique_feedback_id → anonymous public ID (e.g. ANO-A3F2B1) — shown on leaderboard
 ```
 
 ---
 
-## 🔄 Re-seeding the Database
+## 🔄 Database Management
 
 ```bash
+# Reset and re-seed the database
 cd server
 node drop_db.js   # Drops all collections
-npm start         # Server auto-seeds on next startup
+npm start         # Auto-seeds on next startup
 ```
 
 ---
@@ -252,14 +296,30 @@ npm start         # Server auto-seeds on next startup
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | React 18, Vite, TailwindCSS, Framer Motion, Recharts |
-| Backend | Node.js, Express.js |
-| Database | MongoDB Atlas via Mongoose |
-| Auth | JSON Web Tokens (JWT), bcryptjs |
-| UI Icons | Lucide React |
+| **Frontend** | React 18, Vite, TailwindCSS v3, Framer Motion, Recharts |
+| **Backend** | Node.js 18+, Express.js |
+| **Database** | MongoDB Atlas via Mongoose 8 |
+| **Auth** | JSON Web Tokens (JWT), bcryptjs |
+| **UI Icons** | Lucide React |
+| **Design** | Glassmorphism dark theme + light mode toggle |
+
+---
+
+## 🧑‍💻 Development
+
+```bash
+# Run backend with auto-reload
+cd server && npm run dev    # uses nodemon
+
+# Run frontend dev server
+cd frontend && npm run dev  # Vite HMR at http://localhost:5173
+
+# Build frontend for production
+cd frontend && npm run build
+```
 
 ---
 
 ## 📝 License
 
-MIT License — Developed for Invertis University, Lucknow.
+MIT License — Developed for **Invertis University, Lucknow** by Team Saraswat.

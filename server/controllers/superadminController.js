@@ -1,4 +1,5 @@
-import { User } from '../db.js';
+import { User, Section } from '../db.js';
+
 import bcrypt from 'bcryptjs';
 
 // ── Create Super Admin (only Supreme Authority can do this) ──────────────
@@ -68,7 +69,6 @@ export const revealStudentByAnonId = async (req, res) => {
     // Populate section name
     let section_name = null;
     if (student.section_id) {
-      const { Section } = await import('../db.js');
       const sec = await Section.findById(student.section_id).lean();
       section_name = sec?.name || null;
     }

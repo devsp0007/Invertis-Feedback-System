@@ -4,6 +4,8 @@ import cors from 'cors';
 import { initDb } from './db.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { getAnalytics } from './controllers/responseController.js';
+import { authenticate, authorize } from './middleware/auth.js';
 
 import authRoutes        from './routes/authRoutes.js';
 import coordinatorRoutes from './routes/coordinatorRoutes.js';
@@ -17,7 +19,23 @@ const __dirname  = path.dirname(__filename);
 const app  = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+// ── CORS — whitelist frontend origins ───────────────────────────────────────
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://invertis-feedback.vercel.app',
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (server-to-server, curl, Postman)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    callback(new Error(`CORS: origin ${origin} not allowed`));
+  },
+  credentials: true,
+}));
 app.use(express.json());
 
 app.get('/api', (req, res) => res.json({ status: 'OK', message: 'Invertis Feedback System API v2' }));
@@ -28,17 +46,11 @@ app.use('/api/superadmin',  superadminRoutes);
 app.use('/api/hod',         hodRoutes);
 app.use('/api/student',     responseRoutes);
 
-// Analytics endpoint for super_admin (proxy to responseController)
-import { getAnalytics } from './controllers/responseController.js';
-import { authenticate, authorize } from './middleware/auth.js';
-app.get('/api/responses/analytics', authenticate, authorize('super_admin', 'hod'), getAnalytics);
+// Analytics endpoint (super_admin, hod, supreme can access)
+app.get('/api/responses/analytics', authenticate, authorize('super_admin', 'hod', 'supreme'), getAnalytics);
 
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../frontend/dist')));
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../frontend/dist', 'index.html'));
-  });
-}
+// 404 handler for unmatched API routes
+app.use('/api/*', (req, res) => res.status(404).json({ message: 'API route not found.' }));
 
 const startServer = async () => {
   try {

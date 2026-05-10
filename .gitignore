@@ -32,3 +32,6 @@ pnpm-debug.log*
 
 # Scratch / temp files
 scratch_test.js
+
+# Local credentials — NEVER commit
+CREDENTIALS.md
