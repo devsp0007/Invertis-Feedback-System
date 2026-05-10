@@ -21,8 +21,11 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const token = localStorage.getItem('tlfq_token');
-      if (!token) { setLoading(false); return; }
+      const token = localStorage.getItem('tlfq_platform_session');
+      if (!token || token === 'null' || token === 'undefined' || token.length < 10) {
+        setLoading(false);
+        return;
+      }
       try {
         const res = await api.get('/auth/me');
         setUser(res.data.user);
@@ -43,7 +46,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('tlfq_token');
+    localStorage.removeItem('tlfq_platform_session');
     setUser(null);
   };
 

@@ -51,6 +51,11 @@ export default function App() {
               <CoordinatorPanel />
             </ProtectedRoute>
           } />
+          <Route path="/hod/students" element={
+            <ProtectedRoute allowedRoles={['hod']}>
+              <ManageStudents />
+            </ProtectedRoute>
+          } />
 
           {/* Analytics (HOD + Super Admin) */}
           <Route path="/analytics" element={
@@ -77,6 +82,11 @@ export default function App() {
           <Route path="/reveal" element={
             <ProtectedRoute allowedRoles={['super_admin', 'supreme']}>
               <IdentityReveal />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/students" element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <ManageStudents />
             </ProtectedRoute>
           } />
 
