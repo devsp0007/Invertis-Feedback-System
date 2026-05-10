@@ -37,7 +37,7 @@ export default function Analytics() {
     : (data?.submissionRates || []).filter(c => c.department_id === selectedDeptId);
 
   const filteredRecentComments = selectedDeptId === 'all'
-    ? []
+    ? (data?.recentComments || [])
     : (data?.recentComments || []).filter(c => c.department_id === selectedDeptId);
 
   const tabs = [
@@ -113,20 +113,6 @@ export default function Analytics() {
               </div>
             ) : !data ? (
               <div className="bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 rounded-3xl p-16 text-center text-slate-400 font-medium">No analytics data available.</div>
-            ) : selectedDeptId === 'all' ? (
-              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 rounded-3xl p-16 flex flex-col items-center justify-center text-center shadow-2xl">
-                <div className="h-24 w-24 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 rounded-full flex items-center justify-center mb-6 border border-indigo-500/20">
-                  <BarChart2 size={40} className="text-indigo-400" />
-                </div>
-                <h2 className="text-2xl font-black text-slate-100 mb-3">Select a Department</h2>
-                <p className="text-slate-400 text-sm max-w-md leading-relaxed font-medium">
-                  To view faculty rankings, course submission reports, and detailed feedback insights, please select a specific department from the dropdown menu above.
-                </p>
-                <div className="mt-8 flex items-center gap-2 text-indigo-400 text-sm font-bold animate-pulse">
-                  <span>Use the filter above</span>
-                  <ArrowRight size={16} />
-                </div>
-              </motion.div>
             ) : (
               <div className="flex flex-col gap-6">
                 {/* Tabs */}
@@ -161,22 +147,29 @@ export default function Analytics() {
                           <h3 className="text-base font-black text-slate-100 mb-6 flex items-center gap-2">
                             <TrendingUp size={18} className="text-indigo-400" /> Faculty Average Ratings (out of 7)
                           </h3>
-                          <div className="h-[300px]">
-                            <ResponsiveContainer width="100%" height="100%">
-                              <BarChart data={filteredAvgRatingPerFaculty} layout="vertical" margin={{ left: 10, right: 30 }}>
-                                <XAxis type="number" domain={[0, 7]} tick={{ fill: '#64748b', fontSize: 12, fontWeight: 600 }} axisLine={false} tickLine={false} />
-                                <YAxis type="category" dataKey="name" tick={{ fill: '#e2e8f0', fontSize: 12, fontWeight: 600 }} width={160} axisLine={false} tickLine={false} />
-                                <Tooltip
-                                  cursor={{ fill: '#1e293b', opacity: 0.4 }}
-                                  contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: 16, color: '#f8fafc', fontWeight: 600, boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5)' }}
-                                  formatter={v => [`${v}/7`, 'Avg. Rating']}
-                                />
-                                <Bar dataKey="avg_rating" radius={[0, 8, 8, 0]} barSize={24}>
-                                  {filteredAvgRatingPerFaculty.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
-                                </Bar>
-                              </BarChart>
-                            </ResponsiveContainer>
-                          </div>
+                          {filteredAvgRatingPerFaculty.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center py-16 text-slate-500">
+                              <BarChart2 size={40} className="mb-3 text-slate-700" />
+                              <p className="text-sm font-medium">No feedback data yet for this selection.</p>
+                            </div>
+                          ) : (
+                            <div style={{ height: Math.max(200, filteredAvgRatingPerFaculty.length * 52) + 'px' }}>
+                              <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={filteredAvgRatingPerFaculty} layout="vertical" margin={{ left: 10, right: 30 }}>
+                                  <XAxis type="number" domain={[0, 7]} tick={{ fill: '#64748b', fontSize: 12, fontWeight: 600 }} axisLine={false} tickLine={false} />
+                                  <YAxis type="category" dataKey="name" tick={{ fill: '#e2e8f0', fontSize: 12, fontWeight: 600 }} width={160} axisLine={false} tickLine={false} />
+                                  <Tooltip
+                                    cursor={{ fill: '#1e293b', opacity: 0.4 }}
+                                    contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: 16, color: '#f8fafc', fontWeight: 600, boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5)' }}
+                                    formatter={v => [`${v}/7`, 'Avg. Rating']}
+                                  />
+                                  <Bar dataKey="avg_rating" radius={[0, 8, 8, 0]} barSize={28}>
+                                    {filteredAvgRatingPerFaculty.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                                  </Bar>
+                                </BarChart>
+                              </ResponsiveContainer>
+                            </div>
+                          )}
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
