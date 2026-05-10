@@ -21,8 +21,11 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const token = localStorage.getItem('tlfq_token');
-      if (!token) { setLoading(false); return; }
+      const token = localStorage.getItem('tlfq_platform_session');
+      if (!token || token === 'null' || token === 'undefined' || token.length < 10) {
+        setLoading(false);
+        return;
+      }
       try {
         const res = await api.get('/auth/me');
         setUser(res.data.user);
@@ -35,15 +38,17 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
-  const login = async (email, password) => {
-    const res = await api.post('/auth/login', { email, password });
-    localStorage.setItem('tlfq_token', res.data.token);
-    setUser(res.data.user);
+  const login = async (identifier, password) => {
+    const res = await api.post('/auth/login', { identifier, password });
+    if (res.data.token) {
+      localStorage.setItem('tlfq_platform_session', res.data.token);
+      setUser(res.data.user);
+    }
     return res.data.user;
   };
 
   const logout = () => {
-    localStorage.removeItem('tlfq_token');
+    localStorage.removeItem('tlfq_platform_session');
     setUser(null);
   };
 

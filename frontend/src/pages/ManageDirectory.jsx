@@ -5,7 +5,7 @@ import api from '../services/api';
 import { motion } from 'framer-motion';
 import { BookOpen, Users, Plus, Trash2, Settings, Building2, Download, Upload, RefreshCw } from 'lucide-react';
 
-const inputCls = 'bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full transition';
+const inputCls = 'bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-5 py-4 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 w-full transition-all shadow-sm';
 
 export default function ManageDirectory() {
   const [activeTab, setActiveTab] = useState('departments');
@@ -115,190 +115,246 @@ export default function ManageDirectory() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-500">
       <Navbar />
       <div className="flex flex-col md:flex-row flex-1">
         <Sidebar />
-        <main className="flex-1 p-6 md:p-8">
-          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-6 max-w-5xl">
+        <main className="flex-1 p-6 md:p-10">
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-8 max-w-6xl">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <Settings size={20} className="text-indigo-400" />
-                <h1 className="text-2xl font-black">Directory Management</h1>
+                <Settings size={24} className="text-indigo-500" />
+                <h1 className="text-3xl font-black">Directory Hub</h1>
               </div>
-              <p className="text-sm text-slate-400">Manage departments, courses, and faculty data records.</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Manage the structural entities of the feedback system.</p>
             </div>
 
             {msg.text && (
-              <div className={`p-4 rounded-xl text-sm font-semibold border ${
+              <div className={`p-5 rounded-2xl text-sm font-bold border shadow-sm ${
                 msg.type === 'error'
-                  ? 'bg-rose-950/40 text-rose-400 border-rose-900/50'
-                  : 'bg-emerald-950/40 text-emerald-300 border-emerald-800/50'
+                  ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border-rose-100 dark:border-rose-900/50'
+                  : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-800/50'
               }`}>{msg.text}</div>
             )}
 
             {/* Tabs */}
-            <div className="flex gap-2 border-b border-slate-800 flex-wrap">
+            <div className="flex gap-4 border-b border-slate-200 dark:border-slate-800 flex-wrap overflow-x-auto no-scrollbar">
               {TABS.map(({ id, label, icon: Icon }) => (
                 <button
                   key={id}
                   onClick={() => setActiveTab(id)}
-                  className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold border-b-2 transition -mb-px cursor-pointer ${
+                  className={`flex items-center gap-2.5 px-6 py-4 text-sm font-black border-b-2 transition -mb-px cursor-pointer uppercase tracking-widest ${
                     activeTab === id
-                      ? 'border-indigo-500 text-indigo-400'
-                      : 'border-transparent text-slate-500 hover:text-slate-300'
+                      ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400'
+                      : 'border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
                   }`}
                 >
-                  <Icon size={14} /> {label}
+                  <Icon size={16} /> {label}
                 </button>
               ))}
             </div>
 
             {loading ? (
-              <div className="bg-slate-800 border border-slate-700 rounded-2xl p-12 flex justify-center">
-                <div className="h-10 w-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-24 flex flex-col items-center gap-4 shadow-sm">
+                <div className="h-12 w-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+                <span className="text-xs font-black uppercase tracking-[0.2em] text-slate-400 animate-pulse">Syncing Directory...</span>
               </div>
             ) : (
-              <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-8">
                 {/* DEPARTMENTS */}
                 {activeTab === 'departments' && (
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div className="bg-slate-800 border border-slate-700 rounded-2xl p-5 flex flex-col gap-4 h-fit">
-                      <h3 className="font-bold text-slate-200 flex items-center gap-2 text-sm"><Plus size={15} className="text-indigo-400" /> Add Department</h3>
-                      <form onSubmit={handleCreateDept} className="flex flex-col gap-3">
-                        <input type="text" placeholder="E.g. Computer Science & Engineering" value={deptName} onChange={e => setDeptName(e.target.value)} className={inputCls} />
-                        <input type="text" placeholder="Code (e.g. CSE)" value={deptCode} onChange={e => setDeptCode(e.target.value)} className={inputCls} />
-                        <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3 font-bold rounded-xl text-xs cursor-pointer">Add Department</button>
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col gap-6 h-fit shadow-sm">
+                      <h3 className="font-black text-slate-900 dark:text-slate-200 flex items-center gap-2 text-sm uppercase tracking-wider"><Plus size={18} className="text-indigo-500" /> New Department</h3>
+                      <form onSubmit={handleCreateDept} className="flex flex-col gap-4">
+                        <input type="text" placeholder="Engineering Name" value={deptName} onChange={e => setDeptName(e.target.value)} className={inputCls} />
+                        <input type="text" placeholder="Short Code (e.g. CSE)" value={deptCode} onChange={e => setDeptCode(e.target.value)} className={inputCls} />
+                        <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-4 font-black rounded-2xl text-xs uppercase tracking-widest transition-all shadow-lg shadow-indigo-500/20 cursor-pointer active:scale-95">Add Department</button>
                       </form>
                     </div>
-                    <div className="lg:col-span-2 bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden">
-                      <div className="p-4 border-b border-slate-700 flex items-center justify-between">
-                        <h3 className="font-bold text-slate-200 text-sm flex items-center gap-2"><Building2 size={15} className="text-indigo-400" /> All Departments</h3>
-                        <span className="text-xs bg-indigo-900/40 text-indigo-300 border border-indigo-800/40 px-2.5 py-1 rounded-full font-bold">{departments.length}</span>
+                    <div className="lg:col-span-2 flex flex-col gap-6">
+                      <div className="flex items-center justify-between mb-2 px-2">
+                        <h3 className="font-black text-slate-900 dark:text-slate-200 text-sm flex items-center gap-2 uppercase tracking-wider"><Building2 size={18} className="text-indigo-500" /> Registered Entities</h3>
+                        <span className="text-[10px] font-black bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-800/40 px-3 py-1 rounded-full uppercase tracking-widest">{departments.length} Units</span>
                       </div>
-                      <table className="w-full text-sm">
-                        <thead className="bg-slate-900 text-xs text-slate-500 uppercase">
-                          <tr><th className="p-4 text-left">Name</th><th className="p-4 text-left">Code</th><th className="p-4"></th></tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-700/60">
-                          {departments.map(d => (
-                            <tr key={d.id} className="hover:bg-slate-700/30 text-xs text-slate-300">
-                              <td className="p-4 font-semibold">{d.name}</td>
-                              <td className="p-4 font-mono text-slate-400">{d.code}</td>
-                              <td className="p-4 text-right">
-                                <button onClick={() => handleDelete('departments', d.id)} className="p-2 text-slate-500 hover:text-rose-400 hover:bg-rose-950/30 rounded-lg transition cursor-pointer"><Trash2 size={14} /></button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        {departments.map(d => (
+                          <motion.div
+                            key={d.id}
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-500/40 rounded-[2rem] p-6 transition-all shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 relative overflow-hidden"
+                          >
+                            <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-all flex gap-2 translate-y-2 group-hover:translate-y-0">
+                              <button
+                                onClick={() => handleDelete('departments', d.id)}
+                                className="p-3 bg-white dark:bg-slate-800 hover:bg-rose-600 text-rose-500 hover:text-white rounded-2xl transition-all cursor-pointer shadow-lg border border-slate-100 dark:border-slate-700 hover:border-rose-500"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                            <div className="flex items-center gap-5">
+                              <div className="h-14 w-14 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center justify-center text-indigo-500 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
+                                <Building2 size={28} />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <h3 className="font-black text-slate-900 dark:text-white text-base truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{d.name}</h3>
+                                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 dark:bg-slate-800/50 rounded-lg text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest border border-slate-200/50 dark:border-slate-700/50 mt-1.5">
+                                  {d.code}
+                                </div>
+                              </div>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 )}
 
                 {/* COURSES */}
                 {activeTab === 'courses' && (
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div className="bg-slate-800 border border-slate-700 rounded-2xl p-5 flex flex-col gap-4 h-fit">
-                      <h3 className="font-bold text-slate-200 flex items-center gap-2 text-sm"><Plus size={15} className="text-indigo-400" /> Add Course</h3>
-                      <form onSubmit={handleCreateCourse} className="flex flex-col gap-3">
-                        <input type="text" placeholder="Course Code (e.g. CS401)" value={courseCode} onChange={e => setCourseCode(e.target.value)} className={inputCls} />
-                        <input type="text" placeholder="Course Name" value={courseName} onChange={e => setCourseName(e.target.value)} className={inputCls} />
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col gap-6 h-fit shadow-sm">
+                      <h3 className="font-black text-slate-900 dark:text-slate-200 flex items-center gap-2 text-sm uppercase tracking-wider"><Plus size={18} className="text-indigo-500" /> New Course</h3>
+                      <form onSubmit={handleCreateCourse} className="flex flex-col gap-4">
+                        <input type="text" placeholder="CS-XXX" value={courseCode} onChange={e => setCourseCode(e.target.value)} className={inputCls} />
+                        <input type="text" placeholder="Course Title" value={courseName} onChange={e => setCourseName(e.target.value)} className={inputCls} />
                         <select value={courseDept} onChange={e => setCourseDept(e.target.value)} className={inputCls + ' cursor-pointer'}>
-                          <option value="">Select Department…</option>
+                          <option value="">Department Context…</option>
                           {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
                         </select>
-                        <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3 font-bold rounded-xl text-xs cursor-pointer">Add Course</button>
+                        <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-4 font-black rounded-2xl text-xs uppercase tracking-widest transition-all shadow-lg shadow-indigo-500/20 cursor-pointer active:scale-95">Add Course</button>
                       </form>
                     </div>
-                    <div className="lg:col-span-2 bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden">
-                      <div className="p-4 border-b border-slate-700 flex items-center justify-between">
-                        <h3 className="font-bold text-slate-200 text-sm flex items-center gap-2"><BookOpen size={15} className="text-indigo-400" /> All Courses</h3>
-                        <span className="text-xs bg-indigo-900/40 text-indigo-300 border border-indigo-800/40 px-2.5 py-1 rounded-full font-bold">{courses.length}</span>
+                    <div className="lg:col-span-2 flex flex-col gap-6">
+                      <div className="flex items-center justify-between mb-2 px-2">
+                        <h3 className="font-black text-slate-900 dark:text-slate-200 text-sm flex items-center gap-2 uppercase tracking-wider"><BookOpen size={18} className="text-indigo-500" /> Academic Catalog</h3>
+                        <span className="text-[10px] font-black bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-800/40 px-3 py-1 rounded-full uppercase tracking-widest">{courses.length} Courses</span>
                       </div>
-                      <table className="w-full text-sm">
-                        <thead className="bg-slate-900 text-xs text-slate-500 uppercase">
-                          <tr><th className="p-4 text-left">Code</th><th className="p-4 text-left">Name</th><th className="p-4 text-left">Dept.</th><th className="p-4"></th></tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-700/60">
-                          {courses.map(c => (
-                            <tr key={c.id} className="hover:bg-slate-700/30 text-xs text-slate-300">
-                              <td className="p-4 font-mono text-indigo-300">{c.code}</td>
-                              <td className="p-4 font-semibold">{c.name}</td>
-                              <td className="p-4 text-slate-500">{c.department_name}</td>
-                              <td className="p-4 text-right">
-                                <button onClick={() => handleDelete('courses', c.id)} className="p-2 text-slate-500 hover:text-rose-400 hover:bg-rose-950/30 rounded-lg transition cursor-pointer"><Trash2 size={14} /></button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        {courses.map(c => (
+                          <motion.div
+                            key={c.id}
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-500/40 rounded-[2rem] p-6 transition-all shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 relative overflow-hidden"
+                          >
+                            <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-all flex gap-2 translate-y-2 group-hover:translate-y-0">
+                              <button
+                                onClick={() => handleDelete('courses', c.id)}
+                                className="p-3 bg-white dark:bg-slate-800 hover:bg-rose-600 text-rose-500 hover:text-white rounded-2xl transition-all cursor-pointer shadow-lg border border-slate-100 dark:border-slate-700 hover:border-rose-500"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                            <div className="flex items-center gap-5">
+                              <div className="h-14 w-14 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center justify-center text-indigo-500 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
+                                <BookOpen size={28} />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <h3 className="font-black text-slate-900 dark:text-white text-base truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{c.name}</h3>
+                                <div className="flex items-center gap-3 mt-2">
+                                  <span className="text-[9px] font-black text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/30 px-2.5 py-1 rounded-lg border border-indigo-100 dark:border-indigo-800/30 uppercase tracking-tighter">{c.code}</span>
+                                  <span className="text-[10px] text-slate-400 font-bold truncate uppercase tracking-widest">{c.department_name}</span>
+                                </div>
+                              </div>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 )}
 
                 {/* FACULTY */}
                 {activeTab === 'faculty' && (
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div className="bg-slate-800 border border-slate-700 rounded-2xl p-5 flex flex-col gap-4 h-fit">
-                      <h3 className="font-bold text-slate-200 flex items-center gap-2 text-sm"><Plus size={15} className="text-indigo-400" /> Add Faculty Record</h3>
-                      <p className="text-xs text-slate-500">Faculty are data records only — they do not have login access.</p>
-                      <form onSubmit={handleCreateFaculty} className="flex flex-col gap-3">
-                        <input type="text" placeholder="Full Name (e.g. Dr. Alan Turing)" value={facultyName} onChange={e => setFacultyName(e.target.value)} className={inputCls} />
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col gap-6 h-fit shadow-sm">
+                      <h3 className="font-black text-slate-900 dark:text-slate-200 flex items-center gap-2 text-sm uppercase tracking-wider"><Plus size={18} className="text-indigo-500" /> New Faculty</h3>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-500 font-medium leading-relaxed">Adding a faculty record allows them to be assigned to feedback questionnaires. These are informational entities.</p>
+                      <form onSubmit={handleCreateFaculty} className="flex flex-col gap-4">
+                        <input type="text" placeholder="Full Professional Name" value={facultyName} onChange={e => setFacultyName(e.target.value)} className={inputCls} />
                         <select value={facultyDept} onChange={e => setFacultyDept(e.target.value)} className={inputCls + ' cursor-pointer'}>
-                          <option value="">Select Department…</option>
+                          <option value="">Assigned Unit…</option>
                           {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
                         </select>
-                        <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3 font-bold rounded-xl text-xs cursor-pointer">Add Faculty</button>
+                        <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-4 font-black rounded-2xl text-xs uppercase tracking-widest transition-all shadow-lg shadow-indigo-500/20 cursor-pointer active:scale-95">Add Faculty</button>
                       </form>
                     </div>
-                    <div className="lg:col-span-2 bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden">
-                      <div className="p-4 border-b border-slate-700 flex items-center justify-between">
-                        <h3 className="font-bold text-slate-200 text-sm flex items-center gap-2"><Users size={15} className="text-indigo-400" /> Faculty Records</h3>
-                        <span className="text-xs bg-indigo-900/40 text-indigo-300 border border-indigo-800/40 px-2.5 py-1 rounded-full font-bold">{faculty.length}</span>
+                    <div className="lg:col-span-2 flex flex-col gap-6">
+                      <div className="flex items-center justify-between mb-2 px-2">
+                        <h3 className="font-black text-slate-900 dark:text-slate-200 text-sm flex items-center gap-2 uppercase tracking-wider"><Users size={18} className="text-indigo-500" /> Faculty Directory</h3>
+                        <span className="text-[10px] font-black bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-800/40 px-3 py-1 rounded-full uppercase tracking-widest">{faculty.length} Records</span>
                       </div>
-                      <table className="w-full text-sm">
-                        <thead className="bg-slate-900 text-xs text-slate-500 uppercase">
-                          <tr><th className="p-4 text-left">Name</th><th className="p-4 text-left">Department</th><th className="p-4"></th></tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-700/60">
-                          {faculty.map(f => (
-                            <tr key={f.id} className="hover:bg-slate-700/30 text-xs text-slate-300">
-                              <td className="p-4 font-semibold">{f.name}</td>
-                              <td className="p-4 text-slate-400">{f.department_name}</td>
-                              <td className="p-4 text-right">
-                                <button onClick={() => handleDelete('faculty', f.id)} className="p-2 text-slate-500 hover:text-rose-400 hover:bg-rose-950/30 rounded-lg transition cursor-pointer"><Trash2 size={14} /></button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        {faculty.map(f => (
+                          <motion.div
+                            key={f.id}
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-500/40 rounded-[2rem] p-6 transition-all shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 relative overflow-hidden"
+                          >
+                            <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-all flex gap-2 translate-y-2 group-hover:translate-y-0">
+                              <button
+                                onClick={() => handleDelete('faculty', f.id)}
+                                className="p-3 bg-white dark:bg-slate-800 hover:bg-rose-600 text-rose-500 hover:text-white rounded-2xl transition-all cursor-pointer shadow-lg border border-slate-100 dark:border-slate-700 hover:border-rose-500"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                            <div className="flex items-center gap-5">
+                              <div className="h-14 w-14 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center justify-center text-indigo-500 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
+                                <Users size={28} />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <h3 className="font-black text-slate-900 dark:text-white text-base truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{f.name}</h3>
+                                <div className="text-[10px] text-slate-400 dark:text-slate-500 font-black uppercase tracking-[0.1em] mt-2">{f.department_name}</div>
+                              </div>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 )}
 
                 {/* SYNC */}
                 {activeTab === 'sync' && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6 flex flex-col gap-4">
-                      <h3 className="font-bold text-slate-200 flex items-center gap-2"><Download size={16} className="text-indigo-400" /> Export System Data</h3>
-                      <p className="text-xs text-slate-400">Export all records as a JSON backup file.</p>
-                      <button onClick={handleExportData} className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 rounded-xl text-xs flex items-center justify-center gap-2 cursor-pointer">
-                        <Download size={15} /> Download Backup JSON
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-10 flex flex-col gap-6 shadow-sm">
+                      <div className="flex items-center gap-4">
+                        <div className="h-12 w-12 rounded-2xl bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600">
+                          <Download size={24} />
+                        </div>
+                        <div>
+                          <h3 className="font-black text-slate-900 dark:text-slate-200 uppercase tracking-wider">Export Ledger</h3>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Securely download the entire system state.</p>
+                        </div>
+                      </div>
+                      <button onClick={handleExportData} className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black py-4.5 rounded-2xl text-xs flex items-center justify-center gap-3 cursor-pointer uppercase tracking-widest transition-all shadow-xl shadow-indigo-500/20 active:scale-95">
+                        <Download size={18} /> Download Backup Manifest
                       </button>
                     </div>
-                    <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6 flex flex-col gap-4">
-                      <h3 className="font-bold text-slate-200 flex items-center gap-2"><Upload size={16} className="text-indigo-400" /> Import / Synchronize</h3>
-                      <input type="file" accept="application/json" onChange={e => setImportFile(e.target.files[0])} className="text-xs bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-400 cursor-pointer focus:outline-none" />
-                      <div className="grid grid-cols-2 gap-2">
+                    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-10 flex flex-col gap-6 shadow-sm">
+                      <div className="flex items-center gap-4">
+                        <div className="h-12 w-12 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600">
+                          <Upload size={24} />
+                        </div>
+                        <div>
+                          <h3 className="font-black text-slate-900 dark:text-slate-200 uppercase tracking-wider">State Synchronizer</h3>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Upload and reconcile directory records.</p>
+                        </div>
+                      </div>
+                      <input type="file" accept="application/json" onChange={e => setImportFile(e.target.files[0])} className="text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 text-slate-500 dark:text-slate-400 cursor-pointer focus:outline-none" />
+                      <div className="grid grid-cols-2 gap-3">
                         {['merge', 'overwrite'].map(m => (
-                          <button key={m} onClick={() => setSyncMode(m)} className={`py-2.5 px-3 rounded-xl border text-xs font-bold transition cursor-pointer ${syncMode === m ? 'bg-indigo-900/40 border-indigo-600 text-indigo-300' : 'bg-slate-900 border-slate-700 text-slate-500'}`}>
-                            {m === 'merge' ? 'Merge (Safe)' : 'Full Overwrite'}
+                          <button key={m} onClick={() => setSyncMode(m)} className={`py-3.5 px-4 rounded-2xl border text-[10px] font-black transition-all cursor-pointer uppercase tracking-widest ${syncMode === m ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500'}`}>
+                            {m === 'merge' ? 'Merge (Add)' : 'Full Wipe & Set'}
                           </button>
                         ))}
                       </div>
-                      <button onClick={handleImportData} disabled={!importFile} className={`w-full font-bold py-3.5 rounded-xl text-xs flex items-center justify-center gap-2 cursor-pointer ${importFile ? 'bg-emerald-600 hover:bg-emerald-500 text-white' : 'bg-slate-700 text-slate-500 cursor-not-allowed'}`}>
-                        <RefreshCw size={14} /> {syncMode === 'merge' ? 'Merge & Sync' : 'Overwrite & Sync'}
+                      <button onClick={handleImportData} disabled={!importFile} className={`w-full font-black py-4.5 rounded-2xl text-xs flex items-center justify-center gap-3 cursor-pointer uppercase tracking-widest transition-all ${importFile ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-xl shadow-emerald-500/20 active:scale-95' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed'}`}>
+                        <RefreshCw size={16} className={importFile ? 'animate-spin-slow' : ''} /> Execute Synchronization
                       </button>
                     </div>
                   </div>

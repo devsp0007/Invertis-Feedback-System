@@ -7,6 +7,7 @@ import TLFQPage from './pages/TLFQPage';
 import AdminPanel from './pages/AdminPanel';
 import Analytics from './pages/Analytics';
 import ManageDirectory from './pages/ManageDirectory';
+import ManageStudents from './pages/ManageStudents';
 import HODDashboard from './pages/HODDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -42,6 +43,11 @@ export default function App() {
               <HODDashboard />
             </ProtectedRoute>
           } />
+          <Route path="/hod/students" element={
+            <ProtectedRoute allowedRoles={['hod']}>
+              <ManageStudents />
+            </ProtectedRoute>
+          } />
 
           {/* Admin routes */}
           <Route path="/admin/courses" element={
@@ -57,6 +63,11 @@ export default function App() {
           <Route path="/admin/directory" element={
             <ProtectedRoute allowedRoles={['admin']}>
               <ManageDirectory />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/students" element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <ManageStudents />
             </ProtectedRoute>
           } />
 

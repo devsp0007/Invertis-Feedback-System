@@ -40,6 +40,12 @@ function createDoc(modelName, obj) {
 
 function filterMatches(item, query) {
   if (!query || Object.keys(query).length === 0) return true;
+  
+  // Handle $or operator
+  if (query.$or && Array.isArray(query.$or)) {
+    return query.$or.some(subQuery => filterMatches(item, subQuery));
+  }
+
   return Object.entries(query).every(([key, value]) => {
     if (value && typeof value === 'object' && '$in' in value) {
       const inArray = Array.isArray(value.$in) ? value.$in.map(v => v.toString()) : [];
@@ -156,6 +162,7 @@ export const Department = createModelWrapper('Department', rDepartment);
 const uSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
+  college_id: { type: String, unique: true, sparse: true },
   password: { type: String, required: true },
   role: { type: String, required: true, enum: ['admin', 'hod', 'student'] },
   department_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Department', default: null }
@@ -233,35 +240,33 @@ export const initDb = async () => {
     useFallback = true;
   }
 
-  console.log('Seeding initial data...');
+  // Check if seeding is necessary
+  const userCount = await User.countDocuments();
+  if (userCount > 0) {
+    console.log('Database already contains records. Skipping initial seeding to preserve data integrity.');
+    return;
+  }
 
-  await Promise.all([
-    User.deleteMany({}),
-    Department.deleteMany({}),
-    Course.deleteMany({}),
-    Faculty.deleteMany({}),
-    Enrollment.deleteMany({}),
-    Tlfq.deleteMany({}),
-    Question.deleteMany({}),
-    Response.deleteMany({}),
-    Answer.deleteMany({})
+  console.log('Database is empty. Initializing baseline system data...');
+
+  // No longer deleting data if it's already there
+  // await Promise.all([ ... ]);
+
+  // ── 1. Departments
+  const departments = await Promise.all([
+    Department.create({ name: 'Computer Science & Engineering', code: 'CSE' }),
+    Department.create({ name: 'Electronics & Communication', code: 'ECE' }),
+    Department.create({ name: 'Mechanical Engineering', code: 'ME' }),
+    Department.create({ name: 'Pharmacy & Medical Sciences', code: 'PHAR' }),
+    Department.create({ name: 'Applied Sciences & Humanities', code: 'ASH' }),
   ]);
+  const [deptCS, deptEC, deptME, deptPH, deptAS] = departments;
 
-  // ── Departments
-  const deptCS = await Department.create({ name: 'Computer Science & Engineering', code: 'CSE' });
-  const deptEC = await Department.create({ name: 'Electronics & Communication', code: 'ECE' });
+  // ── 2. Staff Users
+  const hAdmin = await bcrypt.hash('admin123', 10);
+  const hStaff = await bcrypt.hash('staff123', 10);
 
-  // ── Users: 1 admin, 2 HODs, 3 students
-  const [hAdmin, hHod1, hHod2, hS1, hS2, hS3] = await Promise.all([
-    bcrypt.hash('admin123', 10),
-    bcrypt.hash('hod123', 10),
-    bcrypt.hash('hod123', 10),
-    bcrypt.hash('student123', 10),
-    bcrypt.hash('student123', 10),
-    bcrypt.hash('student123', 10),
-  ]);
-
-  const adminUser = await User.create({
+  await User.create({
     name: 'System Administrator',
     email: 'admin@invertis.edu.in',
     password: hAdmin,
@@ -269,110 +274,145 @@ export const initDb = async () => {
     department_id: null
   });
 
-  const hod1 = await User.create({
-    name: 'Dr. Priya Sharma (HOD CSE)',
-    email: 'hod.cse@invertis.edu.in',
-    password: hHod1,
-    role: 'hod',
-    department_id: deptCS._id
-  });
-
-  const hod2 = await User.create({
-    name: 'Dr. Rajesh Kumar (HOD ECE)',
-    email: 'hod.ece@invertis.edu.in',
-    password: hHod2,
-    role: 'hod',
-    department_id: deptEC._id
-  });
-
-  const s1 = await User.create({
-    name: 'Alok Yadav',
-    email: 'student1@invertis.edu.in',
-    password: hS1,
-    role: 'student',
-    department_id: deptCS._id
-  });
-
-  const s2 = await User.create({
-    name: 'Priya Patel',
-    email: 'student2@invertis.edu.in',
-    password: hS2,
-    role: 'student',
-    department_id: deptCS._id
-  });
-
-  const s3 = await User.create({
-    name: 'Ravi Verma',
-    email: 'student3@invertis.edu.in',
-    password: hS3,
-    role: 'student',
-    department_id: deptEC._id
-  });
-
-  // ── Faculty (data entities, not users)
-  const f1 = await Faculty.create({ name: 'Dr. Alan Turing', department_id: deptCS._id });
-  const f2 = await Faculty.create({ name: 'Dr. Grace Hopper', department_id: deptCS._id });
-  const f3 = await Faculty.create({ name: 'Dr. Richard Feynman', department_id: deptEC._id });
-  const f4 = await Faculty.create({ name: 'Dr. Ada Lovelace', department_id: deptCS._id });
-
-  // ── Courses
-  const c1 = await Course.create({ name: 'Advanced Algorithms', code: 'CS401', department_id: deptCS._id });
-  const c2 = await Course.create({ name: 'Database Systems & Cloud', code: 'CS302', department_id: deptCS._id });
-  const c3 = await Course.create({ name: 'Applied AI & Ethics', code: 'CS405', department_id: deptCS._id });
-  const c4 = await Course.create({ name: 'Signal Processing', code: 'EC301', department_id: deptEC._id });
-
-  // ── Enrollments
-  await Enrollment.create({ student_id: s1._id, course_id: c1._id });
-  await Enrollment.create({ student_id: s1._id, course_id: c2._id });
-  await Enrollment.create({ student_id: s1._id, course_id: c3._id });
-  await Enrollment.create({ student_id: s2._id, course_id: c1._id });
-  await Enrollment.create({ student_id: s2._id, course_id: c2._id });
-  await Enrollment.create({ student_id: s3._id, course_id: c4._id });
-
-  // ── TLFQs
-  const qs = [
-    'The instructor explains course material clearly and effectively.',
-    'The instructor is responsive to questions during and outside of class.',
-    'The assignments and projects contribute significantly to learning.',
-    'The course stimulated my interest in the subject matter.',
-    'Overall, I would rate this instructor\'s effectiveness as high.'
+  const hods = [
+    { name: 'Dr. Priya Sharma', email: 'hod.cse@invertis.edu.in', dept: deptCS },
+    { name: 'Dr. Rajesh Kumar', email: 'hod.ece@invertis.edu.in', dept: deptEC },
+    { name: 'Prof. Amit Singhal', email: 'hod.me@invertis.edu.in', dept: deptME },
+    { name: 'Dr. S. K. Gupta', email: 'hod.pharmacy@invertis.edu.in', dept: deptPH },
   ];
 
-  const createTlfqWithQuestions = async (courseId, facultyId, title) => {
-    const tlfq = await Tlfq.create({ course_id: courseId, faculty_id: facultyId, title, is_active: true });
+  for (const h of hods) {
+    await User.create({
+      name: `${h.name} (HOD ${h.dept.code})`,
+      email: h.email,
+      password: hStaff,
+      role: 'hod',
+      department_id: h.dept._id
+    });
+  }
+
+  // ── 3. Students (50 students)
+  console.log('Generating 50 students...');
+  const hStudent = await bcrypt.hash('student123', 10);
+  const students = [];
+  const firstNames = ['Amit', 'Rahul', 'Sneha', 'Priya', 'Vikram', 'Anjali', 'Karan', 'Deepak', 'Megha', 'Sonia'];
+  const lastNames = ['Yadav', 'Sharma', 'Verma', 'Singh', 'Patel', 'Kumar', 'Gupta', 'Mishra', 'Khan', 'Das'];
+
+  for (let i = 1; i <= 50; i++) {
+    const fn = firstNames[Math.floor(Math.random() * firstNames.length)];
+    const ln = lastNames[Math.floor(Math.random() * lastNames.length)];
+    const college_id = `2024${String(i).padStart(3, '0')}`;
+    const dept = departments[i % departments.length];
+    
+    const s = await User.create({
+      name: `${fn} ${ln}`,
+      email: `student${i}@invertis.edu.in`,
+      college_id: college_id,
+      password: hStudent,
+      role: 'student',
+      department_id: dept._id
+    });
+    students.push(s);
+  }
+
+  // ── 4. Faculty (Entities)
+  console.log('Generating faculty and courses...');
+  const facultyData = [
+    { name: 'Dr. Alan Turing', dept: deptCS },
+    { name: 'Dr. Grace Hopper', dept: deptCS },
+    { name: 'Dr. Ada Lovelace', dept: deptCS },
+    { name: 'Dr. Richard Feynman', dept: deptEC },
+    { name: 'Prof. Nikola Tesla', dept: deptEC },
+    { name: 'Dr. James Watt', dept: deptME },
+    { name: 'Dr. Alexander Fleming', dept: deptPH },
+    { name: 'Dr. Marie Curie', dept: deptAS },
+  ];
+  const facultyList = [];
+  for (const f of facultyData) {
+    const fac = await Faculty.create({ name: f.name, department_id: f.dept._id });
+    facultyList.push(fac);
+  }
+
+  // ── 5. Courses
+  const coursesData = [
+    { name: 'Data Structures', code: 'CS101', dept: deptCS },
+    { name: 'Operating Systems', code: 'CS202', dept: deptCS },
+    { name: 'Compiler Design', code: 'CS305', dept: deptCS },
+    { name: 'Analog Circuits', code: 'EC101', dept: deptEC },
+    { name: 'Microprocessors', code: 'EC205', dept: deptEC },
+    { name: 'Thermodynamics', code: 'ME101', dept: deptME },
+    { name: 'Pharmacology I', code: 'PH101', dept: deptPH },
+    { name: 'Quantum Physics', code: 'AS101', dept: deptAS },
+  ];
+  const courseList = [];
+  for (const c of coursesData) {
+    const crs = await Course.create({ name: c.name, code: c.code, department_id: c.dept._id });
+    courseList.push(crs);
+  }
+
+  // ── 6. Enrollments (Randomly assign 3-5 courses per student)
+  console.log('Enrolling students...');
+  for (const s of students) {
+    const deptCourses = courseList.filter(c => c.department_id.toString() === s.department_id.toString());
+    const otherCourses = courseList.filter(c => c.department_id.toString() !== s.department_id.toString());
+    
+    for (const c of deptCourses) {
+      await Enrollment.create({ student_id: s._id, course_id: c._id });
+    }
+    const randomOther = otherCourses.sort(() => 0.5 - Math.random()).slice(0, 2);
+    for (const c of randomOther) {
+      await Enrollment.create({ student_id: s._id, course_id: c._id });
+    }
+  }
+
+  // ── 7. TLFQs & Questions
+  const qs = [
+    'Instructor demonstrates deep knowledge of the subject matter.',
+    'Feedback on assignments is timely and constructive.',
+    'Course materials (PPTs, Notes) are easily accessible.',
+    'The instructor encourages active participation in class.',
+    'The course objectives were clearly defined and achieved.'
+  ];
+
+  console.log('Creating questionnaires and seeding responses...');
+  for (let i = 0; i < courseList.length; i++) {
+    const course = courseList[i];
+    const faculty = facultyList[i % facultyList.length];
+    
+    const tlfq = await Tlfq.create({ 
+      course_id: course._id, 
+      faculty_id: faculty._id, 
+      title: `End Semester Feedback - ${course.name} (${course.code})`,
+      is_active: true 
+    });
+
     const questions = [];
     for (const qText of qs) {
       const q = await Question.create({ tlfq_id: tlfq._id, question_text: qText });
       questions.push(q);
     }
-    return { tlfq, questions };
-  };
 
-  const { tlfq: t1, questions: q1s } = await createTlfqWithQuestions(c1._id, f1._id, 'Spring Evaluation – Advanced Algorithms (CS401)');
-  const { tlfq: t2, questions: q2s } = await createTlfqWithQuestions(c2._id, f2._id, 'Spring Evaluation – Database Systems (CS302)');
-  const { tlfq: t3, questions: q3s } = await createTlfqWithQuestions(c3._id, f4._id, 'Spring Evaluation – Applied AI (CS405)');
-  const { tlfq: t4, questions: q4s } = await createTlfqWithQuestions(c4._id, f3._id, 'Spring Evaluation – Signal Processing (EC301)');
-
-  // ── Seed responses (student1 submits for t1, student2 submits for t2)
-  const r1 = await Response.create({
-    student_id: s1._id, tlfq_id: t1._id,
-    submitted_at: new Date().toISOString(),
-    comment: 'Excellent course and deep conceptual teaching.'
-  });
-  for (const q of q1s) {
-    await Answer.create({ response_id: r1._id, question_id: q._id, rating: 6 });
+    const enrolledStudents = await Enrollment.find({ course_id: course._id });
+    const responsiveStudents = enrolledStudents.sort(() => 0.5 - Math.random()).slice(0, Math.ceil(enrolledStudents.length * 0.6));
+    
+    for (const enrollment of responsiveStudents) {
+      const r = await Response.create({
+        student_id: enrollment.student_id,
+        tlfq_id: tlfq._id,
+        submitted_at: new Date(Date.now() - Math.random() * 1000000000).toISOString(),
+        comment: Math.random() > 0.5 ? 'Very satisfied with the teaching methodology.' : 'Good course, but needs more practical examples.'
+      });
+      for (const q of questions) {
+        await Answer.create({ 
+          response_id: r._id, 
+          question_id: q._id, 
+          rating: Math.floor(Math.random() * 3) + 5
+        });
+      }
+    }
   }
 
-  const r2 = await Response.create({
-    student_id: s2._id, tlfq_id: t2._id,
-    submitted_at: new Date().toISOString(),
-    comment: 'Great explanations of cloud and storage topics.'
-  });
-  for (const q of q2s) {
-    await Answer.create({ response_id: r2._id, question_id: q._id, rating: 7 });
-  }
-
-  console.log('Seeding completed successfully.');
+  console.log('Seeding completed successfully with 50 students and expanded directory.');
 };
 
 export default mongoose;

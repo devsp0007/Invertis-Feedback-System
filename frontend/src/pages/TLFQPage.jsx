@@ -102,7 +102,7 @@ export default function TLFQPage() {
   // ── Success screen
   if (submitted) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-500">
         <Navbar />
         <div className="flex flex-col md:flex-row flex-1">
           <Sidebar />
@@ -110,28 +110,28 @@ export default function TLFQPage() {
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-slate-800 border border-emerald-800/50 rounded-3xl p-10 max-w-md w-full text-center flex flex-col items-center gap-5"
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[3rem] p-12 max-w-lg w-full text-center flex flex-col items-center gap-8 shadow-2xl"
             >
-              <div className="h-20 w-20 bg-emerald-900/40 rounded-2xl flex items-center justify-center">
-                <CheckCircle2 size={40} className="text-emerald-400" />
+              <div className="h-24 w-24 bg-emerald-50 dark:bg-emerald-900/20 rounded-[2rem] flex items-center justify-center border border-emerald-100 dark:border-emerald-900/40">
+                <CheckCircle2 size={48} className="text-emerald-500" />
               </div>
               <div>
-                <h2 className="text-xl font-black text-slate-100">Feedback Submitted!</h2>
-                <p className="text-sm text-slate-400 mt-2 leading-relaxed">
-                  Your feedback has been recorded anonymously. Thank you for helping improve teaching quality.
+                <h2 className="text-3xl font-black text-slate-900 dark:text-slate-100 tracking-tight">Submission Successful</h2>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-4 leading-relaxed font-medium">
+                  Your feedback has been recorded anonymously. Your contribution is vital for our continuous academic improvement.
                 </p>
               </div>
-              <div className="bg-slate-900 border border-slate-700 rounded-xl p-4 w-full text-left">
-                <div className="flex items-center gap-2 text-xs text-slate-400 mb-1">
-                  <Lock size={12} className="text-emerald-400" /> Submission Locked
+              <div className="bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-[2rem] p-6 w-full text-left">
+                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2">
+                  <Lock size={12} className="text-emerald-500" /> Security Protocol Active
                 </div>
-                <p className="text-xs text-slate-500">This evaluation cannot be edited after submission.</p>
+                <p className="text-xs text-slate-500 dark:text-slate-600 font-bold leading-relaxed">Identity hashing completed. Response is now immutable and decoupled from your student profile.</p>
               </div>
               <button
                 onClick={() => navigate('/dashboard')}
-                className="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-xl font-bold text-sm transition-all cursor-pointer flex items-center justify-center gap-2"
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-xl shadow-indigo-500/20 cursor-pointer flex items-center justify-center gap-3"
               >
-                <GraduationCap size={16} /> Back to My Courses
+                <GraduationCap size={18} /> Back to My Courses
               </button>
             </motion.div>
           </main>
@@ -141,98 +141,112 @@ export default function TLFQPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-500">
       <Navbar />
       <div className="flex flex-col md:flex-row flex-1">
         <Sidebar />
-        <main className="flex-1 p-6 md:p-8">
-          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-6 max-w-3xl">
+        <main className="flex-1 p-6 md:p-10">
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-10 max-w-4xl mx-auto w-full">
 
             {/* Back + title */}
-            <div className="flex items-start justify-between gap-4 flex-wrap">
+            <div className="flex items-start justify-between gap-6 flex-wrap">
               <div>
                 <button
-                  onClick={() => navigate('/dashboard')}
-                  className="flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-indigo-400 transition mb-2 cursor-pointer"
+                  onClick={() => navigate(-1)}
+                  className="flex items-center gap-1.5 text-[10px] font-black text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition mb-4 cursor-pointer uppercase tracking-widest"
                 >
-                  <ArrowLeft size={14} /> Back to Dashboard
+                  <ArrowLeft size={14} /> Back to Course
                 </button>
-                <h1 className="text-2xl font-black text-slate-100">TLFQ Evaluation Sheet</h1>
+                <h1 className="text-3xl md:text-4xl font-black tracking-tight">TLFQ Sheet</h1>
               </div>
-              <div className="flex gap-2">
-                <span className="flex items-center gap-1.5 text-xs font-bold bg-emerald-900/30 border border-emerald-800/50 text-emerald-300 px-3 py-1.5 rounded-full">
-                  Anonymous
+              <div className="flex gap-3">
+                <span className="flex items-center gap-2 text-[10px] font-black bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/40 text-emerald-600 dark:text-emerald-400 px-4 py-2 rounded-xl uppercase tracking-widest shadow-sm">
+                  <Lock size={12} /> Anonymous
                 </span>
-                <span className="flex items-center gap-1.5 text-xs font-bold bg-indigo-900/30 border border-indigo-800/50 text-indigo-300 px-3 py-1.5 rounded-full">
-                  Auto-Saving Draft
+                <span className="flex items-center gap-2 text-[10px] font-black bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800/40 text-indigo-600 dark:text-indigo-400 px-4 py-2 rounded-xl uppercase tracking-widest shadow-sm">
+                  <RefreshCw size={12} className="animate-spin-slow" /> Auto-Save
                 </span>
               </div>
             </div>
 
             {loading ? (
-              <div className="bg-slate-800 border border-slate-700 rounded-2xl p-12 flex justify-center">
-                <div className="h-10 w-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+              <div className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-24 flex flex-col items-center gap-4 shadow-sm">
+                <div className="h-12 w-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-2" />
+                <span className="text-xs font-black uppercase tracking-widest text-slate-400 animate-pulse">Initializing Questionnaire...</span>
               </div>
             ) : error && !evaluation ? (
-              <div className="bg-rose-950/30 border border-rose-900/50 text-rose-400 p-6 rounded-2xl text-sm">{error}</div>
+              <div className="bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/40 text-rose-600 dark:text-rose-400 p-8 rounded-[2rem] text-sm font-bold text-center shadow-sm">{error}</div>
             ) : (
-              <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+              <form onSubmit={handleSubmit} className="flex flex-col gap-10">
                 {/* Evaluation header */}
-                <div className="bg-slate-800 border border-indigo-900/40 rounded-2xl p-5 flex justify-between items-start">
-                  <div>
-                    <h2 className="text-base font-black text-slate-100">{evaluation?.title}</h2>
-                    <p className="text-xs text-slate-400 mt-1">
-                      Faculty: <span className="text-slate-200 font-semibold">{evaluation?.faculty_name}</span>
-                      &nbsp;•&nbsp; Course: <span className="text-slate-200 font-semibold">{evaluation?.course_name}</span>
-                    </p>
+                <div className="bg-white dark:bg-slate-900 border border-indigo-100 dark:border-indigo-900/40 rounded-[2.5rem] p-8 flex justify-between items-center shadow-sm">
+                  <div className="min-w-0">
+                    <h2 className="text-xl font-black text-slate-900 dark:text-slate-100 truncate">{evaluation?.title}</h2>
+                    <div className="flex items-center gap-4 mt-2">
+                       <div className="flex items-center gap-1.5">
+                          <Users size={12} className="text-slate-400" />
+                          <span className="text-[11px] text-slate-500 font-bold">{evaluation?.faculty_name}</span>
+                       </div>
+                       <div className="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-700" />
+                       <div className="flex items-center gap-1.5">
+                          <BookOpen size={12} className="text-slate-400" />
+                          <span className="text-[11px] text-slate-500 font-bold">{evaluation?.course_name}</span>
+                       </div>
+                    </div>
                   </div>
                   <button
                     type="button" onClick={clearDraft}
-                    className="text-xs font-bold text-slate-500 hover:text-slate-300 flex items-center gap-1 p-2 hover:bg-slate-700 rounded-lg transition cursor-pointer"
+                    className="text-[10px] font-black text-slate-400 hover:text-rose-500 flex items-center gap-2 px-4 py-2 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl transition cursor-pointer uppercase tracking-widest shrink-0"
                   >
-                    <RefreshCw size={12} /> Reset
+                    <RefreshCw size={12} /> Reset Draft
                   </button>
                 </div>
 
                 {error && (
-                  <div className="bg-rose-950/30 border border-rose-900/50 text-rose-400 p-4 rounded-xl text-xs font-semibold">{error}</div>
+                  <div className="bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/40 text-rose-600 dark:text-rose-400 p-6 rounded-2xl text-xs font-black uppercase tracking-widest text-center">{error}</div>
                 )}
 
                 {/* Progress */}
-                <div className="flex items-center justify-between text-xs text-slate-400">
-                  <span>{Object.keys(answers).length} / {questions.length} answered</span>
-                  <div className="w-40 bg-slate-800 rounded-full h-1.5">
-                    <div
-                      className="bg-indigo-500 h-1.5 rounded-full transition-all"
-                      style={{ width: `${(Object.keys(answers).length / Math.max(questions.length, 1)) * 100}%` }}
-                    />
-                  </div>
+                <div className="flex flex-col gap-3">
+                   <div className="flex items-center justify-between text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                     <span>Completion Status</span>
+                     <span>{Object.keys(answers).length} / {questions.length} Questions</span>
+                   </div>
+                   <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-3 overflow-hidden shadow-inner">
+                     <motion.div
+                       initial={{ width: 0 }}
+                       animate={{ width: `${(Object.keys(answers).length / Math.max(questions.length, 1)) * 100}%` }}
+                       className="bg-indigo-600 h-full rounded-full transition-all duration-500 shadow-lg shadow-indigo-500/40"
+                     />
+                   </div>
                 </div>
 
                 {/* Questions */}
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-6">
                   {questions.map((q, idx) => (
                     <motion.div
                       key={q.id || q._id}
-                      whileHover={{ x: 2 }}
-                      className="bg-slate-800 border border-slate-700 rounded-2xl p-5 flex flex-col gap-4"
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-8 flex flex-col gap-8 shadow-sm hover:border-indigo-500/30 transition-all group"
                     >
-                      <div className="flex justify-between items-start gap-3">
-                        <div className="flex gap-3">
-                          <span className="flex-shrink-0 flex items-center justify-center h-7 w-7 bg-indigo-900/50 text-indigo-300 font-black rounded-lg text-xs border border-indigo-800/50">
+                      <div className="flex justify-between items-start gap-6">
+                        <div className="flex gap-5">
+                          <span className="shrink-0 flex items-center justify-center h-10 w-10 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-black rounded-2xl text-sm border border-indigo-100 dark:border-indigo-800/30 shadow-sm">
                             {idx + 1}
                           </span>
-                          <p className="text-sm font-semibold text-slate-200 leading-normal">{q.question_text}</p>
+                          <p className="text-base md:text-lg font-black text-slate-800 dark:text-slate-100 leading-tight pt-1.5">{q.question_text}</p>
                         </div>
                         <button
                           type="button" onClick={() => speakQuestion(q.question_text)}
-                          className="flex-shrink-0 p-1.5 rounded-lg bg-slate-700 text-slate-400 hover:text-indigo-400 transition cursor-pointer"
-                          title="Read aloud"
+                          className="shrink-0 h-10 w-10 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all border border-slate-100 dark:border-slate-700 cursor-pointer flex items-center justify-center"
+                          title="Narrate Question"
                         >
-                          <Volume2 size={15} />
+                          <Volume2 size={18} />
                         </button>
                       </div>
-                      <div className="pl-10">
+                      <div className="pl-0 md:pl-14">
                         <RatingScale
                           value={answers[q.id || q._id]}
                           onChange={val => handleRatingChange(q.id || q._id, val)}
@@ -243,50 +257,59 @@ export default function TLFQPage() {
                 </div>
 
                 {/* Comment box */}
-                <div className="bg-slate-800 border border-slate-700 rounded-2xl p-5 flex flex-col gap-3">
-                  <div className="flex items-center justify-between">
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-8 flex flex-col gap-6 shadow-sm">
+                  <div className="flex items-center justify-between gap-4">
                     <div>
-                      <h3 className="text-sm font-bold text-slate-200">Additional Comments <span className="text-slate-500 font-normal">(Optional)</span></h3>
-                      <p className="text-xs text-slate-500 mt-0.5">Your comment is 100% anonymous and will only be visible to the HOD.</p>
+                      <h3 className="text-lg font-black text-slate-900 dark:text-slate-100">Narrative Feedback</h3>
+                      <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 font-bold uppercase tracking-widest">Optional subjective input</p>
                     </div>
                     {voiceSupported && (
                       <button
                         type="button" onClick={startVoiceInput}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl transition border cursor-pointer ${
+                        className={`flex items-center gap-2 px-5 py-2.5 text-[10px] font-black rounded-xl transition border uppercase tracking-widest cursor-pointer shadow-sm ${
                           listening
-                            ? 'bg-rose-900/40 border-rose-800 text-rose-300 animate-pulse'
-                            : 'bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600'
+                            ? 'bg-rose-50 border-rose-200 text-rose-600 animate-pulse'
+                            : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
                         }`}
                       >
-                        <Mic size={13} /> {listening ? 'Listening...' : 'Voice Input'}
+                        <Mic size={14} /> {listening ? 'Listening...' : 'Voice Dictation'}
                       </button>
                     )}
                   </div>
-                  <textarea
-                    rows={4}
-                    value={comment}
-                    onChange={e => setComment(e.target.value)}
-                    placeholder="Share any specific feedback about teaching style, course content, or improvement suggestions..."
-                    className="w-full bg-slate-900 border border-slate-700 rounded-xl p-4 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all leading-relaxed"
-                  />
+                  <div className="relative group">
+                     <textarea
+                       rows={5}
+                       value={comment}
+                       onChange={e => setComment(e.target.value)}
+                       placeholder="Share any specific feedback about teaching style, course content, or improvement suggestions..."
+                       className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 text-sm text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all leading-relaxed font-medium shadow-inner"
+                     />
+                     <div className="absolute top-4 right-4 pointer-events-none opacity-10 group-focus-within:opacity-30 transition-opacity">
+                        <MessageSquare size={40} className="text-slate-400" />
+                     </div>
+                  </div>
+                  <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-50 dark:bg-slate-950/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800/50">
+                     <Lock size={12} className="text-emerald-500" /> 
+                     System strictly protects narrator anonymity.
+                  </div>
                 </div>
 
                 {/* Submit */}
-                <div className="flex gap-3 pt-2">
+                <div className="flex gap-6 pt-4">
                   <button
                     type="submit" disabled={submitting}
-                    className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-black py-3.5 rounded-xl text-sm transition-all shadow-lg shadow-indigo-950/50 cursor-pointer disabled:opacity-70"
+                    className="flex-1 flex items-center justify-center gap-3 bg-indigo-600 hover:bg-indigo-700 text-white font-black py-5 rounded-[2rem] text-sm transition-all shadow-2xl shadow-indigo-500/30 cursor-pointer disabled:opacity-70 uppercase tracking-[0.2em]"
                   >
                     {submitting
-                      ? <span className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      : <><Send size={16} /><span>Submit Evaluation</span></>
+                      ? <span className="h-6 w-6 border-3 border-white border-t-transparent rounded-full animate-spin" />
+                      : <><Send size={18} /><span>Finalize Submission</span></>
                     }
                   </button>
                   <button
-                    type="button" onClick={() => navigate('/dashboard')}
-                    className="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3.5 px-6 rounded-xl text-sm border border-slate-700 transition cursor-pointer"
+                    type="button" onClick={() => navigate(-1)}
+                    className="bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 font-black py-5 px-12 rounded-[2rem] text-sm border border-slate-200 dark:border-slate-800 transition cursor-pointer uppercase tracking-widest shadow-sm"
                   >
-                    Cancel
+                    Discard
                   </button>
                 </div>
               </form>

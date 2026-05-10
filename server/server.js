@@ -7,6 +7,7 @@ import authRoutes from './routes/authRoutes.js';
 import tlfqRoutes from './routes/tlfqRoutes.js';
 import responseRoutes from './routes/responseRoutes.js';
 import syncRoutes from './routes/syncRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -30,6 +31,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/tlfq', tlfqRoutes);
 app.use('/api/responses', responseRoutes);
 app.use('/api/sync', syncRoutes);
+app.use('/api/users', userRoutes);
 
 
 // Serve frontend static files in production

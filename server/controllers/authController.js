@@ -6,14 +6,28 @@ const SECRET = process.env.JWT_SECRET || 'supersecretkey';
 
 export const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    if (!email || !password) {
-      return res.status(400).json({ message: 'Email and password are required' });
+    const { identifier, password } = req.body;
+    if (!identifier || !password) {
+      return res.status(400).json({ message: 'College ID/Email and password are required' });
     }
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({
+      $or: [
+        { email: identifier },
+        { college_id: identifier }
+      ]
+    });
+
     if (!user) {
       return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    // Role-based Identifier Enforcement
+    if (user.role === 'student' && user.college_id !== identifier) {
+      return res.status(401).json({ message: 'Students must use their College ID to log in' });
+    }
+    if ((user.role === 'admin' || user.role === 'hod') && user.email !== identifier) {
+      return res.status(401).json({ message: 'Staff must use their Email to log in' });
     }
 
     const isValid = await bcrypt.compare(password, user.password);

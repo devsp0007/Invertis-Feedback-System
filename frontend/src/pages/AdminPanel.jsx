@@ -38,7 +38,7 @@ export default function AdminPanel() {
       setFaculty(rF.data);
       setDepartments(rD.data);
     } catch (err) {
-      setError('Failed to load data. Please refresh.');
+      setError('System failed to synchronize data repositories. Please retry.');
     } finally {
       setLoading(false);
     }
@@ -49,15 +49,16 @@ export default function AdminPanel() {
   const handleCreateTlfq = async (e) => {
     e.preventDefault();
     setError(''); setSuccess('');
-    if (!courseId || !facultyId || !title) { setError('Please fill in all required fields.'); return; }
+    if (!courseId || !facultyId || !title) { setError('All configuration fields are mandatory for deployment.'); return; }
     const filteredQs = questions.filter(q => q.trim());
-    if (filteredQs.length === 0) { setError('Add at least 1 question.'); return; }
+    if (filteredQs.length === 0) { setError('Evaluation protocol requires at least 1 question.'); return; }
     try {
       await api.post('/tlfq', { course_id: courseId, faculty_id: facultyId, title, question_texts: filteredQs });
       setTitle(''); setCourseId(''); setFacultyId(''); setQuestions([...DEFAULT_QUESTIONS]);
-      setSuccess('TLFQ evaluation created and published successfully!');
+      setSuccess('TLFQ evaluation published successfully across all student portals.');
+      setTimeout(() => setSuccess(''), 5000);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to create TLFQ.');
+      setError(err.response?.data?.message || 'Transaction failed: Evaluation could not be published.');
     }
   };
 
@@ -68,120 +69,176 @@ export default function AdminPanel() {
   }, {});
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-500">
       <Navbar />
       <div className="flex flex-col md:flex-row flex-1">
         <Sidebar />
-        <main className="flex-1 p-6 md:p-8">
-          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-6 max-w-4xl">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <ClipboardList size={20} className="text-indigo-400" />
-                <h1 className="text-2xl font-black text-slate-100">Create New TLFQ</h1>
+        <main className="flex-1 p-6 md:p-10">
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-10 max-w-5xl mx-auto w-full">
+            
+            {/* Header section */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <ClipboardList size={28} className="text-indigo-600 dark:text-indigo-400" />
+                  <h1 className="text-3xl font-black tracking-tight">Evaluation Forge</h1>
+                </div>
+                <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Design and deploy high-fidelity academic feedback instruments.</p>
               </div>
-              <p className="text-sm text-slate-400">Design and publish a questionnaire mapped to a specific course and faculty record.</p>
+              <div className="flex gap-3">
+                 <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-6 py-3 rounded-2xl flex items-center gap-3 shadow-sm">
+                    <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">Global Repository Sync: Active</span>
+                 </div>
+              </div>
             </div>
 
             {success && (
-              <div className="p-4 bg-emerald-950/40 text-emerald-300 border border-emerald-800/50 rounded-xl text-sm font-semibold flex items-center gap-2">
-                <Check size={16} /> {success}
-              </div>
+              <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="p-6 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/40 rounded-[2rem] text-sm font-black flex items-center gap-4 shadow-sm uppercase tracking-widest">
+                <div className="h-10 w-10 bg-emerald-100 dark:bg-emerald-900/40 rounded-xl flex items-center justify-center shrink-0">
+                   <Check size={20} />
+                </div>
+                {success}
+              </motion.div>
             )}
+            
             {error && (
-              <div className="p-4 bg-rose-950/40 text-rose-400 border border-rose-900/50 rounded-xl text-sm font-semibold">{error}</div>
+              <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="p-6 bg-rose-50 dark:bg-rose-950/20 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-900/40 rounded-[2rem] text-sm font-black text-center shadow-sm uppercase tracking-widest">
+                {error}
+              </motion.div>
             )}
 
             {loading ? (
-              <div className="bg-slate-800 border border-slate-700 rounded-2xl p-12 flex justify-center">
-                <div className="h-10 w-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+              <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[3rem] p-32 flex flex-col items-center gap-4 shadow-sm">
+                <div className="h-12 w-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4" />
+                <span className="text-xs font-black uppercase tracking-[0.2em] text-slate-400 animate-pulse">Synchronizing Data Pools...</span>
               </div>
             ) : (
-              <form onSubmit={handleCreateTlfq} className="flex flex-col gap-5 bg-slate-800 border border-slate-700 rounded-2xl p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Select Course</label>
-                    <select
-                      value={courseId} onChange={e => setCourseId(e.target.value)}
-                      className="bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-3 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
-                    >
-                      <option value="">Choose Course…</option>
-                      {Object.values(coursesByDept).map(({ name, courses: dCourses }) => (
-                        <optgroup key={name} label={`── ${name}`}>
-                          {dCourses.map(c => (
-                            <option key={c.id} value={c.id}>[{c.code}] {c.name}</option>
+              <form onSubmit={handleCreateTlfq} className="flex flex-col gap-10">
+                
+                {/* Configuration Section */}
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[3rem] p-10 shadow-sm flex flex-col gap-8 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 p-10 opacity-[0.02] dark:opacity-[0.05] pointer-events-none">
+                     <ClipboardList size={180} />
+                  </div>
+                  <div className="relative z-10">
+                    <h2 className="text-lg font-black text-slate-900 dark:text-white mb-6 uppercase tracking-widest flex items-center gap-2">
+                       <div className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
+                       Protocol Configuration
+                    </h2>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                      <div className="flex flex-col gap-3">
+                        <label className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-[0.2em] ml-1">Target Course Module</label>
+                        <select
+                          value={courseId} onChange={e => setCourseId(e.target.value)}
+                          className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-4 text-sm text-slate-700 dark:text-slate-200 font-bold focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all cursor-pointer shadow-inner appearance-none"
+                        >
+                          <option value="">Select Course...</option>
+                          {Object.values(coursesByDept).map(({ name, courses: dCourses }) => (
+                            <optgroup key={name} label={`── ${name}`}>
+                              {dCourses.map(c => (
+                                <option key={c.id} value={c.id}>[{c.code}] {c.name}</option>
+                              ))}
+                            </optgroup>
                           ))}
-                        </optgroup>
-                      ))}
-                    </select>
-                  </div>
+                        </select>
+                      </div>
 
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Assigned Faculty</label>
-                    <select
-                      value={facultyId} onChange={e => setFacultyId(e.target.value)}
-                      className="bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-3 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
-                    >
-                      <option value="">Choose Faculty…</option>
-                      {(faculty || []).map(f => (
-                        <option key={f.id} value={f.id}>{f.name} — {f.department_name}</option>
-                      ))}
-                    </select>
+                      <div className="flex flex-col gap-3">
+                        <label className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-[0.2em] ml-1">Assigned Academic Staff</label>
+                        <select
+                          value={facultyId} onChange={e => setFacultyId(e.target.value)}
+                          className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-4 text-sm text-slate-700 dark:text-slate-200 font-bold focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all cursor-pointer shadow-inner appearance-none"
+                        >
+                          <option value="">Select Faculty...</option>
+                          {(faculty || []).map(f => (
+                            <option key={f.id} value={f.id}>{f.name} — {f.department_name}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="flex flex-col gap-3 lg:col-span-2">
+                        <label className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-[0.2em] ml-1">Deployment Identifier / Semester Mapping</label>
+                        <input
+                          type="text" value={title} onChange={e => setTitle(e.target.value)}
+                          placeholder="E.g. [S25] Advanced Algorithms – Comprehensive Evaluation"
+                          className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-6 py-4 text-sm text-slate-700 dark:text-slate-200 font-bold placeholder-slate-400 dark:placeholder-slate-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all shadow-inner"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Evaluation Title / Semester</label>
-                  <input
-                    type="text" value={title} onChange={e => setTitle(e.target.value)}
-                    placeholder="E.g. Spring 2025 – Advanced Algorithms (CS401)"
-                    className="bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
-                </div>
-
-                {/* Questions */}
-                <div className="flex flex-col gap-3 pt-2 border-t border-slate-700">
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Evaluation Questions</label>
+                {/* Instruments/Questions Section */}
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[3rem] p-10 shadow-sm flex flex-col gap-10">
+                  <div className="flex items-center justify-between gap-4">
+                    <h2 className="text-lg font-black text-slate-900 dark:text-white uppercase tracking-widest flex items-center gap-2">
+                       <div className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
+                       Evaluation Instruments
+                    </h2>
                     <button
                       type="button"
                       onClick={() => setQuestions([...questions, ''])}
-                      className="flex items-center gap-1 text-xs font-bold text-indigo-400 hover:bg-indigo-900/30 px-3 py-1.5 rounded-xl transition cursor-pointer"
+                      className="flex items-center gap-2 text-[10px] font-black text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/40 px-5 py-2.5 rounded-xl transition hover:scale-105 active:scale-95 cursor-pointer uppercase tracking-widest shadow-sm"
                     >
-                      <Plus size={13} /> Add Question
+                      <Plus size={14} /> Add Instrument
                     </button>
                   </div>
-                  <div className="flex flex-col gap-2">
+
+                  <div className="flex flex-col gap-5">
                     {questions.map((qText, idx) => (
-                      <div key={idx} className="flex gap-2 items-center">
-                        <span className="h-8 w-8 flex items-center justify-center bg-indigo-900/40 border border-indigo-800/50 font-bold rounded-lg text-xs text-indigo-300 flex-shrink-0">
-                          Q{idx + 1}
-                        </span>
+                      <motion.div 
+                        key={idx} 
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className="flex gap-4 items-center group"
+                      >
+                        <div className="h-14 w-14 flex items-center justify-center bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800/30 font-black rounded-2xl text-[10px] text-indigo-600 dark:text-indigo-400 flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform">
+                          IN-{idx + 1}
+                        </div>
                         <input
                           type="text" value={qText}
                           onChange={e => { const u = [...questions]; u[idx] = e.target.value; setQuestions(u); }}
-                          placeholder="Type question text…"
-                          className="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          placeholder="Compose evaluation instrument text..."
+                          className="flex-1 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-6 py-4 text-sm text-slate-700 dark:text-slate-200 font-bold placeholder-slate-400 dark:placeholder-slate-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all shadow-inner"
                         />
                         {questions.length > 1 && (
                           <button
                             type="button"
                             onClick={() => setQuestions(questions.filter((_, i) => i !== idx))}
-                            className="p-2 text-slate-500 hover:text-rose-400 hover:bg-rose-950/30 rounded-lg transition cursor-pointer"
+                            className="h-14 w-14 flex items-center justify-center text-slate-300 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-2xl transition-all cursor-pointer"
+                            title="Decommission Instrument"
                           >
-                            <Trash2 size={15} />
+                            <Trash2 size={18} />
                           </button>
                         )}
-                      </div>
+                      </motion.div>
                     ))}
+                  </div>
+
+                  <div className="bg-slate-50 dark:bg-slate-950/50 p-6 rounded-[1.5rem] border border-slate-100 dark:border-slate-800 flex items-center gap-4">
+                     <div className="h-8 w-8 bg-indigo-100 dark:bg-indigo-900/50 rounded-lg flex items-center justify-center shrink-0">
+                        <ClipboardList size={16} className="text-indigo-600 dark:text-indigo-400" />
+                     </div>
+                     <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest leading-relaxed">
+                        Evaluations use a standardized Likert scale (1-7). Questions should be objective and focused on instructional quality.
+                     </p>
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-slate-700">
+                {/* Submit Section */}
+                <div className="flex gap-6">
                   <button
                     type="submit"
-                    className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-8 rounded-xl text-sm transition-all shadow-lg shadow-indigo-950/50 cursor-pointer"
+                    className="flex-1 flex items-center justify-center gap-3 bg-indigo-600 hover:bg-indigo-700 text-white font-black py-5 px-10 rounded-[2.5rem] text-sm transition-all shadow-2xl shadow-indigo-500/30 cursor-pointer uppercase tracking-[0.2em]"
                   >
-                    <Check size={16} /> Publish TLFQ Evaluation
+                    <Check size={20} /> Deploy Evaluation Cluster
+                  </button>
+                  <button
+                    type="button" onClick={() => { setQuestions([...DEFAULT_QUESTIONS]); setTitle(''); }}
+                    className="bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-400 font-black py-5 px-12 rounded-[2.5rem] text-sm border border-slate-200 dark:border-slate-800 transition cursor-pointer uppercase tracking-widest shadow-sm"
+                  >
+                    Clear Slate
                   </button>
                 </div>
               </form>
