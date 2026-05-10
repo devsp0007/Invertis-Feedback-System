@@ -9,15 +9,15 @@ export const AuthProvider = ({ children }) => {
   const [theme, setTheme] = useState(localStorage.getItem('tlfq_theme') || 'dark');
 
   useEffect(() => {
+    const root = document.documentElement;
     if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-      document.body.classList.add('dark');
+      root.classList.add('dark');
     } else {
-      document.documentElement.classList.remove('dark');
-      document.body.classList.remove('dark');
+      root.classList.remove('dark');
     }
     localStorage.setItem('tlfq_theme', theme);
   }, [theme]);
+
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -38,12 +38,10 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
-  const login = async (identifier, password) => {
+  const login = async ({ identifier, password }) => {
     const res = await api.post('/auth/login', { identifier, password });
-    if (res.data.token) {
-      localStorage.setItem('tlfq_platform_session', res.data.token);
-      setUser(res.data.user);
-    }
+    localStorage.setItem('tlfq_token', res.data.token);
+    setUser(res.data.user);
     return res.data.user;
   };
 

@@ -2,57 +2,64 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import { initDb } from './db.js';
-
-import authRoutes from './routes/authRoutes.js';
-import tlfqRoutes from './routes/tlfqRoutes.js';
-import responseRoutes from './routes/responseRoutes.js';
-import syncRoutes from './routes/syncRoutes.js';
-import userRoutes from './routes/userRoutes.js';
-
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { getAnalytics } from './controllers/responseController.js';
+import { authenticate, authorize } from './middleware/auth.js';
+
+import authRoutes        from './routes/authRoutes.js';
+import coordinatorRoutes from './routes/coordinatorRoutes.js';
+import superadminRoutes  from './routes/superadminRoutes.js';
+import hodRoutes         from './routes/hodRoutes.js';
+import responseRoutes    from './routes/responseRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname  = path.dirname(__filename);
 
-const app = express();
+const app  = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+// ── CORS — allow localhost + all Vercel preview/production deployments ───────
+const VERCEL_PATTERN = /^https:\/\/invertis-feedback-system(-[a-z0-9]+)*\.vercel\.app$/;
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (server-to-server, curl, Postman, Render health checks)
+    if (!origin) return callback(null, true);
+    // Allow localhost dev servers
+    if (origin === 'http://localhost:5173' || origin === 'http://localhost:3000') return callback(null, true);
+    // Allow all Vercel preview and production URLs for this project
+    if (VERCEL_PATTERN.test(origin)) return callback(null, true);
+    // Allow custom domain set via env var (e.g. your own domain)
+    if (process.env.FRONTEND_URL && origin === process.env.FRONTEND_URL) return callback(null, true);
+    console.warn(`CORS blocked: ${origin}`);
+    callback(new Error(`CORS: origin ${origin} not allowed`));
+  },
+  credentials: true,
+}));
 app.use(express.json());
 
-// Set up base route for server heartbeat
-app.get('/api', (req, res) => {
-  res.json({ status: 'OK', message: 'TLFQ System Backend is fully operational!' });
-});
+app.get('/api', (req, res) => res.json({ status: 'OK', message: 'Invertis Feedback System API v2' }));
 
-// Set up core routes
-app.use('/api/auth', authRoutes);
-app.use('/api/tlfq', tlfqRoutes);
-app.use('/api/responses', responseRoutes);
-app.use('/api/sync', syncRoutes);
-app.use('/api/users', userRoutes);
+app.use('/api/auth',        authRoutes);
+app.use('/api/coordinator', coordinatorRoutes);
+app.use('/api/superadmin',  superadminRoutes);
+app.use('/api/hod',         hodRoutes);
+app.use('/api/student',     responseRoutes);
 
+// Analytics endpoint (super_admin, hod, supreme can access)
+app.get('/api/responses/analytics', authenticate, authorize('super_admin', 'hod', 'supreme'), getAnalytics);
 
-// Serve frontend static files in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../frontend/dist')));
-
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../frontend/dist', 'index.html'));
-  });
-}
+// 404 handler for unmatched API routes
+app.use('/api/*', (req, res) => res.status(404).json({ message: 'API route not found.' }));
 
 const startServer = async () => {
   try {
     await initDb();
-    console.log('Database initialized successfully with schema and seed data.');
-    
-    app.listen(PORT, () => {
-      console.log(`TLFQ System Server running at http://localhost:${PORT}`);
-    });
+    console.log('Database initialized successfully.');
+    app.listen(PORT, () => console.log(`Invertis Feedback System running at http://localhost:${PORT}`));
   } catch (err) {
-    console.error('Failed to initialize or start server:', err);
+    console.error('Failed to start server:', err);
     process.exit(1);
   }
 };

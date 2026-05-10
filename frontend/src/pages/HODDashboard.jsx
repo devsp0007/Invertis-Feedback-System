@@ -34,6 +34,21 @@ export default function HODDashboard() {
       .finally(() => setLoading(false));
   }, []);
 
+  const handleTogglePortal = async (deptId, currentStatus) => {
+    try {
+      const res = await api.put(`/tlfq/departments/${deptId}/portal`, { open: !currentStatus });
+      setData(prev => ({
+        ...prev,
+        deptOverview: prev.deptOverview.map(d =>
+          d.id === deptId ? { ...d, portal_open: res.data.portal_open } : d
+        )
+      }));
+    } catch (err) {
+      console.error(err);
+      alert('Failed to toggle portal status');
+    }
+  };
+
   const tabs = [
     { id: 'overview', label: 'Overview', icon: Building2 },
     { id: 'faculty', label: 'Faculty Rankings', icon: Award },
@@ -95,14 +110,20 @@ export default function HODDashboard() {
                         </div>
                         <div className="flex items-start justify-between mb-10 relative z-10">
                           <div>
-                            <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">{dept.name}</h3>
-                            <span className="text-xs font-black text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/30 px-3 py-1 rounded-lg border border-indigo-100 dark:border-indigo-800/30 uppercase tracking-widest">{dept.code}</span>
-                          </div>
-                          <div className="text-right">
-                             <div className={`text-4xl font-black ${dept.avg_rating >= 5 ? 'text-emerald-500' : dept.avg_rating >= 3.5 ? 'text-amber-500' : 'text-rose-500'}`}>
-                                {dept.avg_rating.toFixed(1)}
-                                <span className="text-xs text-slate-400 font-bold uppercase ml-1">Avg</span>
-                             </div>
+                            <div className="flex items-center gap-3">
+                              <h3 className="text-lg font-bold text-slate-100">{dept.name}</h3>
+                              <button
+                                onClick={() => handleTogglePortal(dept.id, dept.portal_open)}
+                                className={`px-2 py-0.5 rounded text-xs font-bold transition-all cursor-pointer ${
+                                  dept.portal_open
+                                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/30'
+                                    : 'bg-rose-500/20 text-rose-400 border border-rose-500/30 hover:bg-rose-500/30'
+                                }`}
+                              >
+                                {dept.portal_open ? '● Forms Open' : '○ Forms Closed'}
+                              </button>
+                            </div>
+                            <span className="text-xs text-slate-500 font-mono">{dept.code}</span>
                           </div>
                         </div>
                         <div className="grid grid-cols-3 gap-6 relative z-10">

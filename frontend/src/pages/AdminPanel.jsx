@@ -24,6 +24,9 @@ export default function AdminPanel() {
   const [courseId, setCourseId] = useState('');
   const [facultyId, setFacultyId] = useState('');
   const [title, setTitle] = useState('');
+  const [semester, setSemester] = useState('1');
+  const [section, setSection] = useState('A');
+  const [closingTime, setClosingTime] = useState('');
   const [questions, setQuestions] = useState([...DEFAULT_QUESTIONS]);
 
   const loadData = async () => {
@@ -49,14 +52,21 @@ export default function AdminPanel() {
   const handleCreateTlfq = async (e) => {
     e.preventDefault();
     setError(''); setSuccess('');
-    if (!courseId || !facultyId || !title) { setError('All configuration fields are mandatory for deployment.'); return; }
+    if (!courseId || !facultyId || !title || !closingTime) { setError('Please fill in all required fields.'); return; }
     const filteredQs = questions.filter(q => q.trim());
     if (filteredQs.length === 0) { setError('Evaluation protocol requires at least 1 question.'); return; }
     try {
-      await api.post('/tlfq', { course_id: courseId, faculty_id: facultyId, title, question_texts: filteredQs });
-      setTitle(''); setCourseId(''); setFacultyId(''); setQuestions([...DEFAULT_QUESTIONS]);
-      setSuccess('TLFQ evaluation published successfully across all student portals.');
-      setTimeout(() => setSuccess(''), 5000);
+      await api.post('/tlfq', { 
+        course_id: courseId, 
+        faculty_id: facultyId, 
+        title, 
+        semester: parseInt(semester),
+        section,
+        closing_time: closingTime,
+        question_texts: filteredQs 
+      });
+      setTitle(''); setCourseId(''); setFacultyId(''); setSemester('1'); setSection('A'); setClosingTime(''); setQuestions([...DEFAULT_QUESTIONS]);
+      setSuccess('TLFQ evaluation created and published successfully!');
     } catch (err) {
       setError(err.response?.data?.message || 'Transaction failed: Evaluation could not be published.');
     }
@@ -114,12 +124,25 @@ export default function AdminPanel() {
                 <span className="text-xs font-black uppercase tracking-[0.2em] text-slate-400 animate-pulse">Synchronizing Data Pools...</span>
               </div>
             ) : (
-              <form onSubmit={handleCreateTlfq} className="flex flex-col gap-10">
-                
-                {/* Configuration Section */}
-                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[3rem] p-10 shadow-sm flex flex-col gap-8 relative overflow-hidden">
-                  <div className="absolute top-0 right-0 p-10 opacity-[0.02] dark:opacity-[0.05] pointer-events-none">
-                     <ClipboardList size={180} />
+              <form onSubmit={handleCreateTlfq} className="flex flex-col gap-5 bg-slate-800 border border-slate-700 rounded-2xl p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Select Course</label>
+                    <select
+                      value={courseId} onChange={e => setCourseId(e.target.value)}
+                      className="bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-3 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+                    >
+                      <option value="">Choose Course…</option>
+                      {Object.values(coursesByDept).map(({ name, courses: dCourses }) => (
+                        dCourses.length > 0 && (
+                          <optgroup key={name} label={`── ${name}`}>
+                            {dCourses.map(c => (
+                              <option key={c.id} value={c.id}>[{c.code}] {c.name}</option>
+                            ))}
+                          </optgroup>
+                        )
+                      ))}
+                    </select>
                   </div>
                   <div className="relative z-10">
                     <h2 className="text-lg font-black text-slate-900 dark:text-white mb-6 uppercase tracking-widest flex items-center gap-2">
@@ -157,16 +180,46 @@ export default function AdminPanel() {
                         </select>
                       </div>
 
-                      <div className="flex flex-col gap-3 lg:col-span-2">
-                        <label className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-[0.2em] ml-1">Deployment Identifier / Semester Mapping</label>
-                        <input
-                          type="text" value={title} onChange={e => setTitle(e.target.value)}
-                          placeholder="E.g. [S25] Advanced Algorithms – Comprehensive Evaluation"
-                          className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-6 py-4 text-sm text-slate-700 dark:text-slate-200 font-bold placeholder-slate-400 dark:placeholder-slate-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all shadow-inner"
-                        />
-                      </div>
-                    </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Evaluation Title</label>
+                  <input
+                    type="text" value={title} onChange={e => setTitle(e.target.value)}
+                    placeholder="E.g. Advanced Algorithms (CS401) Feedback"
+                    className="bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Semester</label>
+                    <select
+                      value={semester} onChange={e => setSemester(e.target.value)}
+                      className="bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-3 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+                    >
+                      {[1, 2, 3, 4, 5, 6, 7, 8].map(sem => (
+                        <option key={sem} value={sem}>Semester {sem}</option>
+                      ))}
+                    </select>
                   </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Section</label>
+                    <select
+                      value={section} onChange={e => setSection(e.target.value)}
+                      className="bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-3 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+                    >
+                      {['A', 'B', 'C', 'D'].map(sec => (
+                        <option key={sec} value={sec}>Section {sec}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Closing Time</label>
+                  <input
+                    type="datetime-local" value={closingTime} onChange={e => setClosingTime(e.target.value)}
+                    className="bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
                 </div>
 
                 {/* Instruments/Questions Section */}
