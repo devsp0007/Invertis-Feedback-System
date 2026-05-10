@@ -19,19 +19,20 @@ const __dirname  = path.dirname(__filename);
 const app  = express();
 const PORT = process.env.PORT || 5000;
 
-// ── CORS — whitelist frontend origins ───────────────────────────────────────
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:3000',
-  'https://invertis-feedback.vercel.app',
-  process.env.FRONTEND_URL,
-].filter(Boolean);
+// ── CORS — allow localhost + all Vercel preview/production deployments ───────
+const VERCEL_PATTERN = /^https:\/\/invertis-feedback-system(-[a-z0-9]+)*\.vercel\.app$/;
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (server-to-server, curl, Postman)
+    // Allow requests with no origin (server-to-server, curl, Postman, Render health checks)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
+    // Allow localhost dev servers
+    if (origin === 'http://localhost:5173' || origin === 'http://localhost:3000') return callback(null, true);
+    // Allow all Vercel preview and production URLs for this project
+    if (VERCEL_PATTERN.test(origin)) return callback(null, true);
+    // Allow custom domain set via env var (e.g. your own domain)
+    if (process.env.FRONTEND_URL && origin === process.env.FRONTEND_URL) return callback(null, true);
+    console.warn(`CORS blocked: ${origin}`);
     callback(new Error(`CORS: origin ${origin} not allowed`));
   },
   credentials: true,
