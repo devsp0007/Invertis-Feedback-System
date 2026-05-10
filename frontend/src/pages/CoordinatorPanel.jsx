@@ -124,7 +124,7 @@ function SectionsTab({ departments, sections, onRefresh, setMsg }) {
           </div>
           <div className="flex flex-col gap-1"><Label>Section</Label>
             <Select value={label} onChange={e => setLabel(e.target.value)}>
-              {['A','B','C','D'].map(l => <option key={l} value={l}>{l}</option>)}
+              {Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i)).map(l => <option key={l} value={l}>{l}</option>)}
             </Select>
           </div>
           <div className="flex items-end"><Btn onClick={create}><Plus size={16} /> Create</Btn></div>
