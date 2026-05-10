@@ -18,7 +18,7 @@ export const getDepartments = async (req, res) => {
   try {
     const depts = await Department.find().lean();
     return res.json(depts.map(d => ({ ...d, id: d._id.toString() })));
-  } catch { return res.status(500).json({ message: 'Internal Server Error' }); }
+  } catch (err) { console.error('getDepartments error:', err); return res.status(500).json({ message: 'Internal Server Error' }); }
 };
 
 export const createDepartment = async (req, res) => {
@@ -37,7 +37,7 @@ export const deleteDepartment = async (req, res) => {
   try {
     await Department.findByIdAndDelete(req.params.id);
     return res.json({ message: 'Department deleted' });
-  } catch { return res.status(500).json({ message: 'Internal Server Error' }); }
+  } catch (err) { console.error('deleteDepartment error:', err); return res.status(500).json({ message: 'Internal Server Error' }); }
 };
 
 // ── Sections ───────────────────────────────────────────────────────────────
@@ -48,7 +48,7 @@ export const getSections = async (req, res) => {
     const sections = await Section.find(filter).lean();
     const result = await Promise.all(sections.map(populateSection));
     return res.json(result);
-  } catch { return res.status(500).json({ message: 'Internal Server Error' }); }
+  } catch (err) { console.error('getSections error:', err); return res.status(500).json({ message: 'Internal Server Error' }); }
 };
 
 export const createSection = async (req, res) => {
@@ -62,8 +62,11 @@ export const createSection = async (req, res) => {
     const existing = await Section.findOne({ code });
     if (existing) return res.status(400).json({ message: 'Section already exists.' });
     const section = await Section.create({ name, code, semester: Number(semester), label: label.toUpperCase(), department_id });
-    return res.status(201).json({ ...(await populateSection(section.toObject())) });
+    // Use findById+lean so populateSection receives a plain object with string IDs
+    const created = await Section.findById(section._id).lean();
+    return res.status(201).json({ ...(await populateSection(created)) });
   } catch (err) {
+    console.error('createSection error:', err);
     return res.status(500).json({ message: 'Internal Server Error' });
   }
 };
