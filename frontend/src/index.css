@@ -8,16 +8,20 @@
 
   html { scroll-behavior: smooth; }
 
+  /* Dark mode base (default) */
   body {
-    @apply bg-[#030712] text-slate-100 antialiased select-none;
+    @apply antialiased select-none;
     font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
     font-feature-settings: 'cv11', 'ss01';
     transition: background-color 0.3s ease, color 0.3s ease;
+    background-color: #030712;
+    color: #f1f5f9;
   }
 
-  /* Light mode overrides */
-  body:not(.dark) {
-    @apply bg-slate-100 text-slate-900;
+  /* Light mode overrides — triggered when <html> does NOT have .dark */
+  html:not(.dark) body {
+    background-color: #f1f5f9;
+    color: #0f172a;
   }
 
   ::selection { @apply bg-fuchsia-600/40 text-white; }
@@ -222,7 +226,7 @@
 }
 
 /* ── Light Mode Component Overrides ─────────────────────────────────────── */
-body:not(.dark) .mesh-bg {
+html:not(.dark) body .mesh-bg {
   background-color: #f1f5f9;
   background-image:
     radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.08), transparent 50%),
@@ -230,28 +234,33 @@ body:not(.dark) .mesh-bg {
     radial-gradient(circle at 50% 80%, rgba(14, 165, 233, 0.08), transparent 50%);
 }
 
-body:not(.dark) .glass-card {
+html:not(.dark) body .glass-card {
   background: rgba(255, 255, 255, 0.85);
   border-color: rgba(0, 0, 0, 0.08);
   box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.08);
 }
 
-body:not(.dark) .card {
+html:not(.dark) body .card {
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(241, 245, 249, 0.95) 100%);
   border-color: rgba(0, 0, 0, 0.08);
   box-shadow: 0 4px 16px -4px rgba(0, 0, 0, 0.06);
 }
 
-body:not(.dark) .card-hover:hover {
+html:not(.dark) body .card-hover:hover {
   border-color: rgba(99, 102, 241, 0.3);
   box-shadow: 0 8px 24px -8px rgba(99, 102, 241, 0.15);
 }
 
-body:not(.dark) .input-base {
-  @apply bg-white border-slate-200 text-slate-900 placeholder-slate-400;
+html:not(.dark) body .input-base {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  color: #0f172a;
 }
 
-body:not(.dark) .btn-primary {
+html:not(.dark) body .input-base::placeholder {
+  color: #94a3b8;
+}
+
+html:not(.dark) body .btn-primary {
   box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
 }
-
