@@ -328,4 +328,4 @@ cd frontend && npm run build
 
 ## 📝 License
 
-MIT License — Developed for **Invertis University, Bareilly** by Team Incubation.
+MIT License — Developed for **Invertis University, Bareilly** by Invertis Innovation & Incubation.
