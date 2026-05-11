@@ -58,8 +58,7 @@ export default function Sidebar() {
 
   return (
     <aside
-      className="w-full md:w-52 shrink-0 border-b md:border-b-0 md:border-r border-white/[0.06] p-3 flex flex-row md:flex-col gap-1 overflow-x-auto md:overflow-visible"
-      style={{ background: 'rgba(8,12,20,0.5)' }}
+      className="w-full md:w-52 shrink-0 border-b md:border-b-0 md:border-r border-[var(--border-base)] p-3 flex flex-row md:flex-col gap-1 overflow-x-auto no-scrollbar md:overflow-visible bg-black/5 dark:bg-white/5"
     >
       {/* Role indicator */}
       <div className="hidden md:flex items-center gap-2 px-3 py-2 mb-2">

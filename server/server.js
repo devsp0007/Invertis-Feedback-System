@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import compression from 'compression';
 import { initDb } from './db.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -12,6 +13,9 @@ import coordinatorRoutes from './routes/coordinatorRoutes.js';
 import superadminRoutes  from './routes/superadminRoutes.js';
 import hodRoutes         from './routes/hodRoutes.js';
 import responseRoutes    from './routes/responseRoutes.js';
+import tlfqRoutes        from './routes/tlfqRoutes.js';
+import syncRoutes        from './routes/syncRoutes.js';
+import userRoutes        from './routes/userRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname  = path.dirname(__filename);
@@ -26,17 +30,28 @@ app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (server-to-server, curl, Postman, Render health checks)
     if (!origin) return callback(null, true);
-    // Allow localhost dev servers
-    if (origin === 'http://localhost:5173' || origin === 'http://localhost:3000') return callback(null, true);
-    // Allow all Vercel preview and production URLs for this project
-    if (VERCEL_PATTERN.test(origin)) return callback(null, true);
-    // Allow custom domain set via env var (e.g. your own domain)
-    if (process.env.FRONTEND_URL && origin === process.env.FRONTEND_URL) return callback(null, true);
+
+    const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
+    
+    // Allow localhost if in development
+    if (process.env.NODE_ENV !== 'production' && origin.startsWith('http://localhost')) {
+      return callback(null, true);
+    }
+
+    if (allowedOrigins.includes(origin) || VERCEL_PATTERN.test(origin)) {
+      return callback(null, true);
+    }
+
+    if (process.env.FRONTEND_URL && origin === process.env.FRONTEND_URL) {
+      return callback(null, true);
+    }
+
     console.warn(`CORS blocked: ${origin}`);
     callback(new Error(`CORS: origin ${origin} not allowed`));
   },
   credentials: true,
 }));
+app.use(compression());
 app.use(express.json());
 
 app.get('/api', (req, res) => res.json({ status: 'OK', message: 'Invertis Feedback System API v2' }));
@@ -46,6 +61,9 @@ app.use('/api/coordinator', coordinatorRoutes);
 app.use('/api/superadmin',  superadminRoutes);
 app.use('/api/hod',         hodRoutes);
 app.use('/api/student',     responseRoutes);
+app.use('/api/tlfq',        tlfqRoutes);
+app.use('/api/sync',        syncRoutes);
+app.use('/api/users',       userRoutes);
 
 // Analytics endpoint (super_admin, hod, supreme can access)
 app.get('/api/responses/analytics', authenticate, authorize('super_admin', 'hod', 'supreme'), getAnalytics);

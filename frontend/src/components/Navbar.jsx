@@ -153,8 +153,8 @@ export default function Navbar() {
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.4 }}
-        className="sticky top-0 z-50 flex items-center justify-between px-5 py-3 border-b border-white/[0.06] select-none"
-        style={{ background: 'rgba(8,12,20,0.85)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
+        className="sticky top-0 z-50 flex items-center justify-between px-5 py-3 border-b border-[var(--border-base)] select-none glass-card !rounded-none !bg-opacity-80"
+        style={{ backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
       >
         {/* Brand */}
         <div className="flex items-center gap-3">

@@ -1,6 +1,6 @@
 # 📘 Invertis Feedback System — User Manual
 
-> **Version:** 2.0 &nbsp;|&nbsp; **University:** Invertis University, Lucknow &nbsp;|&nbsp; **System:** Teaching-Learning Feedback System (TLFQ)
+> **Version:** 2.0 &nbsp;|&nbsp; **University:** Invertis University, Bareilly &nbsp;|&nbsp; **System:** Teaching-Learning Feedback System (TLFQ)
 
 ---
 
@@ -328,4 +328,4 @@ For system issues, contact the university IT department or the Academic Coordina
 
 ---
 
-*Invertis University, Lucknow · TLFQ System v2.0 · © 2025*
+*Invertis University, Bareilly · TLFQ System v2.0 · © 2025*

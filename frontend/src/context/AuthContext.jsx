@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async ({ identifier, password }) => {
     const res = await api.post('/auth/login', { identifier, password });
-    localStorage.setItem('tlfq_token', res.data.token);
+    localStorage.setItem('tlfq_platform_session', res.data.token);
     setUser(res.data.user);
     return res.data.user;
   };

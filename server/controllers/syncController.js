@@ -1,26 +1,21 @@
-import { User, Course, Faculty, Enrollment, Tlfq, Question, Response, Answer } from '../db.js';
+import { User, Course, Faculty, Enrollment, Tlfq, Question, Response, Answer, Department, Section } from '../db.js';
 
 export const exportData = async (req, res) => {
   try {
-    const users = await User.find({});
-    const courses = await Course.find({});
-    const faculty = await Faculty.find({});
-    const enrollments = await Enrollment.find({});
-    const tlfqs = await Tlfq.find({});
-    const questions = await Question.find({});
-    const responses = await Response.find({});
-    const answers = await Answer.find({});
+    const data = {
+      Department: await Department.findMany(),
+      Section: await Section.findMany(),
+      User: await User.findMany(),
+      Course: await Course.findMany(),
+      Faculty: await Faculty.findMany(),
+      Enrollment: await Enrollment.findMany(),
+      Tlfq: await Tlfq.findMany(),
+      Question: await Question.findMany(),
+      Response: await Response.findMany(),
+      Answer: await Answer.findMany()
+    };
 
-    return res.status(200).json({
-      User: users,
-      Course: courses,
-      Faculty: faculty,
-      Enrollment: enrollments,
-      Tlfq: tlfqs,
-      Question: questions,
-      Response: responses,
-      Answer: answers
-    });
+    return res.status(200).json(data);
   } catch (err) {
     console.error('Export error:', err);
     return res.status(500).json({ message: 'Error exporting data', error: err.message });
@@ -34,12 +29,12 @@ export const importData = async (req, res) => {
       return res.status(400).json({ message: 'Invalid or missing sync data payload' });
     }
 
-    const collections = ['User', 'Course', 'Faculty', 'Enrollment', 'Tlfq', 'Question', 'Response', 'Answer'];
-    const models = { User, Course, Faculty, Enrollment, Tlfq, Question, Response, Answer };
+    const collections = ['Department', 'Section', 'User', 'Course', 'Faculty', 'Enrollment', 'Tlfq', 'Question', 'Response', 'Answer'];
+    const models = { Department, Section, User, Course, Faculty, Enrollment, Tlfq, Question, Response, Answer };
 
     if (mode === 'overwrite') {
-      // Wipes everything
-      for (const col of collections) {
+      // Wipes everything - reverse order to handle foreign key constraints if any
+      for (const col of [...collections].reverse()) {
         await models[col].deleteMany({});
       }
     }
@@ -47,18 +42,20 @@ export const importData = async (req, res) => {
     // Insert everything
     for (const col of collections) {
       if (data[col] && Array.isArray(data[col])) {
-        for (const item of data[col]) {
-          const id = item._id || item.id;
-          if (mode === 'merge' && id) {
-            await models[col].findByIdAndDelete(id);
-          }
+        const itemsToInsert = data[col].map(item => {
+          const id = item.id || item._id;
           const cleanItem = { ...item };
-          if (!cleanItem._id && cleanItem.id) {
-            cleanItem._id = cleanItem.id;
-          }
-          delete cleanItem.id;
-          
-          await models[col].create(cleanItem);
+          if (id) cleanItem.id = id;
+          delete cleanItem._id;
+          return cleanItem;
+        });
+
+        if (itemsToInsert.length > 0) {
+          // Use createMany for high performance bulk insertion
+          await models[col].createMany({ 
+            data: itemsToInsert,
+            skipDuplicates: mode === 'merge' 
+          });
         }
       }
     }

@@ -11,11 +11,14 @@ import SuperAdminPanel  from './pages/SuperAdminPanel';
 import SupremePanel     from './pages/SupremePanel';
 import Leaderboard      from './pages/Leaderboard';
 import IdentityReveal   from './pages/IdentityReveal';
+import ManageStudents     from './pages/ManageStudents';
 import ProtectedRoute   from './components/ProtectedRoute';
+import { Toaster }      from 'sonner';
 
 export default function App() {
   return (
     <AuthProvider>
+      <Toaster position="top-center" richColors expand={false} closeButton theme="dark" />
       <Router>
         <Routes>
           {/* Public */}
@@ -85,7 +88,7 @@ export default function App() {
             </ProtectedRoute>
           } />
           <Route path="/admin/students" element={
-            <ProtectedRoute allowedRoles={['admin']}>
+            <ProtectedRoute allowedRoles={['super_admin']}>
               <ManageStudents />
             </ProtectedRoute>
           } />

@@ -327,7 +327,7 @@ export default function Login() {
         </div>
 
         <p className="text-center text-[10px] text-slate-600 mt-6">
-          Invertis University, Lucknow &nbsp;·&nbsp; TLFQ v2.0 &nbsp;·&nbsp; © 2025
+          Invertis University, Bareilly &nbsp;·&nbsp; TLFQ v2.0 &nbsp;·&nbsp; © 2025
         </p>
       </motion.div>
     </div>

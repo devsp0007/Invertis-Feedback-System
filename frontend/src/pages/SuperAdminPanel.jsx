@@ -3,13 +3,14 @@ import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import api from '../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 import { Shield, Building2, Users, Plus, Trash2, Check, X, Eye, EyeOff, GraduationCap, Search, UserCheck, Hash } from 'lucide-react';
 
 const TABS = [
   { id: 'departments', label: 'Departments', icon: Building2 },
-  { id: 'hods',        label: 'HODs',        icon: Users },
-  { id: 'coordinators',label: 'Coordinators',icon: Users },
-  { id: 'students',    label: 'Student Lookup', icon: GraduationCap },
+  { id: 'hods', label: 'HODs', icon: Users },
+  { id: 'coordinators', label: 'Coordinators', icon: Users },
+  { id: 'students', label: 'Student Lookup', icon: GraduationCap },
 ];
 
 function Input({ ...props }) {
@@ -25,83 +26,81 @@ function Select({ children, ...props }) {
 }
 
 export default function SuperAdminPanel() {
-  const [tab,          setTab]          = useState('departments');
-  const [msg,          setMsg]          = useState(null);
-  const [departments,  setDepartments]  = useState([]);
-  const [staff,        setStaff]        = useState([]);
-  const [students,     setStudents]     = useState([]);
+  const [tab, setTab] = useState('departments');
+  const [departments, setDepartments] = useState([]);
+  const [staff, setStaff] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [pagination, setPagination] = useState({ page: 1, limit: 50, total: 0, totalPages: 1 });
 
   // Department form
   const [deptName, setDeptName] = useState('');
   const [deptCode, setDeptCode] = useState('');
 
   // HOD form
-  const [hodName,   setHodName]   = useState('');
-  const [hodEmail,  setHodEmail]  = useState('');
-  const [hodPass,   setHodPass]   = useState('');
-  const [hodDept,   setHodDept]   = useState('');
+  const [hodName, setHodName] = useState('');
+  const [hodEmail, setHodEmail] = useState('');
+  const [hodPass, setHodPass] = useState('');
+  const [hodDept, setHodDept] = useState('');
   const [showHodPass, setShowHodPass] = useState(false);
 
   // Coordinator form
-  const [coordName,  setCoordName]  = useState('');
+  const [coordName, setCoordName] = useState('');
   const [coordEmail, setCoordEmail] = useState('');
-  const [coordPass,  setCoordPass]  = useState('');
+  const [coordPass, setCoordPass] = useState('');
   const [showCoordPass, setShowCoordPass] = useState(false);
 
   // Student search
   const [searchQuery, setSearchQuery] = useState('');
   const [revealedIds, setRevealedIds] = useState(new Set());
 
-  const loadAll = async () => {
+  const loadAll = async (page = 1) => {
     try {
       const [rD, rS, rStud] = await Promise.all([
         api.get('/coordinator/departments'),
         api.get('/superadmin/staff'),
-        api.get('/coordinator/students'),
+        api.get('/coordinator/students?page=' + page + '&limit=50'),
       ]);
       setDepartments(rD.data);
       setStaff(rS.data);
-      setStudents(rStud.data);
-    } catch {}
+      setStudents(rStud.data.students || []);
+      setPagination(rStud.data.pagination || { page: 1, limit: 50, total: 0, totalPages: 1 });
+    } catch { }
   };
 
   useEffect(() => { loadAll(); }, []);
-  useEffect(() => { if (msg) { const t = setTimeout(() => setMsg(null), 4000); return () => clearTimeout(t); } }, [msg]);
-
-  const showMsg = (type, text) => setMsg({ type, text });
 
   const createDept = async () => {
     try {
       await api.post('/coordinator/departments', { name: deptName, code: deptCode });
       setDeptName(''); setDeptCode('');
-      loadAll(); showMsg('success', 'Department created.');
-    } catch (e) { showMsg('error', e.response?.data?.message || 'Failed.'); }
+      loadAll(); toast.success('Department created.');
+    } catch (e) { toast.error(e.response?.data?.message || 'Failed.'); }
   };
 
   const deleteDept = async (id) => {
     try { await api.delete(`/coordinator/departments/${id}`); loadAll(); }
-    catch (e) { showMsg('error', 'Failed to delete.'); }
+    catch (e) { toast.error('Failed to delete.'); }
   };
 
   const createHod = async () => {
     try {
       await api.post('/superadmin/hods', { name: hodName, email: hodEmail, password: hodPass, department_id: hodDept });
       setHodName(''); setHodEmail(''); setHodPass(''); setHodDept('');
-      loadAll(); showMsg('success', 'HOD created successfully.');
-    } catch (e) { showMsg('error', e.response?.data?.message || 'Failed.'); }
+      loadAll(); toast.success('HOD created successfully.');
+    } catch (e) { toast.error(e.response?.data?.message || 'Failed.'); }
   };
 
   const createCoord = async () => {
     try {
       await api.post('/superadmin/coordinators', { name: coordName, email: coordEmail, password: coordPass });
       setCoordName(''); setCoordEmail(''); setCoordPass('');
-      loadAll(); showMsg('success', 'Coordinator created successfully.');
-    } catch (e) { showMsg('error', e.response?.data?.message || 'Failed.'); }
+      loadAll(); toast.success('Coordinator created successfully.');
+    } catch (e) { toast.error(e.response?.data?.message || 'Failed.'); }
   };
 
   const deleteUser = async (id) => {
     try { await api.delete(`/superadmin/users/${id}`); loadAll(); }
-    catch { showMsg('error', 'Failed to delete.'); }
+    catch { toast.error('Failed to delete.'); }
   };
 
   const toggleReveal = (id) => {
@@ -113,17 +112,17 @@ export default function SuperAdminPanel() {
     });
   };
 
-  const hods  = staff.filter(s => s.role === 'hod');
+  const hods = staff.filter(s => s.role === 'hod');
   const coords = staff.filter(s => s.role === 'coordinator');
 
   // Filter students — search by ANO ID (unique_feedback_id) OR real name
   const q = searchQuery.trim().toUpperCase();
   const filteredStudents = q
     ? students.filter(s =>
-        (s.unique_feedback_id || '').toUpperCase().includes(q) ||
-        s.name?.toUpperCase().includes(q) ||
-        (s.student_id || '').toUpperCase().includes(q)
-      )
+      (s.unique_feedback_id || '').toUpperCase().includes(q) ||
+      s.name?.toUpperCase().includes(q) ||
+      (s.student_id || '').toUpperCase().includes(q)
+    )
     : students;
 
   return (
@@ -142,13 +141,6 @@ export default function SuperAdminPanel() {
             </div>
           </div>
 
-          {msg && (
-            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
-              className={`mb-4 p-3.5 border text-xs font-semibold rounded-xl flex items-center justify-between gap-2 ${msg.type === 'success' ? 'bg-emerald-950/50 text-emerald-300 border-emerald-800/60' : 'bg-rose-950/50 text-rose-400 border-rose-900/60'}`}>
-              {msg.text}
-              <button onClick={() => setMsg(null)} className="cursor-pointer"><X size={14} /></button>
-            </motion.div>
-          )}
 
           {/* Tabs */}
           <div className="flex gap-1.5 p-1.5 card rounded-2xl mb-6 w-fit flex-wrap">
@@ -347,11 +339,10 @@ export default function SuperAdminPanel() {
                             <button
                               onClick={() => toggleReveal(s.id)}
                               title={isRevealed ? 'Hide Identity' : 'Reveal Identity'}
-                              className={`p-2 rounded-lg transition-all cursor-pointer flex-shrink-0 ${
-                                isRevealed
+                              className={`p-2 rounded-lg transition-all cursor-pointer flex-shrink-0 ${isRevealed
                                   ? 'bg-amber-500/15 text-amber-400 hover:bg-amber-500/25'
                                   : 'bg-white/5 text-slate-500 hover:text-slate-300 hover:bg-white/10'
-                              }`}
+                                }`}
                             >
                               {isRevealed ? <EyeOff size={14} /> : <Eye size={14} />}
                             </button>
@@ -373,6 +364,33 @@ export default function SuperAdminPanel() {
                       </div>
                     )}
                   </div>
+                  {/* Pagination Controls */}
+                  {tab === 'students' && pagination.totalPages > 1 && (
+                    <div className="flex items-center justify-between card rounded-2xl p-4 mt-6">
+                      <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                        Total {pagination.total} records
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <button
+                          disabled={pagination.page <= 1}
+                          onClick={() => loadAll(pagination.page - 1)}
+                          className="px-4 py-2 bg-slate-900 hover:bg-white/5 text-slate-400 text-[10px] font-black rounded-xl uppercase tracking-widest transition-all border border-white/5 disabled:opacity-30 disabled:cursor-not-allowed"
+                        >
+                          Prev
+                        </button>
+                        <div className="text-xs font-bold text-slate-400">
+                          {pagination.page} / {pagination.totalPages}
+                        </div>
+                        <button
+                          disabled={pagination.page >= pagination.totalPages}
+                          onClick={() => loadAll(pagination.page + 1)}
+                          className="px-4 py-2 bg-slate-900 hover:bg-white/5 text-slate-400 text-[10px] font-black rounded-xl uppercase tracking-widest transition-all border border-white/5 disabled:opacity-30 disabled:cursor-not-allowed"
+                        >
+                          Next
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 

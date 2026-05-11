@@ -1,11 +1,11 @@
 # 🎓 Invertis Feedback System
 
-> A production-grade, university-wide **Teaching-Learning Feedback System (TLFQ)** built for **Invertis University, Lucknow**.
+> A production-grade, university-wide **Teaching-Learning Feedback System (TLFQ)** built for **Invertis University, Bareilly**.
 > Enables structured, **fully anonymous** student feedback collection — department-wise, section-wise, and semester-wise — with a complete 5-tier role-based access control hierarchy.
 
-[![Node.js](https://img.shields.io/badge/Node.js-18%2B-green)](https://nodejs.org)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Supabase-blue)](https://supabase.com)
+[![Prisma](https://img.shields.io/badge/ORM-Prisma-black)](https://prisma.io)
 [![React](https://img.shields.io/badge/React-18-blue)](https://react.dev)
-[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-brightgreen)](https://mongodb.com)
 [![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
 
 ---
@@ -58,8 +58,10 @@
 - Super Admin sees university-wide analytics across all departments
 - **Anonymous Leaderboard** — shows top contributing students by ANO- ID and points
 
-### 🌙 Dark / Light Mode
+### 🌙 Modern UI & Notifications
 - Global theme toggle (Sun/Moon) in the Navbar — persists across sessions
+- **Sonner** notification system for production-grade, high-performance feedback
+- Glassmorphism design with sleek animations via **Framer Motion**
 
 ### 🔑 Change Password
 - In-app password change modal for Supreme, Super Admin, and HOD roles
@@ -86,7 +88,7 @@ The system **auto-detects** the identifier type (email vs Student ID) and adapts
 
 ### Prerequisites
 - Node.js ≥ 18
-- MongoDB Atlas cluster (or local MongoDB)
+- PostgreSQL database (Supabase recommended)
 - Git
 
 ### Setup
@@ -100,7 +102,9 @@ cd invertis-feedback-system
 cd server
 npm install
 cp .env.example .env
-# Edit .env — add your MONGO_URI and JWT_SECRET
+# Edit .env — add your DATABASE_URL and DIRECT_URL (Supabase)
+npx prisma generate
+npx prisma db push # To sync schema and seed initial data
 
 # 3. Frontend setup
 cd ../frontend
@@ -114,12 +118,13 @@ cd frontend && npm run dev   # UI  → http://localhost:5173
 ### Environment Variables (`server/.env`)
 
 ```env
-MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/invertis_feedback
+DATABASE_URL="postgresql://postgres:password@aws-1-ap-northeast-2.pooler.supabase.com:6543/postgres?pgbouncer=true"
+DIRECT_URL="postgresql://postgres:password@aws-1-ap-northeast-2.pooler.supabase.com:5432/postgres"
 JWT_SECRET=your_super_secret_jwt_key_here
 PORT=5000
 ```
 
-> ⚠️ The database is **auto-seeded** on first startup. All demo accounts (see `CREDENTIALS.example.md`) are created automatically.
+> ⚠️ The database is **auto-seeded** via `prisma/seed.js` during the first migration or manual push. Demo accounts (see `CREDENTIALS.example.md`) are created automatically.
 
 ---
 
@@ -215,11 +220,12 @@ invertis-feedback-system/
 │   │   ├── hodRoutes.js
 │   │   ├── superadminRoutes.js
 │   │   └── responseRoutes.js
+│   ├── prisma/
+│   │   ├── schema.prisma       # Relational schema (PostgreSQL)
+│   │   └── seed.js             # Full initial seed for 14k+ student scale
 │   ├── middleware/
 │   │   ├── auth.js             # JWT authenticate + role authorize
 │   │   └── roleMiddleware.js   # Role-based middleware
-│   ├── db.js                   # Mongoose schemas + full seed data
-│   ├── drop_db.js              # Utility: drop all collections
 │   └── server.js               # Express app entry point
 │
 └── frontend/
@@ -286,8 +292,8 @@ User (roles: supreme | super_admin | coordinator | hod | student)
 ```bash
 # Reset and re-seed the database
 cd server
-node drop_db.js   # Drops all collections
-npm start         # Auto-seeds on next startup
+npx prisma migrate dev --name init # Or use db push for rapid prototyping
+node prisma/seed.js # Manual re-seed if needed
 ```
 
 ---
@@ -296,9 +302,9 @@ npm start         # Auto-seeds on next startup
 
 | Layer | Technology |
 |-------|-----------|
-| **Frontend** | React 18, Vite, TailwindCSS v3, Framer Motion, Recharts |
+| **Frontend** | React 18, Vite, TailwindCSS v3, Framer Motion, Recharts, **Sonner** |
 | **Backend** | Node.js 18+, Express.js |
-| **Database** | MongoDB Atlas via Mongoose 8 |
+| **Database** | PostgreSQL (Supabase) via **Prisma ORM** |
 | **Auth** | JSON Web Tokens (JWT), bcryptjs |
 | **UI Icons** | Lucide React |
 | **Design** | Glassmorphism dark theme + light mode toggle |
@@ -322,4 +328,4 @@ cd frontend && npm run build
 
 ## 📝 License
 
-MIT License — Developed for **Invertis University, Lucknow** by Team Saraswat.
+MIT License — Developed for **Invertis University, Bareilly** by Team Incubation.

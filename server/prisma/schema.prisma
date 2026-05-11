@@ -1,0 +1,192 @@
+generator client {
+  provider = "prisma-client-js"
+  engineType = "binary"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Department {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  code        String    @unique
+  portal_open Boolean   @default(true)
+  sections    Section[]
+  users       User[]
+  courses     Course[]
+  faculties   Faculty[]
+}
+
+model Section {
+  id             String           @id @default(uuid())
+  name           String
+  code           String
+  semester       Int
+  label          String
+  department     Department       @relation(fields: [department_id], references: [id])
+  department_id  String
+  users          User[]
+  sectionFaculty SectionFaculty[]
+  enrollments    Enrollment[]
+  tlfqs          Tlfq[]
+
+  @@index([department_id])
+}
+
+enum Role {
+  supreme
+  super_admin
+  coordinator
+  hod
+  student
+}
+
+enum Status {
+  pending
+  active
+}
+
+model User {
+  id                 String       @id @default(uuid())
+  name               String
+  email              String?      @unique
+  password           String?
+  role               Role
+  status             Status       @default(active)
+  department         Department?  @relation(fields: [department_id], references: [id])
+  department_id      String?
+  section            Section?     @relation(fields: [section_id], references: [id])
+  section_id         String?
+  student_id         String?      @unique
+  unique_feedback_id String?      @unique
+  points             Int          @default(0)
+  batch              String?
+  semester           Int?
+  enrollments        Enrollment[]
+  tlfqsCreated       Tlfq[]       @relation("TlfqCreator")
+  responses          Response[]
+
+  @@index([role])
+  @@index([status])
+  @@index([department_id])
+  @@index([section_id])
+  @@index([points])
+}
+
+model Course {
+  id             String           @id @default(uuid())
+  name           String
+  code           String           @unique
+  department     Department       @relation(fields: [department_id], references: [id])
+  department_id  String
+  sectionFaculty SectionFaculty[]
+  enrollments    Enrollment[]
+  tlfqs          Tlfq[]
+
+  @@index([department_id])
+}
+
+enum TeacherType {
+  college_faculty
+  trainer
+}
+
+model Faculty {
+  id             String           @id @default(uuid())
+  name           String
+  department     Department       @relation(fields: [department_id], references: [id])
+  department_id  String
+  teacher_type   TeacherType      @default(college_faculty)
+  sectionFaculty SectionFaculty[]
+  tlfqs          Tlfq[]
+
+  @@index([department_id])
+}
+
+model SectionFaculty {
+  id         String  @id @default(uuid())
+  section    Section @relation(fields: [section_id], references: [id])
+  section_id String
+  faculty    Faculty @relation(fields: [faculty_id], references: [id])
+  faculty_id String
+  course     Course  @relation(fields: [course_id], references: [id])
+  course_id  String
+
+  @@index([section_id])
+  @@index([faculty_id])
+  @@index([course_id])
+}
+
+model Enrollment {
+  id         String  @id @default(uuid())
+  student    User    @relation(fields: [student_id], references: [id])
+  student_id String
+  course     Course  @relation(fields: [course_id], references: [id])
+  course_id  String
+  section    Section @relation(fields: [section_id], references: [id])
+  section_id String
+
+  @@index([student_id])
+  @@index([course_id])
+  @@index([section_id])
+}
+
+model Tlfq {
+  id           String     @id @default(uuid())
+  section      Section    @relation(fields: [section_id], references: [id])
+  section_id   String
+  course       Course     @relation(fields: [course_id], references: [id])
+  course_id    String
+  faculty      Faculty    @relation(fields: [faculty_id], references: [id])
+  faculty_id   String
+  title        String
+  is_active    Boolean    @default(false)
+  closing_time DateTime
+  creator      User       @relation("TlfqCreator", fields: [created_by], references: [id])
+  created_by   String
+  questions    Question[]
+  responses    Response[]
+
+  @@index([section_id])
+  @@index([course_id])
+  @@index([faculty_id])
+  @@index([is_active])
+  @@index([closing_time])
+}
+
+model Question {
+  id            String   @id @default(uuid())
+  tlfq          Tlfq     @relation(fields: [tlfq_id], references: [id])
+  tlfq_id       String
+  question_text String
+  answers       Answer[]
+
+  @@index([tlfq_id])
+}
+
+model Response {
+  id           String   @id @default(uuid())
+  student      User     @relation(fields: [student_id], references: [id])
+  student_id   String
+  tlfq         Tlfq     @relation(fields: [tlfq_id], references: [id])
+  tlfq_id      String
+  submitted_at String
+  comment      String?  @default("")
+  answers      Answer[]
+
+  @@index([student_id])
+  @@index([tlfq_id])
+}
+
+model Answer {
+  id          String   @id @default(uuid())
+  response    Response @relation(fields: [response_id], references: [id])
+  response_id String
+  question    Question @relation(fields: [question_id], references: [id])
+  question_id String
+  rating      Int
+
+  @@index([response_id])
+  @@index([question_id])
+}

@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import api from '../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 import { Crown, Shield, Plus, Trash2, Check, X, Eye, EyeOff, Users } from 'lucide-react';
 
 function Input({ ...props }) {
@@ -17,13 +18,12 @@ function Input({ ...props }) {
 }
 
 export default function SupremePanel() {
-  const [msg,        setMsg]        = useState(null);
   const [superAdmins, setSuperAdmins] = useState([]);
-  const [loading,    setLoading]    = useState(true);
+  const [loading, setLoading] = useState(true);
 
   // New Super Admin form
-  const [name,     setName]     = useState('');
-  const [email,    setEmail]    = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -33,30 +33,26 @@ export default function SupremePanel() {
       const { data } = await api.get('/superadmin/staff');
       setSuperAdmins(data.filter(s => s.role === 'super_admin'));
     } catch {
-      showMsg('error', 'Failed to load Super Admins.');
+      toast.error('Failed to load Super Admins.');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => { loadAdmins(); }, []);
-  useEffect(() => {
-    if (msg) { const t = setTimeout(() => setMsg(null), 4000); return () => clearTimeout(t); }
-  }, [msg]);
-
-  const showMsg = (type, text) => setMsg({ type, text });
+  useEffect(() => { loadAdmins(); }, []);
 
   const createAdmin = async () => {
-    if (!name || !email || !password) return showMsg('error', 'All fields are required.');
-    if (password.length < 8) return showMsg('error', 'Password must be at least 8 characters.');
+    if (!name || !email || !password) return toast.error('All fields are required.');
+    if (password.length < 8) return toast.error('Password must be at least 8 characters.');
     setCreating(true);
     try {
       await api.post('/superadmin/superadmins', { name, email, password });
       setName(''); setEmail(''); setPassword('');
       loadAdmins();
-      showMsg('success', 'Super Admin account created successfully.');
+      toast.success('Super Admin account created successfully.');
     } catch (e) {
-      showMsg('error', e.response?.data?.message || 'Failed to create Super Admin.');
+      toast.error(e.response?.data?.message || 'Failed to create Super Admin.');
     } finally {
       setCreating(false);
     }
@@ -67,9 +63,9 @@ export default function SupremePanel() {
     try {
       await api.delete(`/superadmin/users/${id}`);
       loadAdmins();
-      showMsg('success', 'Super Admin deleted.');
+      toast.success('Super Admin deleted.');
     } catch {
-      showMsg('error', 'Failed to delete.');
+      toast.error('Failed to delete.');
     }
   };
 
@@ -102,23 +98,6 @@ export default function SupremePanel() {
             </p>
           </div>
 
-          {/* Toast */}
-          <AnimatePresence>
-            {msg && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className={`mb-5 p-3.5 border text-xs font-semibold rounded-xl flex items-center justify-between gap-2
-                  ${msg.type === 'success'
-                    ? 'bg-emerald-950/50 text-emerald-300 border-emerald-800/60'
-                    : 'bg-rose-950/50 text-rose-400 border-rose-900/60'}`}
-              >
-                {msg.text}
-                <button onClick={() => setMsg(null)} className="cursor-pointer hover:opacity-70"><X size={14} /></button>
-              </motion.div>
-            )}
-          </AnimatePresence>
 
           {/* Create Super Admin Form */}
           <div className="glass-card p-6 mb-6">

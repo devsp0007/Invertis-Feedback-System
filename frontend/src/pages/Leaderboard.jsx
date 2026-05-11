@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import api from '../services/api';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 import { Trophy, Star, Medal, Users, ShieldAlert } from 'lucide-react';
 
 export default function Leaderboard() {
@@ -12,7 +13,7 @@ export default function Leaderboard() {
   useEffect(() => {
     api.get('/student/leaderboard')
       .then(res => setStudents(res.data))
-      .catch(err => console.error(err))
+      .catch(() => toast.error('Failed to load leaderboard.'))
       .finally(() => setLoading(false));
   }, []);
 

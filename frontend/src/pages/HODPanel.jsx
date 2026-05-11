@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import api from '../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 import { LayoutDashboard, Plus, ToggleLeft, ToggleRight, Clock, FileText, BarChart2, Check, X } from 'lucide-react';
 
 const STD_QUESTIONS = [
@@ -15,27 +16,26 @@ const STD_QUESTIONS = [
 ];
 
 const TABS = [
-  { id: 'dashboard', label: 'Dashboard',    icon: LayoutDashboard },
-  { id: 'create',    label: 'Create Form',  icon: Plus },
-  { id: 'forms',     label: 'My Forms',     icon: FileText },
+  { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { id: 'create', label: 'Create Form', icon: Plus },
+  { id: 'forms', label: 'My Forms', icon: FileText },
 ];
 
 export default function HODPanel() {
-  const [tab,       setTab]       = useState('dashboard');
-  const [stats,     setStats]     = useState(null);
-  const [sections,  setSections]  = useState([]);
-  const [forms,     setForms]     = useState([]);
-  const [portal,    setPortal]    = useState(null);
-  const [msg,       setMsg]       = useState(null);
+  const [tab, setTab] = useState('dashboard');
+  const [stats, setStats] = useState(null);
+  const [sections, setSections] = useState([]);
+  const [forms, setForms] = useState([]);
+  const [portal, setPortal] = useState(null);
 
   // Form creation state
-  const [sectionId,    setSectionId]    = useState('');
-  const [sfList,       setSfList]       = useState([]);
-  const [selectedSf,   setSelectedSf]   = useState('');
-  const [title,        setTitle]        = useState('');
-  const [closingTime,  setClosingTime]  = useState('');
-  const [questions,    setQuestions]    = useState([...STD_QUESTIONS]);
-  const [creating,     setCreating]     = useState(false);
+  const [sectionId, setSectionId] = useState('');
+  const [sfList, setSfList] = useState([]);
+  const [selectedSf, setSelectedSf] = useState('');
+  const [title, setTitle] = useState('');
+  const [closingTime, setClosingTime] = useState('');
+  const [questions, setQuestions] = useState([...STD_QUESTIONS]);
+  const [creating, setCreating] = useState(false);
 
   const loadData = async () => {
     try {
@@ -49,11 +49,10 @@ export default function HODPanel() {
       setSections(rSections.data);
       setForms(rForms.data);
       setPortal(rPortal.data);
-    } catch {}
+    } catch { }
   };
 
   useEffect(() => { loadData(); }, []);
-  useEffect(() => { if (msg) { const t = setTimeout(() => setMsg(null), 4000); return () => clearTimeout(t); } }, [msg]);
 
   // Load section-faculty when section changes
   useEffect(() => {
@@ -65,41 +64,41 @@ export default function HODPanel() {
 
   const handleCreate = async (e) => {
     e.preventDefault();
-    if (!sectionId || !selectedSf || !title || !closingTime) { setMsg({ type: 'error', text: 'All fields are required.' }); return; }
+    if (!sectionId || !selectedSf || !title || !closingTime) { toast.error('All fields are required.'); return; }
     const sf = sfList.find(s => s.id === selectedSf);
     if (!sf) return;
     setCreating(true);
     try {
       await api.post('/hod/tlfq', {
         section_id: sectionId,
-        course_id:  sf.course_id,
+        course_id: sf.course_id,
         faculty_id: sf.faculty_id,
         title, closing_time: closingTime,
         question_texts: questions.filter(q => q.trim())
       });
       setSectionId(''); setSelectedSf(''); setTitle(''); setClosingTime(''); setQuestions([...STD_QUESTIONS]);
-      setMsg({ type: 'success', text: 'Form created. Open it from "My Forms" to make it live.' });
+      toast.success('Form created successfully!');
       setTab('forms');
       loadData();
     } catch (err) {
-      setMsg({ type: 'error', text: err.response?.data?.message || 'Failed to create form.' });
+      toast.error(err.response?.data?.message || 'Failed to create form.');
     } finally { setCreating(false); }
   };
 
   const toggleForm = async (id, current) => {
     try {
       await api.put(`/hod/tlfq/${id}/toggle`, { is_active: !current });
-      setMsg({ type: 'success', text: `Form ${!current ? 'opened' : 'closed'}.` });
+      toast.success(`Form ${!current ? 'opened' : 'closed'}.`);
       loadData();
-    } catch { setMsg({ type: 'error', text: 'Failed.' }); }
+    } catch { toast.error('Failed to toggle form status.'); }
   };
 
   const togglePortal = async () => {
     try {
       const res = await api.put('/hod/portal', { open: !portal.portal_open });
       setPortal(prev => ({ ...prev, portal_open: res.data.portal_open }));
-      setMsg({ type: 'success', text: res.data.message });
-    } catch { setMsg({ type: 'error', text: 'Failed.' }); }
+      toast.success(res.data.message);
+    } catch { toast.error('Failed to update portal status.'); }
   };
 
   const statusColor = s => s === 'open' ? 'text-emerald-400 bg-emerald-900/30 border-emerald-800/40' : s === 'expired' ? 'text-slate-500 bg-slate-800/40 border-slate-700/40' : 'text-amber-400 bg-amber-900/30 border-amber-800/40';
@@ -120,13 +119,6 @@ export default function HODPanel() {
             </div>
           </div>
 
-          {msg && (
-            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
-              className={`mb-4 p-3.5 border text-xs font-semibold rounded-xl flex items-center justify-between gap-2 ${msg.type === 'success' ? 'bg-emerald-950/50 text-emerald-300 border-emerald-800/60' : 'bg-rose-950/50 text-rose-400 border-rose-900/60'}`}>
-              {msg.text}
-              <button onClick={() => setMsg(null)} className="cursor-pointer"><X size={14} /></button>
-            </motion.div>
-          )}
 
           {/* Tabs */}
           <div className="flex gap-1.5 p-1.5 card rounded-2xl mb-6 w-fit">
@@ -147,12 +139,12 @@ export default function HODPanel() {
                   {stats && (
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                       {[
-                        { label: 'Sections',    val: stats.sections,  color: 'from-blue-500 to-cyan-600' },
-                        { label: 'Faculty',     val: stats.faculty,   color: 'from-violet-500 to-purple-600' },
-                        { label: 'Courses',     val: stats.courses,   color: 'from-indigo-500 to-blue-600' },
-                        { label: 'Students',    val: stats.students,  color: 'from-emerald-500 to-teal-600' },
-                        { label: 'My Forms',    val: stats.myForms,   color: 'from-amber-500 to-orange-600' },
-                        { label: 'Open Forms',  val: stats.openForms, color: 'from-rose-500 to-pink-600' },
+                        { label: 'Sections', val: stats.sections, color: 'from-blue-500 to-cyan-600' },
+                        { label: 'Faculty', val: stats.faculty, color: 'from-violet-500 to-purple-600' },
+                        { label: 'Courses', val: stats.courses, color: 'from-indigo-500 to-blue-600' },
+                        { label: 'Students', val: stats.students, color: 'from-emerald-500 to-teal-600' },
+                        { label: 'My Forms', val: stats.myForms, color: 'from-amber-500 to-orange-600' },
+                        { label: 'Open Forms', val: stats.openForms, color: 'from-rose-500 to-pink-600' },
                       ].map(({ label, val, color }) => (
                         <div key={label} className="card rounded-2xl p-5">
                           <div className="text-2xl font-black text-slate-100">{val ?? '—'}</div>

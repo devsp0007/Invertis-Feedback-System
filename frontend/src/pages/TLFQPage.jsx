@@ -5,7 +5,8 @@ import Sidebar from '../components/Sidebar';
 import RatingScale from '../components/RatingScale';
 import api from '../services/api';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Send, RefreshCw, Volume2, Mic, CheckCircle2, Lock, GraduationCap } from 'lucide-react';
+import { toast } from 'sonner';
+import { ArrowLeft, Send, RefreshCw, Volume2, Mic, CheckCircle2, Lock, GraduationCap, MessageSquare, BookOpen } from 'lucide-react';
 
 export default function TLFQPage() {
   const { id, tlfqId } = useParams();
@@ -16,7 +17,6 @@ export default function TLFQPage() {
   const [answers, setAnswers] = useState({});
   const [comment, setComment] = useState('');
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [voiceSupported, setVoiceSupported] = useState(false);
@@ -44,7 +44,7 @@ export default function TLFQPage() {
   useEffect(() => {
     api.get(`/student/tlfq/${tlfqId}`)
       .then(r => { setEvaluation(r.data); setQuestions(r.data.questions || []); })
-      .catch(err => setError(err.response?.data?.message || 'Failed to load evaluation.'))
+      .catch(err => toast.error(err.response?.data?.message || 'Failed to load evaluation.'))
       .finally(() => setLoading(false));
   }, [id, tlfqId]);
 
@@ -78,9 +78,8 @@ export default function TLFQPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
     if (Object.keys(answers).length < questions.length) {
-      setError(`Please answer all ${questions.length} questions before submitting.`);
+      toast.error(`Please answer all ${questions.length} questions before submitting.`);
       return;
     }
     setSubmitting(true);
@@ -92,8 +91,9 @@ export default function TLFQPage() {
       });
       clearDraft();
       setSubmitted(true);
+      toast.success('Feedback submitted successfully!');
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to submit. Please try again.');
+      toast.error(err.response?.data?.message || 'Failed to submit. Please try again.');
     } finally {
       setSubmitting(false);
     }
@@ -174,8 +174,8 @@ export default function TLFQPage() {
                 <div className="h-12 w-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-2" />
                 <span className="text-xs font-black uppercase tracking-widest text-slate-400 animate-pulse">Initializing Questionnaire...</span>
               </div>
-            ) : error && !evaluation ? (
-              <div className="bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/40 text-rose-600 dark:text-rose-400 p-8 rounded-[2rem] text-sm font-bold text-center shadow-sm">{error}</div>
+            ) : !evaluation ? (
+              <div className="bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/40 text-rose-600 dark:text-rose-400 p-8 rounded-[2rem] text-sm font-bold text-center shadow-sm">Failed to load questionnaire.</div>
             ) : (
               <form onSubmit={handleSubmit} className="flex flex-col gap-10">
                 {/* Evaluation header */}
@@ -202,9 +202,6 @@ export default function TLFQPage() {
                   </button>
                 </div>
 
-                {error && (
-                  <div className="bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/40 text-rose-600 dark:text-rose-400 p-6 rounded-2xl text-xs font-black uppercase tracking-widest text-center">{error}</div>
-                )}
 
                 {/* Progress */}
                 <div className="flex flex-col gap-3">

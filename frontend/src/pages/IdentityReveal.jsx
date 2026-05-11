@@ -13,12 +13,12 @@ import {
 const PLACEHOLDER_CYCLE = ['ANO-A3F2B1', 'ANO-7C9D4E', 'ANO-B1F208', 'ANO-4E2A91'];
 
 export default function IdentityRevealPage() {
-  const [query,       setQuery]       = useState('');
-  const [result,      setResult]      = useState(null);   // revealed student data
-  const [error,       setError]       = useState('');
-  const [loading,     setLoading]     = useState(false);
-  const [confirmed,   setConfirmed]   = useState(false);  // confirmation step
-  const [revealed,    setRevealed]    = useState(false);  // final reveal shown
+  const [query, setQuery] = useState('');
+  const [result, setResult] = useState(null);   // revealed student data
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [confirmed, setConfirmed] = useState(false);  // confirmation step
+  const [revealed, setRevealed] = useState(false);  // final reveal shown
   const [searchCount, setSearchCount] = useState(0);      // audit counter
 
   const handleSearch = async () => {

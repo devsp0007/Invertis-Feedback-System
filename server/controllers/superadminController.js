@@ -1,5 +1,4 @@
 import { User, Section } from '../db.js';
-
 import bcrypt from 'bcryptjs';
 
 // ── Create Super Admin (only Supreme Authority can do this) ──────────────
@@ -10,11 +9,22 @@ export const createSuperAdmin = async (req, res) => {
       return res.status(400).json({ message: 'name, email, password required' });
     }
     if (password.length < 8) return res.status(400).json({ message: 'Password must be at least 8 characters.' });
+    
     const hashed = await bcrypt.hash(password, 10);
-    const admin = await User.create({ name, email: email.toLowerCase(), password: hashed, role: 'super_admin', status: 'active' });
-    return res.status(201).json({ id: admin._id.toString(), name: admin.name, email: admin.email, role: 'super_admin' });
+    const admin = await User.create({
+      data: {
+        name,
+        email: email.toLowerCase(),
+        password: hashed,
+        role: 'super_admin',
+        status: 'active'
+      }
+    });
+    
+    return res.status(201).json({ id: admin.id, name: admin.name, email: admin.email, role: 'super_admin' });
   } catch (err) {
-    if (err.code === 11000) return res.status(400).json({ message: 'Email already in use.' });
+    if (err.code === 'P2002') return res.status(400).json({ message: 'Email already in use.' });
+    console.error(err);
     return res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -26,11 +36,23 @@ export const createHod = async (req, res) => {
     if (!name || !email || !password || !department_id) {
       return res.status(400).json({ message: 'name, email, password, department_id required' });
     }
+    
     const hashed = await bcrypt.hash(password, 10);
-    const hod = await User.create({ name, email: email.toLowerCase(), password: hashed, role: 'hod', department_id, status: 'active' });
-    return res.status(201).json({ id: hod._id.toString(), name: hod.name, email: hod.email, role: 'hod' });
+    const hod = await User.create({
+      data: {
+        name,
+        email: email.toLowerCase(),
+        password: hashed,
+        role: 'hod',
+        department_id,
+        status: 'active'
+      }
+    });
+    
+    return res.status(201).json({ id: hod.id, name: hod.name, email: hod.email, role: 'hod' });
   } catch (err) {
-    if (err.code === 11000) return res.status(400).json({ message: 'Email already in use.' });
+    if (err.code === 'P2002') return res.status(400).json({ message: 'Email already in use.' });
+    console.error(err);
     return res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -42,11 +64,22 @@ export const createCoordinator = async (req, res) => {
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'name, email, password required' });
     }
+    
     const hashed = await bcrypt.hash(password, 10);
-    const coord = await User.create({ name, email: email.toLowerCase(), password: hashed, role: 'coordinator', status: 'active' });
-    return res.status(201).json({ id: coord._id.toString(), name: coord.name, email: coord.email, role: 'coordinator' });
+    const coord = await User.create({
+      data: {
+        name,
+        email: email.toLowerCase(),
+        password: hashed,
+        role: 'coordinator',
+        status: 'active'
+      }
+    });
+    
+    return res.status(201).json({ id: coord.id, name: coord.name, email: coord.email, role: 'coordinator' });
   } catch (err) {
-    if (err.code === 11000) return res.status(400).json({ message: 'Email already in use.' });
+    if (err.code === 'P2002') return res.status(400).json({ message: 'Email already in use.' });
+    console.error(err);
     return res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -54,9 +87,23 @@ export const createCoordinator = async (req, res) => {
 // ── Get all staff ──────────────────────────────────────────────────────────
 export const getStaff = async (req, res) => {
   try {
-    const staff = await User.find({ role: { $in: ['super_admin', 'hod', 'coordinator'] } }).lean();
-    return res.json(staff.map(s => ({ id: s._id.toString(), name: s.name, email: s.email, role: s.role, department_id: s.department_id?.toString() || null })));
-  } catch { return res.status(500).json({ message: 'Internal Server Error' }); }
+    const staff = await User.findMany({
+      where: {
+        role: { in: ['super_admin', 'hod', 'coordinator'] }
+      }
+    });
+    
+    return res.json(staff.map(s => ({
+      id: s.id,
+      name: s.name,
+      email: s.email,
+      role: s.role,
+      department_id: s.department_id
+    })));
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
 };
 
 // ── Reveal student identity by anonymous ID ───────────────────────────
@@ -64,16 +111,21 @@ export const revealStudentByAnonId = async (req, res) => {
   try {
     const { anon_id } = req.query;
     if (!anon_id) return res.status(400).json({ message: 'anon_id query parameter is required.' });
-    const student = await User.findOne({ unique_feedback_id: anon_id.trim().toUpperCase(), role: 'student' }).lean();
+    
+    const student = await User.findFirst({
+      where: {
+        unique_feedback_id: anon_id.trim().toUpperCase(),
+        role: 'student'
+      },
+      include: {
+        section: true
+      }
+    });
+    
     if (!student) return res.status(404).json({ message: 'No student found with that Anonymous ID.' });
-    // Populate section name
-    let section_name = null;
-    if (student.section_id) {
-      const sec = await Section.findById(student.section_id).lean();
-      section_name = sec?.name || null;
-    }
+    
     return res.json({
-      id:                 student._id.toString(),
+      id:                 student.id,
       name:               student.name,
       email:              student.email,
       student_id:         student.student_id,
@@ -82,7 +134,7 @@ export const revealStudentByAnonId = async (req, res) => {
       semester:           student.semester,
       batch:              student.batch,
       points:             student.points,
-      section_name,
+      section_name:       student.section?.name || null,
     });
   } catch (err) {
     console.error(err);
@@ -94,21 +146,31 @@ export const revealStudentByAnonId = async (req, res) => {
 export const updateUser = async (req, res) => {
   try {
     const { name, email, password, department_id } = req.body;
-    const updates = {};
-    if (name) updates.name = name;
-    if (email) updates.email = email.toLowerCase();
-    if (department_id) updates.department_id = department_id;
-    if (password) updates.password = await bcrypt.hash(password, 10);
-    const user = await User.findByIdAndUpdate(req.params.id, updates, { new: true }).lean();
-    if (!user) return res.status(404).json({ message: 'User not found' });
-    return res.json({ id: user._id.toString(), name: user.name, email: user.email, role: user.role });
-  } catch { return res.status(500).json({ message: 'Internal Server Error' }); }
+    const data = {};
+    if (name) data.name = name;
+    if (email) data.email = email.toLowerCase();
+    if (department_id) data.department_id = department_id;
+    if (password) data.password = await bcrypt.hash(password, 10);
+    
+    const user = await User.update({
+      where: { id: req.params.id },
+      data
+    });
+    
+    return res.json({ id: user.id, name: user.name, email: user.email, role: user.role });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
 };
 
 // ── Delete user ────────────────────────────────────────────────────────────
 export const deleteUser = async (req, res) => {
   try {
-    await User.findByIdAndDelete(req.params.id);
+    await User.delete({ where: { id: req.params.id } });
     return res.json({ message: 'User deleted' });
-  } catch { return res.status(500).json({ message: 'Internal Server Error' }); }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
 };

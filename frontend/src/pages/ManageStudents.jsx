@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
-import { 
-  Users, Search, Filter, GraduationCap, 
-  Trash2, Edit, ChevronRight, UserCircle, 
+import {
+  Users, Search, Filter, GraduationCap,
+  Trash2, Edit, ChevronRight, UserCircle,
   Building2, Mail, Hash, Calendar, Loader2,
   UserPlus, X, Save, Lock, Info, ArrowLeft
 } from 'lucide-react';
@@ -20,7 +20,8 @@ export default function ManageStudents() {
   const [search, setSearch] = useState('');
   const [selectedDept, setSelectedDept] = useState('all');
   const [depts, setDepts] = useState([]);
-  
+  const [pagination, setPagination] = useState({ page: 1, limit: 50, total: 0, totalPages: 1 });
+
   // Modal states
   const [showModal, setShowModal] = useState(false);
   const [modalLoading, setModalLoading] = useState(false);
@@ -33,14 +34,15 @@ export default function ManageStudents() {
     password: 'student123'
   });
 
-  const fetchData = async () => {
+  const fetchData = async (page = 1) => {
     setLoading(true);
     try {
       const [studentRes, deptRes] = await Promise.all([
-        api.get('/users/students'),
+        api.get(`/users/students?page=${page}&limit=50`),
         api.get('/tlfq/departments')
       ]);
-      setStudents(studentRes.data);
+      setStudents(studentRes.data.students || []);
+      setPagination(studentRes.data.pagination || { page: 1, limit: 50, total: 0, totalPages: 1 });
       setDepts(deptRes.data);
     } catch (err) {
       console.error('Directory sync failed:', err);
@@ -54,9 +56,9 @@ export default function ManageStudents() {
   }, []);
 
   const filteredStudents = students.filter(s => {
-    const matchesSearch = s.name.toLowerCase().includes(search.toLowerCase()) || 
-                          s.college_id.toLowerCase().includes(search.toLowerCase()) || 
-                          s.email.toLowerCase().includes(search.toLowerCase());
+    const matchesSearch = s.name.toLowerCase().includes(search.toLowerCase()) ||
+      s.college_id.toLowerCase().includes(search.toLowerCase()) ||
+      s.email.toLowerCase().includes(search.toLowerCase());
     const matchesDept = selectedDept === 'all' || s.department_name === selectedDept;
     return matchesSearch && matchesDept;
   });
@@ -80,7 +82,7 @@ export default function ManageStudents() {
         email: student.email || '',
         college_id: student.college_id,
         department_id: deptObj?._id || student.department_id || '',
-        password: '' 
+        password: ''
       });
     } else {
       setEditingId(null);
@@ -120,12 +122,12 @@ export default function ManageStudents() {
         <Sidebar />
         <main className="flex-1 p-6 md:p-10">
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-10 pb-10 max-w-7xl mx-auto w-full">
-            
+
             {/* Header section with sophisticated design */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-10 rounded-[3rem] shadow-sm relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/5 blur-[120px] -mr-48 -mt-48 transition-opacity opacity-50 group-hover:opacity-100" />
               <div className="z-10 flex items-start gap-8">
-                <button 
+                <button
                   onClick={() => window.history.back()}
                   className="mt-1 h-14 w-14 flex items-center justify-center bg-slate-50 dark:bg-slate-800 hover:bg-indigo-600 text-slate-400 dark:text-slate-500 hover:text-white rounded-[1.5rem] transition-all cursor-pointer border border-slate-100 dark:border-slate-700 active:scale-90 shadow-sm"
                 >
@@ -137,13 +139,13 @@ export default function ManageStudents() {
                     <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">Student Directory</h1>
                   </div>
                   <p className="text-slate-500 dark:text-slate-400 text-sm mt-4 max-w-lg font-bold leading-relaxed uppercase tracking-widest opacity-80">
-                    {user.role === 'admin' 
-                      ? 'Managing global academic identities across the TLFQ infrastructure.' 
+                    {user.role === 'admin'
+                      ? 'Managing global academic identities across the TLFQ infrastructure.'
                       : `Reviewing departmental student roster and access protocol.`}
                   </p>
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-8 z-10">
                 <div className="hidden lg:flex flex-col items-end">
                   <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] mb-1">Active Profiles</span>
@@ -152,7 +154,7 @@ export default function ManageStudents() {
                     <span className="text-xs font-black text-slate-400">Synced</span>
                   </div>
                 </div>
-                <button 
+                <button
                   onClick={() => openModal()}
                   className="flex items-center gap-3 px-10 py-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-[2rem] font-black text-xs uppercase tracking-[0.15em] transition-all shadow-2xl shadow-indigo-500/30 hover:scale-[1.03] active:scale-95 cursor-pointer"
                 >
@@ -166,7 +168,7 @@ export default function ManageStudents() {
             <div className="flex flex-col lg:flex-row gap-6">
               <div className="flex-1 relative group">
                 <Search className="absolute left-8 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 group-focus-within:text-indigo-500 transition-all" size={24} />
-                <input 
+                <input
                   type="text"
                   placeholder="Query names, ID tags, or digital handles..."
                   className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] pl-20 pr-10 py-6 text-sm text-slate-800 dark:text-white font-bold focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all placeholder-slate-400 dark:placeholder-slate-700 shadow-sm"
@@ -178,7 +180,7 @@ export default function ManageStudents() {
               {user.role === 'admin' && (
                 <div className="lg:w-96 relative group">
                   <Filter className="absolute left-8 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 group-focus-within:text-indigo-500 transition-all" size={22} />
-                  <select 
+                  <select
                     className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] pl-20 pr-14 py-6 text-sm font-black text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 appearance-none cursor-pointer shadow-sm uppercase tracking-widest transition-all"
                     value={selectedDept}
                     onChange={(e) => setSelectedDept(e.target.value)}
@@ -189,7 +191,7 @@ export default function ManageStudents() {
                     ))}
                   </select>
                   <div className="absolute right-8 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none group-focus-within:text-indigo-500 transition-colors">
-                     <ChevronRight className="rotate-90" size={20} />
+                    <ChevronRight className="rotate-90" size={20} />
                   </div>
                 </div>
               )}
@@ -209,7 +211,7 @@ export default function ManageStudents() {
                     </div>
                     <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-3">No Records Identified</h3>
                     <p className="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-[10px] max-w-xs mx-auto">Try broadening your search criteria or scope selection.</p>
-                    <button onClick={() => {setSearch(''); setSelectedDept('all');}} className="mt-10 px-10 py-4 bg-slate-50 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-[10px] font-black rounded-2xl uppercase tracking-[0.2em] transition-all border border-slate-100 dark:border-slate-700">Reset System View</button>
+                    <button onClick={() => { setSearch(''); setSelectedDept('all'); }} className="mt-10 px-10 py-4 bg-slate-50 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-[10px] font-black rounded-2xl uppercase tracking-[0.2em] transition-all border border-slate-100 dark:border-slate-700">Reset System View</button>
                   </motion.div>
                 ) : filteredStudents.map((student, idx) => (
                   <motion.div
@@ -222,7 +224,7 @@ export default function ManageStudents() {
                     className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-500/40 rounded-[2.5rem] p-8 transition-all shadow-sm hover:shadow-2xl hover:shadow-indigo-500/5 flex flex-col lg:flex-row lg:items-center gap-10 relative overflow-hidden"
                   >
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    
+
                     {/* Identity block */}
                     <div className="flex items-center gap-8 lg:w-[35%] shrink-0">
                       <div className="h-20 w-20 rounded-[2rem] bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/40 flex items-center justify-center text-indigo-600 dark:text-indigo-400 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-700 shadow-inner overflow-hidden">
@@ -233,9 +235,9 @@ export default function ManageStudents() {
                           {student.name}
                         </h3>
                         <div className="flex items-center gap-3">
-                           <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">ID: {student.college_id}</span>
-                           <div className="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-700" />
-                           <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Active</span>
+                          <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">ID: {student.college_id}</span>
+                          <div className="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-700" />
+                          <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Active</span>
                         </div>
                       </div>
                     </div>
@@ -251,7 +253,7 @@ export default function ManageStudents() {
                           <span className="font-black text-slate-700 dark:text-slate-100 text-xs truncate uppercase tracking-tighter">{student.department_name}</span>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-center gap-5">
                         <div className="h-12 w-12 rounded-2xl bg-slate-50 dark:bg-slate-850 flex items-center justify-center text-slate-400 group-hover:text-indigo-500 transition-all border border-slate-100 dark:border-slate-800 shrink-0 shadow-sm">
                           <Mail size={20} />
@@ -277,14 +279,14 @@ export default function ManageStudents() {
 
                     {/* Action Block */}
                     <div className="flex items-center justify-end gap-4 lg:w-[15%] shrink-0">
-                      <button 
+                      <button
                         onClick={() => openModal(student)}
                         className="h-14 w-14 flex items-center justify-center bg-white dark:bg-slate-800 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 rounded-[1.5rem] transition-all border border-slate-100 dark:border-slate-700 cursor-pointer shadow-sm active:scale-90"
                         title="Edit Profile"
                       >
                         <Edit size={20} />
                       </button>
-                      <button 
+                      <button
                         onClick={() => handleDelete(student.id)}
                         className="h-14 w-14 flex items-center justify-center bg-white dark:bg-slate-800 text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/40 rounded-[1.5rem] transition-all border border-slate-100 dark:border-slate-700 cursor-pointer shadow-sm active:scale-90"
                         title="Purge Record"
@@ -297,18 +299,46 @@ export default function ManageStudents() {
               </AnimatePresence>
             </div>
 
+            {/* Pagination Controls */}
+            {pagination.totalPages > 1 && (
+              <div className="flex items-center justify-between bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-[2rem] shadow-sm">
+                <div className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                  Showing {students.length} of {pagination.total} records
+                </div>
+                <div className="flex items-center gap-4">
+                  <button
+                    disabled={pagination.page <= 1 || loading}
+                    onClick={() => fetchData(pagination.page - 1)}
+                    className="px-6 py-3 bg-slate-50 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-[10px] font-black rounded-xl uppercase tracking-widest transition-all border border-slate-100 dark:border-slate-700 disabled:opacity-30 disabled:cursor-not-allowed"
+                  >
+                    Previous
+                  </button>
+                  <div className="text-xs font-black text-slate-700 dark:text-slate-300">
+                    Page {pagination.page} of {pagination.totalPages}
+                  </div>
+                  <button
+                    disabled={pagination.page >= pagination.totalPages || loading}
+                    onClick={() => fetchData(pagination.page + 1)}
+                    className="px-6 py-3 bg-slate-50 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-[10px] font-black rounded-xl uppercase tracking-widest transition-all border border-slate-100 dark:border-slate-700 disabled:opacity-30 disabled:cursor-not-allowed"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Sophisticated Modal */}
             <AnimatePresence>
               {showModal && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     onClick={() => setShowModal(false)}
                     className="absolute inset-0 bg-slate-950/60 backdrop-blur-xl"
                   />
-                  
+
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9, y: 40 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -319,14 +349,14 @@ export default function ManageStudents() {
                       <div className="flex items-center justify-between mb-12">
                         <div>
                           <div className="flex items-center gap-3">
-                             <div className="h-2 w-2 rounded-full bg-indigo-500" />
-                             <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-                               {editingId ? 'Modify Record' : 'Student Intake'}
-                             </h2>
+                            <div className="h-2 w-2 rounded-full bg-indigo-500" />
+                            <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                              {editingId ? 'Modify Record' : 'Student Intake'}
+                            </h2>
                           </div>
                           <p className="text-slate-500 dark:text-slate-400 text-[10px] mt-3 uppercase tracking-[0.2em] font-black opacity-80">Security Protocol Mapping: Enabled</p>
                         </div>
-                        <button 
+                        <button
                           onClick={() => setShowModal(false)}
                           className="h-14 w-14 flex items-center justify-center bg-slate-50 dark:bg-slate-800 hover:bg-rose-600 text-slate-400 hover:text-white rounded-2xl transition-all cursor-pointer border border-slate-100 dark:border-slate-700"
                         >
@@ -338,21 +368,21 @@ export default function ManageStudents() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                           <div className="flex flex-col gap-3">
                             <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Legal Name</label>
-                            <input 
+                            <input
                               type="text" required
                               className={inputCls}
                               value={formData.name}
-                              onChange={e => setFormData({...formData, name: e.target.value})}
+                              onChange={e => setFormData({ ...formData, name: e.target.value })}
                               placeholder="e.g. Alok Yadav"
                             />
                           </div>
                           <div className="flex flex-col gap-3">
                             <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Academic ID Tag</label>
-                            <input 
+                            <input
                               type="text" required
                               className={inputCls}
                               value={formData.college_id}
-                              onChange={e => setFormData({...formData, college_id: e.target.value})}
+                              onChange={e => setFormData({ ...formData, college_id: e.target.value })}
                               placeholder="REF-XXXXXX"
                             />
                           </div>
@@ -360,22 +390,22 @@ export default function ManageStudents() {
 
                         <div className="flex flex-col gap-3">
                           <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Institutional Handle</label>
-                          <input 
+                          <input
                             type="email"
                             className={inputCls}
                             value={formData.email}
-                            onChange={e => setFormData({...formData, email: e.target.value})}
+                            onChange={e => setFormData({ ...formData, email: e.target.value })}
                             placeholder="user@university.edu"
                           />
                         </div>
 
                         <div className="flex flex-col gap-3">
                           <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Faculty Affiliation</label>
-                          <select 
+                          <select
                             disabled={user.role === 'hod'}
                             className={inputCls + ' cursor-pointer appearance-none'}
                             value={formData.department_id}
-                            onChange={e => setFormData({...formData, department_id: e.target.value})}
+                            onChange={e => setFormData({ ...formData, department_id: e.target.value })}
                           >
                             <option value="">Choose Department…</option>
                             {depts.map(d => (
@@ -388,27 +418,27 @@ export default function ManageStudents() {
                           <div className="flex flex-col gap-3">
                             <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Master Access Key</label>
                             <div className="relative">
-                               <input 
-                                 type="password" required
-                                 className={inputCls + ' pr-14'}
-                                 value={formData.password}
-                                 onChange={e => setFormData({...formData, password: e.target.value})}
-                                 placeholder="••••••••"
-                               />
-                               <Lock className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
+                              <input
+                                type="password" required
+                                className={inputCls + ' pr-14'}
+                                value={formData.password}
+                                onChange={e => setFormData({ ...formData, password: e.target.value })}
+                                placeholder="••••••••"
+                              />
+                              <Lock className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
                             </div>
                           </div>
                         )}
 
                         <div className="flex gap-6 mt-12 pt-4">
-                          <button 
+                          <button
                             type="button"
                             onClick={() => setShowModal(false)}
                             className="flex-1 px-8 py-5 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-750 text-slate-400 dark:text-slate-500 rounded-[2rem] font-black text-xs uppercase tracking-widest transition-all cursor-pointer border border-slate-100 dark:border-slate-700 shadow-sm"
                           >
                             Discard
                           </button>
-                          <button 
+                          <button
                             type="submit"
                             disabled={modalLoading}
                             className="flex-[2] px-8 py-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] transition-all shadow-2xl shadow-indigo-500/40 flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 cursor-pointer disabled:opacity-50"
