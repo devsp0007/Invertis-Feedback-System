@@ -7,7 +7,7 @@ export default function ProtectedRoute({ children, allowedRoles }) {
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center">
-        <div className="h-10 w-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="h-10 w-10 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
         <p className="text-sm text-slate-500 mt-3 animate-pulse">Authenticating...</p>
       </div>
     );

@@ -100,8 +100,8 @@ export default function StudentRegister() {
         <div className="glass-card rounded-2xl p-7">
           {error && (
             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
-              className="mb-4 p-3.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 text-xs font-semibold rounded-xl flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-rose-400 flex-shrink-0" />
+              className="mb-4 p-3.5 bg-accent-500/10 text-accent-400 border border-accent-500/20 text-xs font-semibold rounded-xl flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent-400 flex-shrink-0" />
               {error}
             </motion.div>
           )}

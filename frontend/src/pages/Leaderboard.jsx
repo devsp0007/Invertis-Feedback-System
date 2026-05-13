@@ -27,7 +27,7 @@ export default function Leaderboard() {
 
             {/* Header */}
             <div className="text-center mb-2">
-              <div className="inline-flex h-16 w-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-3xl items-center justify-center shadow-xl shadow-amber-500/20 mb-4">
+              <div className="inline-flex h-16 w-16 bg-gradient-to-br from-accent-400 to-accent-600 rounded-3xl items-center justify-center shadow-xl shadow-accent-600/30 mb-4">
                 <Trophy size={32} className="text-white" />
               </div>
               <h1 className="text-3xl font-black text-slate-100">Top Contributors</h1>
@@ -37,9 +37,9 @@ export default function Leaderboard() {
             </div>
 
             {/* Anonymity notice */}
-            <div className="flex items-start gap-3 p-3.5 bg-indigo-500/10 border border-indigo-500/25 rounded-2xl">
-              <ShieldAlert size={16} className="text-indigo-400 mt-0.5 flex-shrink-0" />
-              <p className="text-xs text-indigo-300 leading-relaxed">
+            <div className="flex items-start gap-3 p-3.5 bg-primary-500/10 border border-primary-500/25 rounded-2xl">
+              <ShieldAlert size={16} className="text-primary-400 mt-0.5 flex-shrink-0" />
+              <p className="text-xs text-primary-300 leading-relaxed">
                 <span className="font-bold">Anonymous Leaderboard</span> — Student identities are protected.
                 Only their system-generated anonymous ID is displayed here.
                 Real identities can only be viewed by Super Admin or Supreme Authority.
@@ -48,7 +48,7 @@ export default function Leaderboard() {
 
             {loading ? (
               <div className="card rounded-3xl p-12 flex justify-center">
-                <div className="h-10 w-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin" />
+                <div className="h-10 w-10 border-4 border-accent-500 border-t-transparent rounded-full animate-spin" />
               </div>
             ) : students.length === 0 ? (
               <div className="card rounded-3xl p-12 text-center flex flex-col items-center">
@@ -65,17 +65,17 @@ export default function Leaderboard() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: idx * 0.04 }}
                     className={`flex items-center gap-4 p-4 rounded-2xl border transition-all ${
-                      idx === 0 ? 'bg-gradient-to-r from-amber-900/40 to-slate-900/80 border-amber-500/50 shadow-lg shadow-amber-900/20 scale-[1.02]' :
-                      idx === 1 ? 'card border-slate-400/30' :
-                      idx === 2 ? 'card border-amber-700/30' :
+                      idx === 0 ? 'bg-gradient-to-r from-accent-900/40 to-slate-900/80 border-accent-500/50 shadow-lg shadow-accent-900/30 scale-[1.02]' :
+                      idx === 1 ? 'card border-primary-500/30' :
+                      idx === 2 ? 'card border-accent-700/30' :
                       'card hover:border-white/15'
                     }`}
                   >
                     {/* Rank badge */}
                     <div className={`h-12 w-12 flex-shrink-0 flex items-center justify-center rounded-xl font-black text-lg shadow-inner ${
-                      idx === 0 ? 'bg-gradient-to-br from-amber-300 to-amber-600 text-white' :
-                      idx === 1 ? 'bg-gradient-to-br from-slate-300 to-slate-500 text-white' :
-                      idx === 2 ? 'bg-gradient-to-br from-amber-600 to-amber-800 text-white' :
+                      idx === 0 ? 'bg-gradient-to-br from-accent-300 to-accent-600 text-white' :
+                      idx === 1 ? 'bg-gradient-to-br from-primary-300 to-primary-600 text-white' :
+                      idx === 2 ? 'bg-gradient-to-br from-accent-600 to-accent-800 text-white' :
                       'bg-slate-800 text-slate-500'
                     }`}>
                       #{s.rank}
@@ -87,9 +87,9 @@ export default function Leaderboard() {
                         <span className="font-mono font-black text-slate-100 text-lg tracking-wider">
                           {s.unique_feedback_id}
                         </span>
-                        {idx === 0 && <Medal size={16} className="text-amber-400 flex-shrink-0" />}
-                        {idx === 1 && <Medal size={16} className="text-slate-300 flex-shrink-0" />}
-                        {idx === 2 && <Medal size={16} className="text-amber-700 flex-shrink-0" />}
+                        {idx === 0 && <Medal size={16} className="text-accent-400 flex-shrink-0" />}
+                        {idx === 1 && <Medal size={16} className="text-primary-300 flex-shrink-0" />}
+                        {idx === 2 && <Medal size={16} className="text-accent-600 flex-shrink-0" />}
                       </div>
                       <div className="text-xs text-slate-500 mt-1 font-medium">
                         Anonymous Participant · Batch: {s.batch || '2025'}
@@ -99,8 +99,8 @@ export default function Leaderboard() {
                     {/* Points */}
                     <div className="flex flex-col items-end flex-shrink-0">
                       <div className="flex items-center gap-1.5 bg-slate-950/60 px-3 py-1.5 rounded-xl border border-slate-800">
-                        <Star size={14} className="text-amber-400 fill-amber-400" />
-                        <span className="font-black text-amber-400 text-sm">{s.points}</span>
+                        <Star size={14} className="text-accent-400 fill-accent-400" />
+                        <span className="font-black text-accent-400 text-sm">{s.points}</span>
                         <span className="text-xs text-slate-500 font-bold">PTS</span>
                       </div>
                     </div>

@@ -10,24 +10,32 @@
     --bg-input: #ffffff;
     --text-main: #0f172a;
     --text-muted: #64748b;
-    --border-base: rgba(0, 0, 0, 0.08);
-    --border-accent: rgba(99, 102, 241, 0.1);
+    --border-base: rgba(15, 45, 82, 0.1);
+    --border-accent: rgba(198, 40, 40, 0.15);
     --glass-bg: rgba(255, 255, 255, 0.85);
-    --accent: #6366f1;
-    --accent-glow: rgba(99, 102, 241, 0.3);
+    --accent: #1D4E89;
+    --accent-glow: rgba(29, 78, 137, 0.2);
+    --premium-gradient-1: linear-gradient(135deg, #0F2D52 0%, #1D4E89 100%);
+    --premium-gradient-2: linear-gradient(135deg, #1D4E89 0%, #3B6EA5 100%);
+    --premium-gradient-accent: linear-gradient(135deg, #A61E2D 0%, #C62828 100%);
+    --premium-shadow: 0 20px 40px -10px rgba(15, 45, 82, 0.15);
   }
 
   .dark {
-    --bg-main: #030712;
-    --bg-card: #0f172a;
-    --bg-input: #020617;
-    --text-main: #f1f5f9;
+    --bg-main: #06172E;
+    --bg-card: #0F2D52;
+    --bg-input: #0B2340;
+    --text-main: #f8fafc;
     --text-muted: #94a3b8;
-    --border-base: rgba(255, 255, 255, 0.08);
-    --border-accent: rgba(168, 85, 247, 0.15);
-    --glass-bg: rgba(15, 23, 42, 0.75);
-    --accent: #8b5cf6;
-    --accent-glow: rgba(139, 92, 246, 0.4);
+    --border-base: rgba(255, 255, 255, 0.1);
+    --border-accent: rgba(198, 40, 40, 0.25);
+    --glass-bg: rgba(15, 45, 82, 0.75);
+    --accent: #3B6EA5;
+    --accent-glow: rgba(59, 110, 165, 0.3);
+    --premium-gradient-1: linear-gradient(135deg, #1D4E89 0%, #3B6EA5 100%);
+    --premium-gradient-2: linear-gradient(135deg, #3B6EA5 0%, #0F2D52 100%);
+    --premium-gradient-accent: linear-gradient(135deg, #C62828 0%, #A61E2D 100%);
+    --premium-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 20px 50px -15px rgba(0, 0, 0, 0.6);
   }
 
   *,
@@ -50,7 +58,7 @@
   }
 
   ::selection {
-    @apply bg-indigo-500/30 text-white;
+    @apply bg-primary-600/30 text-white;
   }
 }
 
@@ -65,7 +73,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-slate-400/20 dark:bg-slate-700/50 rounded-full hover:bg-indigo-500/50 transition-all;
+  @apply bg-slate-400/20 dark:bg-slate-700/50 rounded-full hover:bg-primary-500/50 transition-all;
 }
 
 @layer components {
@@ -77,23 +85,23 @@
     -webkit-backdrop-filter: blur(24px);
     border: 1px solid var(--border-base);
     border-radius: 1.25rem;
-    box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 8px 32px -4px rgba(15, 45, 82, 0.08);
   }
 
   .dark .glass-card {
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 20px 40px -10px rgba(0, 0, 0, 0.6);
   }
 
   /* ── Gradient Text ──────────────────────────────────────────────────────── */
   .gradient-text {
-    @apply bg-gradient-to-r from-indigo-500 via-fuchsia-500 to-rose-500 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-primary-700 via-primary-500 to-accent-600 dark:from-primary-300 dark:via-primary-500 dark:to-accent-400 bg-clip-text text-transparent;
     background-size: 200% auto;
     animation: text-shine 4s linear infinite;
   }
 
   /* ── Buttons ────────────────────────────────────────────────────────────── */
   .btn-primary {
-    @apply flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-fuchsia-600 text-white shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:pointer-events-none;
+    @apply flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-bold bg-gradient-to-r from-primary-700 via-primary-600 to-accent-600 text-white shadow-lg shadow-primary-700/25 hover:shadow-primary-700/40 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:pointer-events-none;
     background-size: 200% auto;
   }
 
@@ -103,16 +111,20 @@
 
   /* ── Layout Controls ─────────────────────────────────────────────────────── */
   .input-base {
-    @apply w-full bg-[var(--bg-input)] border border-[var(--border-base)] rounded-xl px-4 py-2.5 text-sm text-[var(--text-main)] placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500/50 hover:border-indigo-500/30 transition-all duration-200;
+    @apply w-full bg-[var(--bg-input)] border border-[var(--border-base)] rounded-xl px-4 py-2.5 text-sm text-[var(--text-main)] placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-600/30 focus:border-primary-600/50 hover:border-primary-600/30 transition-all duration-200;
   }
 
   .select-base {
     @apply input-base cursor-pointer appearance-none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236366f1'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%231D4E89'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 1rem center;
     background-size: 1.25rem;
     padding-right: 2.5rem;
+  }
+
+  .dark .select-base {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%233B6EA5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
   }
 
   /* ── Cards ──────────────────────────────────────────────────────────────── */
@@ -120,32 +132,49 @@
     background: var(--bg-card);
     border: 1px solid var(--border-base);
     border-radius: 1.25rem;
-    box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.05);
-    @apply p-6 transition-all duration-300;
+    box-shadow: 0 4px 20px -4px rgba(15, 45, 82, 0.05);
+    @apply p-6;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-main:hover {
+    box-shadow: 0 20px 40px -8px rgba(15, 45, 82, 0.12);
+    transform: translateY(-4px);
+    border-color: rgba(29, 78, 137, 0.2);
   }
 
   .dark .card-main {
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 10px 30px -10px rgba(0, 0, 0, 0.4);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  }
+
+  .dark .card-main:hover {
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 20px 50px -15px rgba(0, 0, 0, 0.6);
+    border-color: rgba(59, 110, 165, 0.3);
   }
 
   /* ── Mesh Background ────────────────────────────────────────────────────── */
   .mesh-bg {
     background-color: var(--bg-main);
     background-image:
-      radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.1), transparent 40%),
-      radial-gradient(circle at 90% 80%, rgba(217, 70, 239, 0.1), transparent 40%),
-      radial-gradient(circle at 50% 50%, rgba(14, 165, 233, 0.1), transparent 40%);
-    animation: mesh-pulse 15s ease-in-out infinite alternate;
+      radial-gradient(circle at 10% 20%, rgba(15, 45, 82, 0.08), transparent 40%),
+      radial-gradient(circle at 90% 80%, rgba(198, 40, 40, 0.08), transparent 40%),
+      radial-gradient(circle at 50% 50%, rgba(29, 78, 137, 0.08), transparent 40%);
+    animation: mesh-pulse 25s ease-in-out infinite alternate;
+  }
+
+  .dark .mesh-bg {
+    background-image:
+      radial-gradient(circle at 10% 20%, rgba(15, 45, 82, 0.2), transparent 40%),
+      radial-gradient(circle at 90% 80%, rgba(198, 40, 40, 0.15), transparent 40%),
+      radial-gradient(circle at 50% 50%, rgba(59, 110, 165, 0.15), transparent 40%);
   }
 
   @keyframes mesh-pulse {
     0% {
-      transform: scale(1);
       opacity: 0.8;
     }
 
     100% {
-      transform: scale(1.1);
       opacity: 1;
     }
   }
@@ -154,6 +183,139 @@
     to {
       background-position: 200% center;
     }
+  }
+
+  /* ── Premium Animations ──────────────────────────────────────────────────── */
+  @keyframes institutional-pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.95;
+    }
+  }
+
+  @keyframes gradient-flow {
+    0% {
+      background-position: 0% center;
+    }
+    50% {
+      background-position: 100% center;
+    }
+    100% {
+      background-position: 0% center;
+    }
+  }
+
+  @keyframes premium-float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-4px);
+    }
+  }
+
+  @keyframes glow-bloom {
+    0% {
+      box-shadow: 0 0 0 0 rgba(29, 78, 137, 0.5);
+    }
+    70% {
+      box-shadow: 0 0 0 8px rgba(29, 78, 137, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(29, 78, 137, 0);
+    }
+  }
+
+  /* ── Premium Card Component ──────────────────────────────────────────────── */
+  .premium-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-base);
+    border-radius: 1.25rem;
+    box-shadow: var(--premium-shadow);
+    @apply p-6;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .premium-card:hover {
+    border-color: rgba(29, 78, 137, 0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 25px 50px -12px rgba(29, 78, 137, 0.2);
+  }
+
+  .dark .premium-card:hover {
+    border-color: rgba(59, 110, 165, 0.4);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 25px 60px -15px rgba(29, 78, 137, 0.4);
+  }
+
+  /* ── Premium Button Enhancement ──────────────────────────────────────────── */
+  .btn-premium {
+    @apply flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-bold bg-gradient-to-r from-primary-700 via-primary-600 to-accent-600 text-white shadow-lg shadow-primary-700/30 hover:shadow-primary-700/50 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 transition-all duration-350 cursor-pointer disabled:opacity-50 disabled:pointer-events-none;
+    background-size: 200% auto;
+  }
+
+  .btn-premium:hover {
+    background-position: right center;
+  }
+
+  /* ── Premium Input Enhancement ───────────────────────────────────────────── */
+  .input-premium {
+    @apply w-full bg-[var(--bg-input)] border border-[var(--border-base)] rounded-xl px-4 py-2.5 text-sm text-[var(--text-main)] placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-600/40 focus:border-primary-600/60 hover:border-primary-600/40 transition-all duration-300;
+  }
+
+  /* ── Admin Panel Emphasis ────────────────────────────────────────────────── */
+  .admin-card {
+    @apply premium-card bg-gradient-to-br from-[#0F2D52]/5 to-[#1D4E89]/3 dark:from-[#1D4E89]/10 dark:to-[#3B6EA5]/5;
+  }
+
+  .admin-card:hover {
+    border-color: rgba(198, 40, 40, 0.4);
+    box-shadow: 0 25px 50px -12px rgba(198, 40, 40, 0.2), inset 0 0 20px rgba(198, 40, 40, 0.05);
+  }
+
+  /* ── Premium Glass Effect ────────────────────────────────────────────────── */
+  .glass-premium {
+    background: var(--glass-bg);
+    backdrop-filter: blur(32px);
+    -webkit-backdrop-filter: blur(32px);
+    border: 1px solid var(--border-base);
+    border-radius: 1.25rem;
+    box-shadow: var(--premium-shadow);
+  }
+
+  /* ── Animated Gradient Background ────────────────────────────────────────── */
+  .animated-gradient-bg {
+    background: var(--premium-gradient-1);
+    background-size: 200% 200%;
+    animation: gradient-flow 10s ease infinite;
+  }
+
+  .animated-gradient-bg-accent {
+    background: var(--premium-gradient-accent);
+    background-size: 200% 200%;
+    animation: gradient-flow 12s ease infinite;
+  }
+
+  /* ── Institution Badge ──────────────────────────────────────────────────── */
+  .institution-badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest border transition-all duration-300;
+  }
+
+  .institution-badge-primary {
+    @apply bg-primary-500/15 text-primary-600 dark:text-primary-300 border-primary-500/30 dark:border-primary-500/40;
+  }
+
+  .institution-badge-primary:hover {
+    @apply bg-primary-500/25 border-primary-500/50;
+  }
+
+  .institution-badge-accent {
+    @apply bg-accent-500/15 text-accent-600 dark:text-accent-300 border-accent-500/30 dark:border-accent-500/40;
+  }
+
+  .institution-badge-accent:hover {
+    @apply bg-accent-500/25 border-accent-500/50;
   }
 
 }

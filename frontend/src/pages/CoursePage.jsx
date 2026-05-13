@@ -52,7 +52,7 @@ export default function CoursePage() {
             <div>
               <button
                 onClick={() => navigate('/dashboard')}
-                className="flex items-center gap-1.5 text-xs font-black text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition mb-6 cursor-pointer uppercase tracking-widest"
+                className="flex items-center gap-1.5 text-xs font-black text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition mb-6 cursor-pointer uppercase tracking-widest"
               >
                 <ArrowLeft size={14} /> Back to Dashboard
               </button>
@@ -67,12 +67,12 @@ export default function CoursePage() {
 
             {loading ? (
               <div className="bg-white dark:bg-slate-900/50 p-24 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center min-h-[400px] shadow-sm">
-                <div className="h-12 w-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+                <div className="h-12 w-12 border-4 border-primary-600 border-t-transparent rounded-full animate-spin mb-4"></div>
                 <span className="text-xs font-black uppercase tracking-[0.2em] text-slate-400 animate-pulse">Scanning Forms...</span>
               </div>
             ) : error || evaluations.length === 0 ? (
               <div className="bg-white dark:bg-slate-900/50 p-12 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 text-center flex flex-col items-center justify-center min-h-[400px] gap-6 shadow-sm">
-                <div className="h-20 w-20 rounded-[2rem] bg-rose-50 dark:bg-rose-950/40 text-rose-500 flex items-center justify-center border border-rose-100 dark:border-rose-900/50 shadow-lg">
+                <div className="h-20 w-20 rounded-[2rem] bg-accent-50 dark:bg-accent-950/40 text-accent-500 flex items-center justify-center border border-accent-100 dark:border-accent-900/50 shadow-lg">
                   <FileText size={32} />
                 </div>
                 <div>
@@ -83,7 +83,7 @@ export default function CoursePage() {
                 </div>
                 <button
                   onClick={() => navigate('/dashboard')}
-                  className="mt-4 bg-indigo-600 dark:bg-indigo-500 text-white font-black px-8 py-4 rounded-2xl text-xs uppercase tracking-widest shadow-xl shadow-indigo-500/20 hover:bg-indigo-700 transition cursor-pointer"
+                  className="mt-4 bg-primary-600 dark:bg-primary-500 text-white font-black px-8 py-4 rounded-2xl text-xs uppercase tracking-widest shadow-xl shadow-primary-500/20 hover:bg-primary-700 transition cursor-pointer"
                 >
                   Return to Dashboard
                 </button>
@@ -107,8 +107,8 @@ export default function CoursePage() {
                       transition={{ delay: idx * 0.1 }}
                       className={`bg-white dark:bg-slate-900/50 border rounded-[2rem] overflow-hidden transition-all duration-500 shadow-sm ${
                         isOpen
-                          ? 'border-indigo-600/40 dark:border-indigo-500/40 ring-4 ring-indigo-500/5 shadow-2xl'
-                          : 'border-slate-200 dark:border-slate-800 hover:border-indigo-400/50'
+                          ? 'border-primary-600/40 dark:border-primary-500/40 ring-4 ring-primary-500/5 shadow-2xl'
+                          : 'border-slate-200 dark:border-slate-800 hover:border-primary-400/50'
                       }`}
                     >
                       {/* Accordion Header */}
@@ -118,10 +118,10 @@ export default function CoursePage() {
                       >
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between flex-1 gap-6 mr-6">
                           <div>
-                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 px-3 py-1 rounded-lg border border-indigo-100 dark:border-indigo-800/30">
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 px-3 py-1 rounded-lg border border-primary-100 dark:border-primary-800/30">
                               Form Identifier #{idx + 1}
                             </span>
-                            <h2 className="text-xl md:text-2xl font-black text-slate-900 dark:text-slate-100 mt-3 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                            <h2 className="text-xl md:text-2xl font-black text-slate-900 dark:text-slate-100 mt-3 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
                               {ev.title}
                             </h2>
                           </div>
@@ -138,7 +138,7 @@ export default function CoursePage() {
                           </div>
                         </div>
 
-                        <div className={`h-12 w-12 rounded-2xl flex items-center justify-center transition-all duration-500 ${isOpen ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30 rotate-180' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
+                        <div className={`h-12 w-12 rounded-2xl flex items-center justify-center transition-all duration-500 ${isOpen ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/30 rotate-180' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
                           <ChevronDown size={24} />
                         </div>
                       </button>
@@ -154,7 +154,7 @@ export default function CoursePage() {
                           >
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6 border-t border-slate-100 dark:border-slate-800">
                               <div className="flex items-center gap-4 bg-slate-50 dark:bg-slate-800/50 p-5 rounded-2xl border border-slate-100 dark:border-slate-700/50">
-                                <div className="h-12 w-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                                <div className="h-12 w-12 bg-primary-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-primary-500/20">
                                   <BookOpen size={20} />
                                 </div>
                                 <div>
@@ -166,7 +166,7 @@ export default function CoursePage() {
                               </div>
 
                               <div className="flex items-center gap-4 bg-slate-50 dark:bg-slate-800/50 p-5 rounded-2xl border border-slate-100 dark:border-slate-700/50">
-                                <div className="h-12 w-12 bg-purple-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/20">
+                                <div className="h-12 w-12 bg-primary-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-primary-500/20">
                                   <Award size={20} />
                                 </div>
                                 <div>
@@ -188,7 +188,7 @@ export default function CoursePage() {
                             <div className="flex gap-4 pt-2">
                               <button
                                 onClick={() => navigate(`/courses/${id}/tlfq/${ev.id}`)}
-                                className="flex-1 flex items-center justify-center gap-3 bg-indigo-600 dark:bg-indigo-500 hover:bg-indigo-700 dark:hover:bg-indigo-600 text-white font-black py-4 px-10 rounded-2xl text-xs uppercase tracking-widest transition shadow-xl shadow-indigo-500/20 cursor-pointer"
+                                className="flex-1 flex items-center justify-center gap-3 bg-primary-600 dark:bg-primary-500 hover:bg-primary-700 dark:hover:bg-primary-600 text-white font-black py-4 px-10 rounded-2xl text-xs uppercase tracking-widest transition shadow-xl shadow-primary-500/20 cursor-pointer"
                               >
                                 {ev.completed ? 'Review Response' : 'Launch Evaluation'}
                                 <ArrowRight size={16} />

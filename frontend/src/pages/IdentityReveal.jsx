@@ -71,8 +71,8 @@ export default function IdentityRevealPage() {
 
             {/* ── Header ───────────────────────────────────────────────── */}
             <div className="flex items-center gap-4">
-              <div className="h-12 w-12 bg-gradient-to-br from-rose-500 via-fuchsia-600 to-indigo-600
-                rounded-2xl flex items-center justify-center shadow-xl shadow-rose-500/30 flex-shrink-0">
+              <div className="h-12 w-12 bg-gradient-to-br from-accent-500 via-accent-600 to-primary-600
+                rounded-2xl flex items-center justify-center shadow-xl shadow-accent-500/30 flex-shrink-0">
                 <Fingerprint size={22} className="text-white" />
               </div>
               <div>
@@ -89,11 +89,11 @@ export default function IdentityRevealPage() {
             </div>
 
             {/* ── Warning Banner ───────────────────────────────────────── */}
-            <div className="flex items-start gap-3 p-4 bg-rose-500/10 border border-rose-500/30 rounded-2xl">
-              <ShieldAlert size={18} className="text-rose-400 mt-0.5 flex-shrink-0" />
+            <div className="flex items-start gap-3 p-4 bg-accent-500/10 border border-accent-500/30 rounded-2xl">
+              <ShieldAlert size={18} className="text-accent-400 mt-0.5 flex-shrink-0" />
               <div>
-                <p className="text-xs font-bold text-rose-300 mb-0.5">Restricted — Authorized Personnel Only</p>
-                <p className="text-xs text-rose-400/80 leading-relaxed">
+                <p className="text-xs font-bold text-accent-300 mb-0.5">Restricted — Authorized Personnel Only</p>
+                <p className="text-xs text-accent-400/80 leading-relaxed">
                   This tool is only to be used in cases of <span className="font-bold">inappropriate behavior</span> or
                   disciplinary investigation. Revealing a student's identity without cause is a violation of their privacy rights.
                   All reveals are logged for accountability.
@@ -123,7 +123,7 @@ export default function IdentityRevealPage() {
                     placeholder="ANO-XXXXXX"
                     className="w-full bg-slate-900/80 border border-white/10 rounded-xl pl-11 pr-4 py-3.5
                       text-base font-mono font-bold text-emerald-400 placeholder-slate-600
-                      focus:outline-none focus:ring-2 focus:ring-rose-500/50 focus:border-rose-500/50
+                      focus:outline-none focus:ring-2 focus:ring-accent-500/50 focus:border-accent-500/50
                       tracking-widest transition-all"
                     spellCheck={false}
                   />
@@ -137,8 +137,8 @@ export default function IdentityRevealPage() {
                   onClick={handleSearch}
                   disabled={loading || !query.trim()}
                   className="flex items-center gap-2 px-6 py-3.5 rounded-xl font-bold text-sm
-                    bg-gradient-to-r from-rose-600 to-fuchsia-600 text-white
-                    hover:from-rose-500 hover:to-fuchsia-500 shadow-lg shadow-rose-500/25
+                    bg-gradient-to-r from-accent-600 to-accent-600 text-white
+                    hover:from-accent-500 hover:to-accent-500 shadow-lg shadow-accent-500/25
                     hover:-translate-y-0.5 transition-all duration-200 cursor-pointer
                     disabled:opacity-40 disabled:pointer-events-none"
                 >
@@ -157,7 +157,7 @@ export default function IdentityRevealPage() {
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
-                    className="mt-3 flex items-center gap-2 text-xs font-semibold text-rose-400 bg-rose-950/50 border border-rose-900/60 rounded-xl p-3"
+                    className="mt-3 flex items-center gap-2 text-xs font-semibold text-accent-400 bg-accent-950/50 border border-accent-900/60 rounded-xl p-3"
                   >
                     <AlertTriangle size={13} />
                     {error}
@@ -225,7 +225,7 @@ export default function IdentityRevealPage() {
                   className="glass-card overflow-hidden border border-emerald-500/30"
                 >
                   {/* Top stripe */}
-                  <div className="h-1.5 w-full bg-gradient-to-r from-rose-500 via-fuchsia-500 to-indigo-500" />
+                  <div className="h-1.5 w-full bg-gradient-to-r from-accent-500 via-accent-500 to-primary-500" />
 
                   <div className="p-6">
                     {/* Revealed badge */}
@@ -241,7 +241,7 @@ export default function IdentityRevealPage() {
 
                     {/* Avatar + name */}
                     <div className="flex items-center gap-4 mb-6 p-4 bg-white/5 rounded-2xl border border-white/8">
-                      <div className="h-14 w-14 bg-gradient-to-br from-indigo-500 to-fuchsia-600
+                      <div className="h-14 w-14 bg-gradient-to-br from-primary-500 to-accent-600
                         rounded-2xl flex items-center justify-center text-2xl font-black text-white shadow-xl flex-shrink-0">
                         {result.name?.charAt(0).toUpperCase()}
                       </div>
@@ -264,11 +264,11 @@ export default function IdentityRevealPage() {
                         <div className="text-[10px] text-slate-500">This is what everyone else sees</div>
                       </div>
 
-                      <div className="flex flex-col gap-1.5 p-4 bg-rose-950/30 border border-rose-500/20 rounded-2xl">
-                        <div className="flex items-center gap-2 text-[10px] font-bold text-rose-400 uppercase tracking-widest">
+                      <div className="flex flex-col gap-1.5 p-4 bg-accent-950/30 border border-accent-500/20 rounded-2xl">
+                        <div className="flex items-center gap-2 text-[10px] font-bold text-accent-400 uppercase tracking-widest">
                           <GraduationCap size={11} /> Roll Number (Confidential)
                         </div>
-                        <div className="font-mono font-black text-rose-300 text-lg">
+                        <div className="font-mono font-black text-accent-300 text-lg">
                           {result.student_id || '—'}
                         </div>
                         <div className="text-[10px] text-slate-500">Official university roll number</div>

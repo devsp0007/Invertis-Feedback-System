@@ -11,7 +11,7 @@ function Input({ ...props }) {
     <input
       {...props}
       className={`bg-slate-950/80 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-600
-        focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50 focus:border-fuchsia-500/50
+        focus:outline-none focus:ring-2 focus:ring-accent-500/50 focus:border-accent-500/50
         hover:border-white/20 transition-all duration-300 w-full ${props.className || ''}`}
     />
   );
@@ -102,7 +102,7 @@ export default function SupremePanel() {
           {/* Create Super Admin Form */}
           <div className="glass-card p-6 mb-6">
             <h2 className="text-sm font-bold text-slate-200 mb-1 flex items-center gap-2">
-              <Plus size={15} className="text-fuchsia-400" />
+              <Plus size={15} className="text-accent-400" />
               Create New Super Admin Account
             </h2>
             <p className="text-xs text-slate-500 mb-5">
@@ -188,7 +188,7 @@ export default function SupremePanel() {
                     className="card-hover rounded-2xl p-4 flex items-center justify-between"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 bg-gradient-to-br from-indigo-500 to-fuchsia-600 rounded-xl flex items-center justify-center text-white font-black text-sm">
+                      <div className="h-10 w-10 bg-gradient-to-br from-primary-500 to-accent-600 rounded-xl flex items-center justify-center text-white font-black text-sm">
                         {admin.name?.charAt(0).toUpperCase()}
                       </div>
                       <div>
@@ -199,7 +199,7 @@ export default function SupremePanel() {
                     </div>
                     <button
                       onClick={() => deleteAdmin(admin.id)}
-                      className="p-2 text-slate-600 hover:text-rose-400 hover:bg-rose-950/30 rounded-xl cursor-pointer transition-all"
+                      className="p-2 text-slate-600 hover:text-accent-400 hover:bg-accent-950/30 rounded-xl cursor-pointer transition-all"
                       title="Delete Super Admin"
                     >
                       <Trash2 size={16} />

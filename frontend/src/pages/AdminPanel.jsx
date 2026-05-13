@@ -90,7 +90,7 @@ export default function AdminPanel() {
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <ClipboardList size={28} className="text-indigo-600 dark:text-indigo-400" />
+                  <ClipboardList size={28} className="text-primary-600 dark:text-primary-400" />
                   <h1 className="text-3xl font-black tracking-tight">Evaluation Forge</h1>
                 </div>
                 <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Design and deploy high-fidelity academic feedback instruments.</p>
@@ -113,14 +113,14 @@ export default function AdminPanel() {
             )}
             
             {error && (
-              <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="p-6 bg-rose-50 dark:bg-rose-950/20 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-900/40 rounded-[2rem] text-sm font-black text-center shadow-sm uppercase tracking-widest">
+              <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="p-6 bg-accent-50 dark:bg-accent-950/20 text-accent-600 dark:text-accent-400 border border-accent-100 dark:border-accent-900/40 rounded-[2rem] text-sm font-black text-center shadow-sm uppercase tracking-widest">
                 {error}
               </motion.div>
             )}
 
             {loading ? (
               <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[3rem] p-32 flex flex-col items-center gap-4 shadow-sm">
-                <div className="h-12 w-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4" />
+                <div className="h-12 w-12 border-4 border-primary-600 border-t-transparent rounded-full animate-spin mb-4" />
                 <span className="text-xs font-black uppercase tracking-[0.2em] text-slate-400 animate-pulse">Synchronizing Data Pools...</span>
               </div>
             ) : (
@@ -130,7 +130,7 @@ export default function AdminPanel() {
                     <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Select Course</label>
                     <select
                       value={courseId} onChange={e => setCourseId(e.target.value)}
-                      className="bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-3 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+                      className="bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-3 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer"
                     >
                       <option value="">Choose Course…</option>
                       {Object.values(coursesByDept).map(({ name, courses: dCourses }) => (
@@ -146,7 +146,7 @@ export default function AdminPanel() {
                   </div>
                   <div className="relative z-10">
                     <h2 className="text-lg font-black text-slate-900 dark:text-white mb-6 uppercase tracking-widest flex items-center gap-2">
-                       <div className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
+                       <div className="h-1.5 w-1.5 rounded-full bg-primary-500" />
                        Protocol Configuration
                     </h2>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -154,7 +154,7 @@ export default function AdminPanel() {
                         <label className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-[0.2em] ml-1">Target Course Module</label>
                         <select
                           value={courseId} onChange={e => setCourseId(e.target.value)}
-                          className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-4 text-sm text-slate-700 dark:text-slate-200 font-bold focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all cursor-pointer shadow-inner appearance-none"
+                          className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-4 text-sm text-slate-700 dark:text-slate-200 font-bold focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all cursor-pointer shadow-inner appearance-none"
                         >
                           <option value="">Select Course...</option>
                           {Object.values(coursesByDept).map(({ name, courses: dCourses }) => (
@@ -171,7 +171,7 @@ export default function AdminPanel() {
                         <label className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-[0.2em] ml-1">Assigned Academic Staff</label>
                         <select
                           value={facultyId} onChange={e => setFacultyId(e.target.value)}
-                          className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-4 text-sm text-slate-700 dark:text-slate-200 font-bold focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all cursor-pointer shadow-inner appearance-none"
+                          className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-4 text-sm text-slate-700 dark:text-slate-200 font-bold focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all cursor-pointer shadow-inner appearance-none"
                         >
                           <option value="">Select Faculty...</option>
                           {(faculty || []).map(f => (
@@ -185,7 +185,7 @@ export default function AdminPanel() {
                   <input
                     type="text" value={title} onChange={e => setTitle(e.target.value)}
                     placeholder="E.g. Advanced Algorithms (CS401) Feedback"
-                    className="bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-primary-500"
                   />
                 </div>
 
@@ -194,7 +194,7 @@ export default function AdminPanel() {
                     <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Semester</label>
                     <select
                       value={semester} onChange={e => setSemester(e.target.value)}
-                      className="bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-3 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+                      className="bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-3 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer"
                     >
                       {[1, 2, 3, 4, 5, 6, 7, 8].map(sem => (
                         <option key={sem} value={sem}>Semester {sem}</option>
@@ -205,7 +205,7 @@ export default function AdminPanel() {
                     <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Section</label>
                     <select
                       value={section} onChange={e => setSection(e.target.value)}
-                      className="bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-3 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+                      className="bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-3 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer"
                     >
                       {['A', 'B', 'C', 'D'].map(sec => (
                         <option key={sec} value={sec}>Section {sec}</option>
@@ -218,7 +218,7 @@ export default function AdminPanel() {
                   <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Closing Time</label>
                   <input
                     type="datetime-local" value={closingTime} onChange={e => setClosingTime(e.target.value)}
-                    className="bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-primary-500"
                   />
                 </div>
 
@@ -226,13 +226,13 @@ export default function AdminPanel() {
                 <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[3rem] p-10 shadow-sm flex flex-col gap-10">
                   <div className="flex items-center justify-between gap-4">
                     <h2 className="text-lg font-black text-slate-900 dark:text-white uppercase tracking-widest flex items-center gap-2">
-                       <div className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
+                       <div className="h-1.5 w-1.5 rounded-full bg-primary-500" />
                        Evaluation Instruments
                     </h2>
                     <button
                       type="button"
                       onClick={() => setQuestions([...questions, ''])}
-                      className="flex items-center gap-2 text-[10px] font-black text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/40 px-5 py-2.5 rounded-xl transition hover:scale-105 active:scale-95 cursor-pointer uppercase tracking-widest shadow-sm"
+                      className="flex items-center gap-2 text-[10px] font-black text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/30 border border-primary-100 dark:border-primary-900/40 px-5 py-2.5 rounded-xl transition hover:scale-105 active:scale-95 cursor-pointer uppercase tracking-widest shadow-sm"
                     >
                       <Plus size={14} /> Add Instrument
                     </button>
@@ -246,20 +246,20 @@ export default function AdminPanel() {
                         animate={{ opacity: 1, x: 0 }}
                         className="flex gap-4 items-center group"
                       >
-                        <div className="h-14 w-14 flex items-center justify-center bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800/30 font-black rounded-2xl text-[10px] text-indigo-600 dark:text-indigo-400 flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform">
+                        <div className="h-14 w-14 flex items-center justify-center bg-primary-50 dark:bg-primary-900/20 border border-primary-100 dark:border-primary-800/30 font-black rounded-2xl text-[10px] text-primary-600 dark:text-primary-400 flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform">
                           IN-{idx + 1}
                         </div>
                         <input
                           type="text" value={qText}
                           onChange={e => { const u = [...questions]; u[idx] = e.target.value; setQuestions(u); }}
                           placeholder="Compose evaluation instrument text..."
-                          className="flex-1 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-6 py-4 text-sm text-slate-700 dark:text-slate-200 font-bold placeholder-slate-400 dark:placeholder-slate-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all shadow-inner"
+                          className="flex-1 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-6 py-4 text-sm text-slate-700 dark:text-slate-200 font-bold placeholder-slate-400 dark:placeholder-slate-700 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all shadow-inner"
                         />
                         {questions.length > 1 && (
                           <button
                             type="button"
                             onClick={() => setQuestions(questions.filter((_, i) => i !== idx))}
-                            className="h-14 w-14 flex items-center justify-center text-slate-300 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-2xl transition-all cursor-pointer"
+                            className="h-14 w-14 flex items-center justify-center text-slate-300 hover:text-accent-500 hover:bg-accent-50 dark:hover:bg-accent-950/30 rounded-2xl transition-all cursor-pointer"
                             title="Decommission Instrument"
                           >
                             <Trash2 size={18} />
@@ -270,8 +270,8 @@ export default function AdminPanel() {
                   </div>
 
                   <div className="bg-slate-50 dark:bg-slate-950/50 p-6 rounded-[1.5rem] border border-slate-100 dark:border-slate-800 flex items-center gap-4">
-                     <div className="h-8 w-8 bg-indigo-100 dark:bg-indigo-900/50 rounded-lg flex items-center justify-center shrink-0">
-                        <ClipboardList size={16} className="text-indigo-600 dark:text-indigo-400" />
+                     <div className="h-8 w-8 bg-primary-100 dark:bg-primary-900/50 rounded-lg flex items-center justify-center shrink-0">
+                        <ClipboardList size={16} className="text-primary-600 dark:text-primary-400" />
                      </div>
                      <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest leading-relaxed">
                         Evaluations use a standardized Likert scale (1-7). Questions should be objective and focused on instructional quality.
@@ -283,7 +283,7 @@ export default function AdminPanel() {
                 <div className="flex gap-6">
                   <button
                     type="submit"
-                    className="flex-1 flex items-center justify-center gap-3 bg-indigo-600 hover:bg-indigo-700 text-white font-black py-5 px-10 rounded-[2.5rem] text-sm transition-all shadow-2xl shadow-indigo-500/30 cursor-pointer uppercase tracking-[0.2em]"
+                    className="flex-1 flex items-center justify-center gap-3 bg-primary-600 hover:bg-primary-700 text-white font-black py-5 px-10 rounded-[2.5rem] text-sm transition-all shadow-2xl shadow-primary-500/30 cursor-pointer uppercase tracking-[0.2em]"
                   >
                     <Check size={20} /> Deploy Evaluation Cluster
                   </button>

@@ -13,11 +13,11 @@ import {
   RadarChart, PolarGrid, PolarAngleAxis, Radar, Cell
 } from 'recharts';
 
-const COLORS = ['#6366f1', '#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6'];
+const COLORS = ['#0F2D52', '#1D4E89', '#10B981', '#F59E0B', '#C62828', '#3B6EA5'];
 
 function RatingBadge({ value, max = 7 }) {
   const pct = (value / max) * 100;
-  const color = pct >= 70 ? 'text-emerald-400' : pct >= 50 ? 'text-amber-400' : 'text-rose-400';
+  const color = pct >= 70 ? 'text-emerald-400' : pct >= 50 ? 'text-amber-400' : 'text-accent-400';
   return <span className={`text-lg font-black ${color}`}>{value.toFixed(1)}<span className="text-xs text-slate-500 font-normal">/{max}</span></span>;
 }
 
@@ -67,7 +67,7 @@ export default function HODDashboard() {
             {/* Header */}
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <BarChart2 size={24} className="text-indigo-600 dark:text-indigo-400" />
+                <BarChart2 size={24} className="text-primary-600 dark:text-primary-400" />
                 <h1 className="text-3xl font-black tracking-tight">Department Portal</h1>
               </div>
               <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
@@ -83,7 +83,7 @@ export default function HODDashboard() {
                   onClick={() => setActiveTab(id)}
                   className={`flex items-center gap-2.5 px-6 py-4 text-sm font-black border-b-2 transition -mb-px cursor-pointer uppercase tracking-widest ${
                     activeTab === id
-                      ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400'
+                      ? 'border-primary-600 text-primary-600 dark:text-primary-400'
                       : 'border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
                   }`}
                 >
@@ -117,7 +117,7 @@ export default function HODDashboard() {
                                 className={`px-2 py-0.5 rounded text-xs font-bold transition-all cursor-pointer ${
                                   dept.portal_open
                                     ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/30'
-                                    : 'bg-rose-500/20 text-rose-400 border border-rose-500/30 hover:bg-rose-500/30'
+                                    : 'bg-accent-500/20 text-accent-400 border border-accent-500/30 hover:bg-accent-500/30'
                                 }`}
                               >
                                 {dept.portal_open ? '● Forms Open' : '○ Forms Closed'}
@@ -129,10 +129,10 @@ export default function HODDashboard() {
                         <div className="grid grid-cols-3 gap-6 relative z-10">
                           {[
                             { icon: BookOpen, label: 'Course Modules', value: dept.course_count, color: 'text-blue-500' },
-                            { icon: Award, label: 'Faculty Records', value: dept.faculty_count, color: 'text-purple-500' },
+                            { icon: Award, label: 'Faculty Records', value: dept.faculty_count, color: 'text-primary-500' },
                             { icon: Users, label: 'Enrolled Students', value: dept.student_count, color: 'text-emerald-500' },
                           ].map(({ icon: Icon, label, value, color }) => (
-                            <div key={label} className="bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 rounded-[1.5rem] p-6 group-hover:border-indigo-500/20 transition-all text-center">
+                            <div key={label} className="bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 rounded-[1.5rem] p-6 group-hover:border-primary-500/20 transition-all text-center">
                               <Icon size={18} className={`${color} mx-auto mb-2`} />
                               <div className="text-2xl font-black text-slate-900 dark:text-slate-100">{value}</div>
                               <div className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mt-1">{label}</div>
@@ -155,7 +155,7 @@ export default function HODDashboard() {
                   <div className="flex flex-col gap-8">
                     <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-8 shadow-sm">
                       <h3 className="text-sm font-black text-slate-900 dark:text-slate-200 mb-8 flex items-center gap-3 uppercase tracking-wider">
-                        <TrendingUp size={18} className="text-indigo-600 dark:text-indigo-400" /> Faculty Performance Ranking
+                        <TrendingUp size={18} className="text-primary-600 dark:text-primary-400" /> Faculty Performance Ranking
                       </h3>
                       {(data.avgRatingPerFaculty || []).length === 0 ? (
                         <div className="p-12 text-center text-slate-400 font-bold uppercase text-xs tracking-widest">No evaluation data recorded for faculty.</div>
@@ -193,7 +193,7 @@ export default function HODDashboard() {
                           key={f.id}
                           initial={{ opacity: 0, scale: 0.95 }}
                           animate={{ opacity: 1, scale: 1 }}
-                          className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-500/40 rounded-[2.5rem] p-7 transition-all shadow-sm hover:shadow-2xl hover:shadow-indigo-500/5 relative overflow-hidden"
+                          className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary-500/40 rounded-[2.5rem] p-7 transition-all shadow-sm hover:shadow-2xl hover:shadow-primary-500/5 relative overflow-hidden"
                         >
                           <div className="flex items-center gap-6">
                             <div className={`h-16 w-16 rounded-2xl flex items-center justify-center text-xl font-black text-white shadow-xl transform group-hover:scale-110 transition-transform duration-500 ${
@@ -205,14 +205,14 @@ export default function HODDashboard() {
                               {i + 1}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <h3 className="font-black text-slate-900 dark:text-white text-lg truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{f.name}</h3>
+                              <h3 className="font-black text-slate-900 dark:text-white text-lg truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{f.name}</h3>
                               <div className="text-[10px] text-slate-400 dark:text-slate-500 font-black truncate uppercase tracking-[0.1em] mt-1.5">{f.total_responses} Evaluation Samples</div>
                             </div>
                           </div>
                           <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-100 dark:border-slate-800">
                              <div className="flex items-center gap-1.5">
                                 <Star size={18} className="text-amber-400 fill-amber-400" />
-                                <span className={`text-2xl font-black ${f.avg_rating >= 5 ? 'text-emerald-500' : f.avg_rating >= 3.5 ? 'text-amber-500' : 'text-rose-500'}`}>
+                                <span className={`text-2xl font-black ${f.avg_rating >= 5 ? 'text-emerald-500' : f.avg_rating >= 3.5 ? 'text-amber-500' : 'text-accent-500'}`}>
                                   {f.avg_rating.toFixed(1)}
                                 </span>
                                 <span className="text-xs text-slate-400 font-bold uppercase">Rating</span>
@@ -232,13 +232,13 @@ export default function HODDashboard() {
                         <div className="flex items-start justify-between mb-6">
                           <div className="min-w-0">
                             <div className="flex items-center gap-3 mb-2">
-                              <span className="text-[10px] font-black bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-2.5 py-1 rounded-lg border border-indigo-100 dark:border-indigo-800/30 uppercase tracking-tighter">{c.course_code}</span>
-                              <h4 className="text-base font-black text-slate-900 dark:text-slate-200 truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{c.course_name}</h4>
+                              <span className="text-[10px] font-black bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 px-2.5 py-1 rounded-lg border border-primary-100 dark:border-primary-800/30 uppercase tracking-tighter">{c.course_code}</span>
+                              <h4 className="text-base font-black text-slate-900 dark:text-slate-200 truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{c.course_name}</h4>
                             </div>
                             <p className="text-[10px] text-slate-400 dark:text-slate-500 font-black uppercase tracking-widest">{c.department_name}</p>
                           </div>
                           <div className="text-right shrink-0 ml-4">
-                            <span className={`text-3xl font-black ${c.rate >= 70 ? 'text-emerald-500' : c.rate >= 40 ? 'text-amber-500' : 'text-rose-500'}`}>{c.rate}%</span>
+                            <span className={`text-3xl font-black ${c.rate >= 70 ? 'text-emerald-500' : c.rate >= 40 ? 'text-amber-500' : 'text-accent-500'}`}>{c.rate}%</span>
                             <div className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mt-1">Submission Rate</div>
                           </div>
                         </div>
@@ -247,7 +247,7 @@ export default function HODDashboard() {
                             initial={{ width: 0 }}
                             animate={{ width: `${c.rate}%` }}
                             transition={{ duration: 1, ease: 'easeOut' }}
-                            className={`h-full rounded-full ${c.rate >= 70 ? 'bg-emerald-500' : c.rate >= 40 ? 'bg-amber-500' : 'bg-rose-500'}`}
+                            className={`h-full rounded-full ${c.rate >= 70 ? 'bg-emerald-500' : c.rate >= 40 ? 'bg-amber-500' : 'bg-accent-500'}`}
                           />
                         </div>
                         <div className="flex gap-6 mt-6 pt-4 border-t border-slate-50 dark:border-slate-800/50 text-[10px] font-black uppercase tracking-[0.1em]">
@@ -255,8 +255,8 @@ export default function HODDashboard() {
                              <div className="h-2 w-2 rounded-full bg-slate-300 dark:bg-slate-700" />
                              <span>{c.enrolled} Enrolled</span>
                           </div>
-                          <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
-                             <div className="h-2 w-2 rounded-full bg-indigo-500" />
+                          <div className="flex items-center gap-2 text-primary-600 dark:text-primary-400">
+                             <div className="h-2 w-2 rounded-full bg-primary-500" />
                              <span>{c.submitted} Received</span>
                           </div>
                         </div>
@@ -289,7 +289,7 @@ export default function HODDashboard() {
                             className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-8 shadow-sm hover:shadow-xl transition-all"
                           >
                             <div className="flex items-center gap-2 mb-6">
-                               <div className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
+                               <div className="h-1.5 w-1.5 rounded-full bg-primary-500" />
                                <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{c.faculty_name}</span>
                             </div>
                             <p className="text-sm text-slate-700 dark:text-slate-300 italic leading-relaxed font-medium">"{c.comment}"</p>

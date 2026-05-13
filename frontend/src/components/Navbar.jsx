@@ -5,11 +5,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import api from '../services/api';
 
 const ROLE_CONFIG = {
-  supreme:     { label: 'Supreme',      icon: Crown,        color: 'text-amber-300',  bg: 'bg-amber-500/10 border-amber-500/25' },
-  super_admin: { label: 'Super Admin',  icon: Shield,       color: 'text-rose-300',   bg: 'bg-rose-500/10 border-rose-500/25' },
-  coordinator: { label: 'Coordinator',  icon: Users,        color: 'text-violet-300', bg: 'bg-violet-500/10 border-violet-500/25' },
-  hod:         { label: 'Head of Dept', icon: Building2,    color: 'text-blue-300',   bg: 'bg-blue-500/10 border-blue-500/25' },
-  student:     { label: 'Student',      icon: GraduationCap,color: 'text-emerald-300',bg: 'bg-emerald-500/10 border-emerald-500/25' },
+  supreme:     { label: 'Supreme',      icon: Crown,        color: 'text-accent-300',   bg: 'bg-accent-500/15 border-accent-500/30' },
+  super_admin: { label: 'Super Admin',  icon: Shield,       color: 'text-accent-300',   bg: 'bg-accent-500/15 border-accent-500/30' },
+  coordinator: { label: 'Coordinator',  icon: Users,        color: 'text-primary-300',  bg: 'bg-primary-500/15 border-primary-500/30' },
+  hod:         { label: 'Head of Dept', icon: Building2,    color: 'text-primary-300',  bg: 'bg-primary-500/15 border-primary-500/30' },
+  student:     { label: 'Student',      icon: GraduationCap,color: 'text-emerald-300', bg: 'bg-emerald-500/10 border-emerald-500/25' },
 };
 
 // Roles allowed to change their own password via Navbar
@@ -55,7 +55,7 @@ function ChangePasswordModal({ onClose }) {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 bg-gradient-to-br from-indigo-500 to-fuchsia-600 rounded-xl flex items-center justify-center">
+            <div className="h-10 w-10 bg-gradient-to-br from-primary-600 to-accent-600 rounded-xl flex items-center justify-center">
               <KeyRound size={18} className="text-white" />
             </div>
             <div>
@@ -78,7 +78,7 @@ function ChangePasswordModal({ onClose }) {
                 value={current}
                 onChange={e => setCurrent(e.target.value)}
                 placeholder="Your current password"
-                className="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 pr-10"
+                className="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-primary-500/50 pr-10"
               />
               <button type="button" onClick={() => setShowCur(!showCur)} className="absolute right-3 top-3.5 text-slate-500 hover:text-slate-300 cursor-pointer">
                 {showCur ? <EyeOff size={15} /> : <Eye size={15} />}
@@ -94,7 +94,7 @@ function ChangePasswordModal({ onClose }) {
                 value={newPwd}
                 onChange={e => setNewPwd(e.target.value)}
                 placeholder="Min. 8 characters"
-                className="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 pr-10"
+                className="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-primary-500/50 pr-10"
               />
               <button type="button" onClick={() => setShowNew(!showNew)} className="absolute right-3 top-3.5 text-slate-500 hover:text-slate-300 cursor-pointer">
                 {showNew ? <EyeOff size={15} /> : <Eye size={15} />}
@@ -109,7 +109,7 @@ function ChangePasswordModal({ onClose }) {
               value={confirm}
               onChange={e => setConfirm(e.target.value)}
               placeholder="Repeat new password"
-              className="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+              className="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-primary-500/50"
             />
           </div>
 
@@ -117,7 +117,7 @@ function ChangePasswordModal({ onClose }) {
             <div className={`text-xs font-semibold p-3 rounded-xl border flex items-center gap-2 ${
               msg.type === 'success'
                 ? 'bg-emerald-950/60 text-emerald-300 border-emerald-800/60'
-                : 'bg-rose-950/60 text-rose-400 border-rose-900/60'
+                : 'bg-accent-950/60 text-accent-400 border-accent-900/60'
             }`}>
               {msg.type === 'success' ? <Check size={13} /> : <X size={13} />}
               {msg.text}
@@ -159,7 +159,7 @@ export default function Navbar() {
         {/* Brand */}
         <div className="flex items-center gap-3">
           <div className="relative flex h-9 w-9 items-center justify-center rounded-xl flex-shrink-0"
-            style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)', boxShadow: '0 0 20px rgba(99,102,241,0.4)' }}>
+            style={{ background: 'linear-gradient(135deg, #0F2D52 0%, #1D4E89 100%)', boxShadow: '0 0 20px rgba(15, 45, 82, 0.6)' }}>
             <span className="text-white font-black text-xs tracking-tight">IF</span>
           </div>
           <div className="hidden sm:block">
@@ -198,7 +198,7 @@ export default function Navbar() {
               id="change-password-btn"
               onClick={() => setShowChangePwd(true)}
               title="Change Password"
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-bold text-slate-400 hover:text-indigo-400 hover:bg-indigo-500/10 border border-white/8 hover:border-indigo-500/25 transition-all duration-200 cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-bold text-slate-400 hover:text-primary-400 hover:bg-primary-500/10 border border-white/8 hover:border-primary-500/25 transition-all duration-200 cursor-pointer"
             >
               <KeyRound size={14} />
               <span className="hidden sm:inline">Password</span>
@@ -207,7 +207,7 @@ export default function Navbar() {
 
           <button
             onClick={logout}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-bold text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 border border-white/8 hover:border-rose-500/25 transition-all duration-200 cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-bold text-slate-400 hover:text-accent-400 hover:bg-accent-500/10 border border-white/8 hover:border-accent-500/25 transition-all duration-200 cursor-pointer"
           >
             <LogOut size={14} />
             <span className="hidden sm:inline">Logout</span>

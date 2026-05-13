@@ -42,7 +42,7 @@ function Btn({ children, variant = 'primary', ...props }) {
   const cls = variant === 'primary'
     ? 'btn-primary'
     : variant === 'danger'
-      ? 'bg-rose-600/20 hover:bg-rose-600 hover:text-white text-rose-400 border border-rose-500/30 px-5 py-2.5 rounded-xl text-sm font-bold transition-all'
+      ? 'bg-accent-600/20 hover:bg-accent-600 hover:text-white text-accent-400 border border-accent-500/30 px-5 py-2.5 rounded-xl text-sm font-bold transition-all'
       : 'bg-slate-500/10 hover:bg-slate-500/20 text-slate-500 hover:text-[var(--text-main)] border border-[var(--border-base)] px-5 py-2.5 rounded-xl text-sm font-bold transition-all';
 
   return (
@@ -396,22 +396,22 @@ function StudentsTab({ departments, sections, students, onRefresh }) {
       </Card>
 
       {/* Bulk Import Card */}
-      <Card className="border border-indigo-500/20 bg-indigo-950/10">
+      <Card className="border border-primary-500/20 bg-primary-950/10">
         <div className="flex items-center gap-3 mb-4">
-          <Upload size={18} className="text-indigo-400" />
+          <Upload size={18} className="text-primary-400" />
           <h3 className="text-sm font-bold text-slate-200">Bulk Import via CSV</h3>
         </div>
         <div className="flex flex-col md:flex-row gap-6">
           <div className="flex-1">
             <p className="text-[11px] text-slate-400 mb-4 leading-relaxed">
-              Upload a <span className="text-indigo-300 font-bold">CSV file</span> with the following headers:
+              Upload a <span className="text-primary-300 font-bold">CSV file</span> with the following headers:
               <br />
-              <code className="bg-slate-900 px-2 py-1 rounded mt-2 inline-block text-indigo-400 border border-indigo-500/10 font-mono text-[9px]">
+              <code className="bg-slate-900 px-2 py-1 rounded mt-2 inline-block text-primary-400 border border-primary-500/10 font-mono text-[9px]">
                 name, student_id, department_id, section_id, semester, batch
               </code>
             </p>
             <div className="flex items-center gap-3">
-              <label className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest cursor-pointer transition-all shadow-lg shadow-indigo-500/20 active:scale-95">
+              <label className="flex items-center gap-2 bg-primary-600 hover:bg-primary-500 text-white px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest cursor-pointer transition-all shadow-lg shadow-primary-500/20 active:scale-95">
                 <FileText size={14} />
                 {bulkLoading ? 'Processing...' : 'Select CSV File'}
                 <input type="file" accept=".csv" onChange={handleBulkUpload} hidden disabled={bulkLoading} />
@@ -425,11 +425,11 @@ function StudentsTab({ departments, sections, students, onRefresh }) {
             </h4>
             <ul className="flex flex-col gap-2">
               <li className="text-[10px] text-slate-400 flex items-start gap-2">
-                <div className="h-1 w-1 rounded-full bg-indigo-500 mt-1.5" />
+                <div className="h-1 w-1 rounded-full bg-primary-500 mt-1.5" />
                 IDs are case-insensitive
               </li>
               <li className="text-[10px] text-slate-400 flex items-start gap-2">
-                <div className="h-1 w-1 rounded-full bg-indigo-500 mt-1.5" />
+                <div className="h-1 w-1 rounded-full bg-primary-500 mt-1.5" />
                 Dupes will be skipped
               </li>
             </ul>
@@ -447,15 +447,15 @@ function StudentsTab({ departments, sections, students, onRefresh }) {
                 <div className="text-[10px] font-black text-emerald-500 uppercase">Success</div>
                 <div className="text-xl font-black text-white">{importResults.success}</div>
               </div>
-              <div className="bg-rose-500/10 border border-rose-500/20 p-3 rounded-xl">
-                <div className="text-[10px] font-black text-rose-500 uppercase">Failed</div>
+              <div className="bg-accent-500/10 border border-accent-500/20 p-3 rounded-xl">
+                <div className="text-[10px] font-black text-accent-500 uppercase">Failed</div>
                 <div className="text-xl font-black text-white">{importResults.failed}</div>
               </div>
             </div>
             {importResults.errors.length > 0 && (
               <div className="max-h-32 overflow-y-auto bg-slate-950 rounded-xl p-3 border border-white/5 no-scrollbar">
                 {importResults.errors.map((err, i) => (
-                  <div key={i} className="text-[10px] text-rose-400 font-mono py-1 border-b border-white/5 last:border-0">{err}</div>
+                  <div key={i} className="text-[10px] text-accent-400 font-mono py-1 border-b border-white/5 last:border-0">{err}</div>
                 ))}
               </div>
             )}
@@ -491,7 +491,7 @@ function StudentsTab({ departments, sections, students, onRefresh }) {
                 <Btn variant="secondary" onClick={() => setResetId('')}><X size={14} /></Btn>
               </div>
             ) : (
-              <button onClick={() => setResetId(s.id)} className="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-indigo-400 transition-colors cursor-pointer">
+              <button onClick={() => setResetId(s.id)} className="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-primary-400 transition-colors cursor-pointer">
                 <Key size={13} /> Reset Password
               </button>
             )}
@@ -549,8 +549,8 @@ export default function CoordinatorPanel() {
                   key={t.id}
                   onClick={() => setTab(t.id)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${tab === t.id
-                      ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/25'
-                      : 'text-slate-500 hover:text-indigo-500 hover:bg-indigo-500/5'
+                      ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/25'
+                      : 'text-slate-500 hover:text-primary-500 hover:bg-primary-500/5'
                     }`}
                 >
                   <Icon size={14} />

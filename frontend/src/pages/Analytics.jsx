@@ -13,7 +13,7 @@ import {
   Star, Filter, LayoutGrid, Users, CheckCircle, Activity 
 } from 'lucide-react';
 
-const COLORS = ['#6366f1', '#a855f7', '#3b82f6', '#10b981', '#f59e0b', '#ec4899'];
+const COLORS = ['#0F2D52', '#1D4E89', '#3B6EA5', '#10B981', '#F59E0B', '#C62828'];
 
 export default function Analytics() {
   const [data, setData] = useState(null);
@@ -51,14 +51,14 @@ export default function Analytics() {
     : 0;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-indigo-500/30">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-primary-500/30">
       <Navbar />
       <div className="flex flex-col md:flex-row flex-1">
         <Sidebar />
         <main className="flex-1 p-6 md:p-10 lg:p-12 relative overflow-hidden">
 
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none" />
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-[120px] pointer-events-none" />
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary-600/10 rounded-full blur-[120px] pointer-events-none" />
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary-600/10 rounded-full blur-[120px] pointer-events-none" />
 
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-8 relative z-10 max-w-7xl mx-auto w-full">
 
@@ -66,7 +66,7 @@ export default function Analytics() {
             <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6 bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 p-6 rounded-3xl shadow-2xl">
               <div>
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="h-10 w-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                  <div className="h-10 w-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/20">
                     <BarChart2 size={20} className="text-white" />
                   </div>
                   <h1 className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400">
@@ -95,7 +95,7 @@ export default function Analytics() {
                   {[['all', 'All'], ['college_faculty', 'Faculty'], ['trainer', 'Trainer']].map(([val, lbl]) => (
                     <button key={val} onClick={() => setTeacherTypeFilter(val)}
                       className={`px-3 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${teacherTypeFilter === val
-                          ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20'
+                          ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/20'
                           : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
                         }`}>
                       {lbl}
@@ -108,10 +108,10 @@ export default function Analytics() {
             {/* Quick Insight Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {[
-                { label: 'Total Responses', value: totalSubmissions, icon: MessageSquare, color: 'text-indigo-400', bg: 'bg-indigo-500/10' },
+                { label: 'Total Responses', value: totalSubmissions, icon: MessageSquare, color: 'text-primary-400', bg: 'bg-primary-500/10' },
                 { label: 'Avg Rating', value: avgSystemRating, icon: Star, color: 'text-amber-400', bg: 'bg-amber-500/10' },
                 { label: 'Active Courses', value: data?.submissionRates?.length || 0, icon: BookOpen, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-                { label: 'Engagement', value: (data?.submissionRates?.length || 0) > 0 ? ((data.submissionRates || []).reduce((s, c) => s + (c.rate || 0), 0) / (data?.submissionRates?.length || 1)).toFixed(0) + '%' : '0%', icon: TrendingUp, color: 'text-purple-400', bg: 'bg-purple-500/10' },
+                { label: 'Engagement', value: (data?.submissionRates?.length || 0) > 0 ? ((data.submissionRates || []).reduce((s, c) => s + (c.rate || 0), 0) / (data?.submissionRates?.length || 1)).toFixed(0) + '%' : '0%', icon: TrendingUp, color: 'text-primary-400', bg: 'bg-primary-500/10' },
               ].map((stat, i) => (
                 <motion.div 
                   initial={{ opacity: 0, y: 10 }}
@@ -134,7 +134,7 @@ export default function Analytics() {
 
             {loading ? (
               <div className="bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 rounded-3xl p-16 flex justify-center">
-                <div className="h-12 w-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin shadow-lg shadow-indigo-500/20" />
+                <div className="h-12 w-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin shadow-lg shadow-primary-500/20" />
               </div>
             ) : !data ? (
               <div className="bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 rounded-3xl p-16 text-center text-slate-400 font-medium">No analytics data available.</div>
@@ -149,7 +149,7 @@ export default function Analytics() {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       className={`flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-xl transition-all cursor-pointer ${activeTab === id
-                          ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/25'
+                          ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/25'
                           : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
                         }`}
                     >
@@ -171,7 +171,7 @@ export default function Analytics() {
                       <div className="flex flex-col gap-6">
                         <div className="bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 rounded-3xl p-8 shadow-xl">
                           <h3 className="text-base font-black text-slate-100 mb-6 flex items-center gap-2">
-                            <TrendingUp size={18} className="text-indigo-400" /> Leaderboard Rankings (out of 7)
+                            <TrendingUp size={18} className="text-primary-400" /> Leaderboard Rankings (out of 7)
                           </h3>
                           {filteredAvgRatingPerFaculty.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-16 text-slate-500">
@@ -205,7 +205,7 @@ export default function Analytics() {
                       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
                         <div className="lg:col-span-3 bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 rounded-3xl p-8 shadow-xl">
                           <h3 className="text-base font-black text-slate-100 mb-6 flex items-center gap-2">
-                            <Activity size={18} className="text-indigo-400" /> Attribute Breakdown
+                            <Activity size={18} className="text-primary-400" /> Attribute Breakdown
                           </h3>
                           <div style={{ height: '400px' }}>
                             <ResponsiveContainer width="100%" height="100%">
@@ -216,8 +216,8 @@ export default function Analytics() {
                                 <Radar
                                   name="Score"
                                   dataKey="score"
-                                  stroke="#6366f1"
-                                  fill="#6366f1"
+                                  stroke="#0F2D52"
+                                  fill="#1D4E89"
                                   fillOpacity={0.5}
                                 />
                                 <Tooltip
@@ -233,7 +233,7 @@ export default function Analytics() {
                               <span className="text-sm font-bold text-slate-300">{attr.full_text}</span>
                               <div className="flex items-center gap-2">
                                 <div className="h-1.5 w-16 bg-slate-800 rounded-full overflow-hidden">
-                                  <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${(attr.score / 7) * 100}%` }} />
+                                  <div className="h-full bg-primary-500 rounded-full" style={{ width: `${(attr.score / 7) * 100}%` }} />
                                 </div>
                                 <span className="text-sm font-black text-white">{attr.score}</span>
                               </div>
@@ -252,7 +252,7 @@ export default function Analytics() {
                               <div className="h-12 w-12 bg-slate-950/50 rounded-2xl flex items-center justify-center border border-slate-800">
                                 <LayoutGrid size={20} className={COLORS[i % COLORS.length]} />
                               </div>
-                              <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${d.portal_open ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'}`}>
+                              <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${d.portal_open ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-accent-500/10 text-accent-400 border border-accent-500/20'}`}>
                                 {d.portal_open ? 'Portal Open' : 'Portal Closed'}
                               </span>
                             </div>
@@ -281,7 +281,7 @@ export default function Analytics() {
                     {activeTab === 'trends' && (
                       <div className="bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 rounded-3xl p-8 shadow-xl">
                         <h3 className="text-base font-black text-slate-100 mb-6 flex items-center gap-2">
-                          <Activity size={18} className="text-indigo-400" /> Submission Volume Trends
+                          <Activity size={18} className="text-primary-400" /> Submission Volume Trends
                         </h3>
                         {data?.timelineData?.length === 0 ? (
                            <div className="flex flex-col items-center justify-center py-16 text-slate-500 text-center">
@@ -294,8 +294,8 @@ export default function Analytics() {
                               <AreaChart data={data?.timelineData || []}>
                                 <defs>
                                   <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3}/>
-                                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                                    <stop offset="5%" stopColor="#1D4E89" stopOpacity={0.3}/>
+                                    <stop offset="95%" stopColor="#1D4E89" stopOpacity={0}/>
                                   </linearGradient>
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
@@ -304,7 +304,7 @@ export default function Analytics() {
                                 <Tooltip
                                   contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: 12, fontSize: 12 }}
                                 />
-                                <Area type="monotone" dataKey="count" stroke="#6366f1" fillOpacity={1} fill="url(#colorCount)" strokeWidth={3} />
+                                <Area type="monotone" dataKey="count" stroke="#1D4E89" fillOpacity={1} fill="url(#colorCount)" strokeWidth={3} />
                               </AreaChart>
                             </ResponsiveContainer>
                           </div>
@@ -316,21 +316,21 @@ export default function Analytics() {
                     {activeTab === 'courses' && (
                       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                         {(data?.submissionRates || []).map(c => (
-                          <div key={c.course_id} className="bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 rounded-3xl p-6 shadow-xl flex flex-col justify-between hover:border-indigo-500/30 transition-all group">
+                          <div key={c.course_id} className="bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 rounded-3xl p-6 shadow-xl flex flex-col justify-between hover:border-primary-500/30 transition-all group">
                             <div>
                               <div className="flex items-start justify-between mb-4">
                                 <div className="pr-4">
-                                  <span className="inline-block text-[10px] font-black bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded-md border border-indigo-500/20 mb-2 tracking-widest uppercase">{c.course_code}</span>
-                                  <h4 className="text-base font-black text-slate-100 leading-tight group-hover:text-indigo-300 transition-colors">{c.course_name}</h4>
+                                  <span className="inline-block text-[10px] font-black bg-primary-500/10 text-primary-400 px-2 py-0.5 rounded-md border border-primary-500/20 mb-2 tracking-widest uppercase">{c.course_code}</span>
+                                  <h4 className="text-base font-black text-slate-100 leading-tight group-hover:text-primary-300 transition-colors">{c.course_name}</h4>
                                 </div>
-                                <span className={`text-xl font-black ${c.rate >= 70 ? 'text-emerald-400' : c.rate >= 40 ? 'text-amber-400' : 'text-rose-400'}`}>{c.rate}%</span>
+                                <span className={`text-xl font-black ${c.rate >= 70 ? 'text-emerald-400' : c.rate >= 40 ? 'text-amber-400' : 'text-accent-400'}`}>{c.rate}%</span>
                               </div>
                               <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden mb-4 shadow-inner">
                                 <motion.div
                                   initial={{ width: 0 }}
                                   animate={{ width: `${c.rate}%` }}
                                   transition={{ duration: 1, ease: 'easeOut' }}
-                                  className={`h-full rounded-full ${c.rate >= 70 ? 'bg-gradient-to-r from-emerald-500 to-emerald-400' : c.rate >= 40 ? 'bg-gradient-to-r from-amber-500 to-amber-400' : 'bg-gradient-to-r from-rose-500 to-rose-400'}`}
+                                  className={`h-full rounded-full ${c.rate >= 70 ? 'bg-gradient-to-r from-emerald-500 to-emerald-400' : c.rate >= 40 ? 'bg-gradient-to-r from-amber-500 to-amber-400' : 'bg-gradient-to-r from-accent-500 to-accent-400'}`}
                                 />
                               </div>
                             </div>
@@ -353,8 +353,8 @@ export default function Analytics() {
                     {/* COMMENTS TAB */}
                     {activeTab === 'comments' && (
                       <div className="flex flex-col gap-4">
-                        <div className="bg-indigo-500/10 border border-indigo-500/20 rounded-2xl p-4 flex items-center gap-3 text-sm text-indigo-300 font-medium">
-                          <MessageSquare size={18} className="text-indigo-400 flex-shrink-0" />
+                        <div className="bg-primary-500/10 border border-primary-500/20 rounded-2xl p-4 flex items-center gap-3 text-sm text-primary-300 font-medium">
+                          <MessageSquare size={18} className="text-primary-400 flex-shrink-0" />
                           Student feedback is rigorously anonymized. No identifying details are exposed here.
                         </div>
                         {data?.recentComments?.length === 0 ? (
@@ -370,12 +370,12 @@ export default function Analytics() {
                                 className="bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 rounded-3xl p-6 shadow-xl flex flex-col relative overflow-hidden group"
                               >
                                 <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                                  <MessageSquare size={40} className="text-indigo-500" />
+                                  <MessageSquare size={40} className="text-primary-500" />
                                 </div>
                                 <p className="text-base text-slate-300 italic leading-relaxed mb-6 flex-1 relative z-10">"{c.comment}"</p>
                                 <div className="pt-4 border-t border-slate-800/60 flex flex-col gap-1.5 relative z-10">
                                   <div className="flex items-center gap-2 text-sm text-slate-400 font-bold">
-                                    <span className="text-indigo-400 font-black">{c.faculty_name}</span>
+                                    <span className="text-primary-400 font-black">{c.faculty_name}</span>
                                     <span className="text-slate-700">•</span>
                                     <span className="text-slate-500">{c.course_name}</span>
                                   </div>

@@ -11,10 +11,10 @@ import api from '../services/api';
 const roleHint = (id) => {
   if (!id) return null;
   if (id.includes('@')) {
-    if (id.includes('admin')) return { icon: Shield, label: 'Super Admin', color: 'text-rose-400' };
+    if (id.includes('admin')) return { icon: Shield, label: 'Super Admin', color: 'text-accent-400' };
     if (id.includes('coordinator')) return { icon: Users, label: 'Coordinator', color: 'text-violet-400' };
     if (id.includes('hod')) return { icon: Building2, label: 'Head of Department', color: 'text-blue-400' };
-    return { icon: User, label: 'Staff Account', color: 'text-indigo-400' };
+    return { icon: User, label: 'Staff Account', color: 'text-primary-400' };
   }
   if (/^[A-Z]{2,4}\d{4}_\d+$/.test(id.toUpperCase())) {
     return { icon: GraduationCap, label: 'Student Account', color: 'text-emerald-400' };
@@ -130,9 +130,9 @@ export default function Login() {
     <div className="min-h-screen mesh-bg flex items-center justify-center p-4 relative overflow-hidden">
       {/* Ambient orbs */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full opacity-15 blur-3xl pointer-events-none"
-        style={{ background: 'radial-gradient(circle, #6366f1, transparent)' }} />
+        style={{ background: 'radial-gradient(circle, #0F2D52, transparent)' }} />
       <div className="absolute bottom-1/3 right-1/3 w-64 h-64 rounded-full opacity-10 blur-3xl pointer-events-none"
-        style={{ background: 'radial-gradient(circle, #8b5cf6, transparent)' }} />
+        style={{ background: 'radial-gradient(circle, #1D4E89, transparent)' }} />
 
       <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
         className="w-full max-w-sm z-10">
@@ -141,7 +141,7 @@ export default function Login() {
         <div className="flex flex-col items-center mb-8">
           <div className="relative mb-4">
             <div className="h-16 w-16 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-2xl"
-              style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)', boxShadow: '0 0 40px rgba(99,102,241,0.45)' }}>
+              style={{ background: 'linear-gradient(135deg, #0F2D52 0%, #1D4E89 100%)', boxShadow: '0 0 40px rgba(15, 45, 82, 0.6)' }}>
               IF
             </div>
           </div>
@@ -153,7 +153,7 @@ export default function Login() {
           {/* Progress bar */}
           <div className="h-0.5 bg-white/5">
             <motion.div className="h-full rounded-full"
-              style={{ background: 'linear-gradient(90deg, #6366f1, #8b5cf6)' }}
+              style={{ background: 'linear-gradient(90deg, #0F2D52, #1D4E89)' }}
               animate={{ width: step === 1 ? '33%' : step === 2 ? '66%' : '100%' }}
               transition={{ duration: 0.4, ease: 'easeOut' }} />
           </div>
@@ -183,8 +183,8 @@ export default function Login() {
             <AnimatePresence>
               {error && (
                 <motion.div key="err" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
-                  className="mb-4 p-3 bg-rose-500/10 text-rose-400 border border-rose-500/20 text-xs font-semibold rounded-xl flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-rose-400 flex-shrink-0 animate-pulse" />
+                  className="mb-4 p-3 bg-accent-500/10 text-accent-400 border border-accent-500/20 text-xs font-semibold rounded-xl flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-accent-400 flex-shrink-0 animate-pulse" />
                   {error}
                 </motion.div>
               )}
@@ -313,7 +313,7 @@ export default function Login() {
 
                   <button type="submit" disabled={loading}
                     className="flex items-center justify-center gap-2 py-3 px-5 rounded-xl font-bold text-sm text-white cursor-pointer disabled:opacity-50 transition-all mt-1"
-                    style={{ background: 'linear-gradient(135deg, #10b981, #0d9488)', boxShadow: '0 0 20px rgba(16,185,129,0.3)' }}>
+                    style={{ background: 'linear-gradient(135deg, #A61E2D, #C62828)', boxShadow: '0 0 20px rgba(198, 40, 40, 0.4)' }}>
                     {loading
                       ? <span className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                       : <><ArrowRight size={16} /><span>Activate Account & Login</span></>

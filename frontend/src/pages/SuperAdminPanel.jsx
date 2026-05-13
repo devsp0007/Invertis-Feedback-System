@@ -14,12 +14,12 @@ const TABS = [
 ];
 
 function Input({ ...props }) {
-  return <input {...props} className={`bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full ${props.className || ''}`} />;
+  return <input {...props} className={`bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-primary-500 w-full ${props.className || ''}`} />;
 }
 
 function Select({ children, ...props }) {
   return (
-    <select {...props} className={`bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full cursor-pointer ${props.className || ''}`}>
+    <select {...props} className={`bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-500 w-full cursor-pointer ${props.className || ''}`}>
       {children}
     </select>
   );
@@ -132,7 +132,7 @@ export default function SuperAdminPanel() {
         <Sidebar />
         <main className="flex-1 p-6 md:p-8 max-w-5xl">
           <div className="flex items-center gap-3 mb-6">
-            <div className="h-10 w-10 bg-gradient-to-br from-rose-500 to-pink-600 rounded-xl flex items-center justify-center shadow-lg shadow-rose-500/20">
+            <div className="h-10 w-10 bg-gradient-to-br from-accent-500 to-pink-600 rounded-xl flex items-center justify-center shadow-lg shadow-accent-500/20">
               <Shield size={20} className="text-white" />
             </div>
             <div className="flex-1">
@@ -146,7 +146,7 @@ export default function SuperAdminPanel() {
           <div className="flex gap-1.5 p-1.5 card rounded-2xl mb-6 w-fit flex-wrap">
             {TABS.map(({ id, label, icon: Icon }) => (
               <button key={id} onClick={() => setTab(id)}
-                className={`flex items-center gap-2 px-5 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${tab === id ? 'bg-rose-600 text-white shadow-lg shadow-rose-500/20' : 'text-slate-500 hover:text-slate-200 hover:bg-white/5'}`}>
+                className={`flex items-center gap-2 px-5 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${tab === id ? 'bg-accent-600 text-white shadow-lg shadow-accent-500/20' : 'text-slate-500 hover:text-slate-200 hover:bg-white/5'}`}>
                 <Icon size={14} /> {label}
               </button>
             ))}
@@ -164,7 +164,7 @@ export default function SuperAdminPanel() {
                       <div className="flex flex-col gap-1"><label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Name</label><Input value={deptName} onChange={e => setDeptName(e.target.value)} placeholder="B.Tech Computer Science" /></div>
                       <div className="flex flex-col gap-1"><label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Code</label><Input value={deptCode} onChange={e => setDeptCode(e.target.value.toUpperCase())} placeholder="BCS" /></div>
                       <div className="flex items-end">
-                        <button onClick={createDept} className="flex items-center gap-2 bg-rose-600 hover:bg-rose-500 text-white px-4 py-2.5 rounded-xl font-bold text-sm cursor-pointer transition-all">
+                        <button onClick={createDept} className="flex items-center gap-2 bg-accent-600 hover:bg-accent-500 text-white px-4 py-2.5 rounded-xl font-bold text-sm cursor-pointer transition-all">
                           <Plus size={16} /> Create
                         </button>
                       </div>
@@ -177,7 +177,7 @@ export default function SuperAdminPanel() {
                           <div className="text-sm font-bold text-slate-100">{d.name}</div>
                           <div className="text-xs font-mono text-slate-500 mt-0.5">{d.code}</div>
                         </div>
-                        <button onClick={() => deleteDept(d.id)} className="p-2 text-slate-600 hover:text-rose-400 hover:bg-rose-950/30 rounded-xl cursor-pointer"><Trash2 size={16} /></button>
+                        <button onClick={() => deleteDept(d.id)} className="p-2 text-slate-600 hover:text-accent-400 hover:bg-accent-950/30 rounded-xl cursor-pointer"><Trash2 size={16} /></button>
                       </div>
                     ))}
                   </div>
@@ -208,7 +208,7 @@ export default function SuperAdminPanel() {
                         </Select>
                       </div>
                     </div>
-                    <button onClick={createHod} className="mt-3 flex items-center gap-2 bg-rose-600 hover:bg-rose-500 text-white px-4 py-2.5 rounded-xl font-bold text-sm cursor-pointer transition-all">
+                    <button onClick={createHod} className="mt-3 flex items-center gap-2 bg-accent-600 hover:bg-accent-500 text-white px-4 py-2.5 rounded-xl font-bold text-sm cursor-pointer transition-all">
                       <Check size={16} /> Create HOD
                     </button>
                   </div>
@@ -222,7 +222,7 @@ export default function SuperAdminPanel() {
                             <div className="text-xs text-slate-500 mt-0.5">{h.email}</div>
                             <div className="text-xs text-blue-400 mt-0.5">{dept?.name || '—'}</div>
                           </div>
-                          <button onClick={() => deleteUser(h.id)} className="p-2 text-slate-600 hover:text-rose-400 hover:bg-rose-950/30 rounded-xl cursor-pointer"><Trash2 size={16} /></button>
+                          <button onClick={() => deleteUser(h.id)} className="p-2 text-slate-600 hover:text-accent-400 hover:bg-accent-950/30 rounded-xl cursor-pointer"><Trash2 size={16} /></button>
                         </div>
                       );
                     })}
@@ -249,7 +249,7 @@ export default function SuperAdminPanel() {
                         </div>
                       </div>
                     </div>
-                    <button onClick={createCoord} className="mt-3 flex items-center gap-2 bg-rose-600 hover:bg-rose-500 text-white px-4 py-2.5 rounded-xl font-bold text-sm cursor-pointer transition-all">
+                    <button onClick={createCoord} className="mt-3 flex items-center gap-2 bg-accent-600 hover:bg-accent-500 text-white px-4 py-2.5 rounded-xl font-bold text-sm cursor-pointer transition-all">
                       <Check size={16} /> Create Coordinator
                     </button>
                   </div>
@@ -261,7 +261,7 @@ export default function SuperAdminPanel() {
                           <div className="text-xs text-slate-500 mt-0.5">{c.email}</div>
                           <div className="text-xs text-violet-400 mt-0.5 font-bold">University-wide access</div>
                         </div>
-                        <button onClick={() => deleteUser(c.id)} className="p-2 text-slate-600 hover:text-rose-400 hover:bg-rose-950/30 rounded-xl cursor-pointer"><Trash2 size={16} /></button>
+                        <button onClick={() => deleteUser(c.id)} className="p-2 text-slate-600 hover:text-accent-400 hover:bg-accent-950/30 rounded-xl cursor-pointer"><Trash2 size={16} /></button>
                       </div>
                     ))}
                   </div>
@@ -278,7 +278,7 @@ export default function SuperAdminPanel() {
                       <h3 className="text-lg font-bold text-emerald-100">Student Identity Lookup</h3>
                     </div>
                     <p className="text-xs text-slate-400 mb-4">
-                      Search by <span className="text-indigo-300 font-bold">Anonymous ID</span> (e.g. <span className="font-mono text-emerald-400">ANO-A3F2B1</span>) — the ID shown on leaderboards and feedback — to reveal the real student identity.
+                      Search by <span className="text-primary-300 font-bold">Anonymous ID</span> (e.g. <span className="font-mono text-emerald-400">ANO-A3F2B1</span>) — the ID shown on leaderboards and feedback — to reveal the real student identity.
                       Student identities are hidden from everyone else. Only Super Admin and Supreme Authority can see them.
                     </p>
                     <div className="relative">
@@ -316,7 +316,7 @@ export default function SuperAdminPanel() {
                                 {s.unique_feedback_id || 'ANO-?????'}
                               </span>
                             </div>
-                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase ${s.status === 'active' ? 'bg-indigo-500/10 text-indigo-300' : 'bg-amber-500/10 text-amber-300'}`}>{s.status}</span>
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase ${s.status === 'active' ? 'bg-primary-500/10 text-primary-300' : 'bg-amber-500/10 text-amber-300'}`}>{s.status}</span>
                           </div>
 
                           {/* Real identity — hidden by default, revealed by admin */}
@@ -325,7 +325,7 @@ export default function SuperAdminPanel() {
                               <div className="flex flex-col gap-1">
                                 <div className="text-[9px] font-bold text-amber-400 uppercase tracking-widest">Real Identity</div>
                                 <div className="text-sm font-bold text-slate-100">{s.name}</div>
-                                <div className="text-xs font-mono text-rose-300 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20 w-fit">
+                                <div className="text-xs font-mono text-accent-300 bg-accent-500/10 px-2 py-0.5 rounded border border-accent-500/20 w-fit">
                                   Roll: {s.student_id || '—'}
                                 </div>
                                 {s.email && <div className="text-[10px] text-slate-500">{s.email}</div>}

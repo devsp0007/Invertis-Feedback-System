@@ -56,22 +56,22 @@ function AdminDashboard() {
   }, []);
 
   const cards = [
-    { icon: Building2,    label: 'Departments',        value: stats?.depts,   color: 'bg-violet-600', glow: 'rgba(139,92,246,0.4)' },
-    { icon: GraduationCap,label: 'Faculty Evaluated',  value: stats?.faculty, color: 'bg-blue-600',   glow: 'rgba(59,130,246,0.4)' },
+    { icon: Building2,    label: 'Departments',        value: stats?.depts,   color: 'bg-primary-600', glow: 'rgba(29, 78, 137, 0.5)' },
+    { icon: GraduationCap,label: 'Faculty Evaluated',  value: stats?.faculty, color: 'bg-accent-600',  glow: 'rgba(198, 40, 40, 0.5)' },
   ];
 
   const actions = [
-    { label: 'User Management',    desc: 'Create HODs & coordinators', path: '/superadmin',  icon: Shield,       glow: '#6366f1' },
-    { label: 'Coordinator Panel',  desc: 'Sections, courses, faculty', path: '/coordinator', icon: Layers,       glow: '#8b5cf6' },
-    { label: 'Analytics',          desc: 'University-wide insights',   path: '/analytics',   icon: BarChart2,    glow: '#3b82f6' },
+    { label: 'User Management',    desc: 'Create HODs & coordinators', path: '/superadmin',  icon: Shield,       glow: '#0F2D52' },
+    { label: 'Coordinator Panel',  desc: 'Sections, courses, faculty', path: '/coordinator', icon: Layers,       glow: '#1D4E89' },
+    { label: 'Analytics',          desc: 'University-wide insights',   path: '/analytics',   icon: BarChart2,    glow: '#C62828' },
   ];
 
   return (
     <div className="flex flex-col gap-6 max-w-4xl">
       <div>
         <div className="flex items-center gap-2 mb-1">
-          <div className="h-2 w-2 rounded-full bg-rose-400 shadow-sm shadow-rose-400/50" />
-          <span className="text-[10px] font-bold text-rose-400 uppercase tracking-widest">Super Admin</span>
+          <div className="h-2 w-2 rounded-full bg-accent-400 shadow-sm shadow-accent-400/50" />
+          <span className="text-[10px] font-bold text-accent-400 uppercase tracking-widest">Super Admin</span>
         </div>
         <h1 className="text-2xl font-black text-white">Control Tower</h1>
         <p className="text-sm text-slate-400 mt-1">University-wide system overview and management.</p>
@@ -113,8 +113,8 @@ function HODOverview() {
   const navigate = useNavigate();
 
   const cards = [
-    { label: 'Create Forms',  desc: 'Design & assign evaluation forms', path: '/hod',       icon: ClipboardList, glow: '#3b82f6' },
-    { label: 'Analytics',     desc: 'Department performance insights',   path: '/analytics', icon: BarChart2,     glow: '#6366f1' },
+    { label: 'Create Forms',  desc: 'Design & assign evaluation forms', path: '/hod',       icon: ClipboardList, glow: '#1D4E89' },
+    { label: 'Analytics',     desc: 'Department performance insights',   path: '/analytics', icon: BarChart2,     glow: '#C62828' },
   ];
 
   return (
@@ -195,7 +195,7 @@ function StudentDashboard() {
         {[
           { icon: Clock,          label: 'Pending',   value: pendingCount,   color: 'text-amber-400',  bg: 'bg-amber-400/10 border-amber-400/20' },
           { icon: CheckCircle2,   label: 'Completed', value: completedCount, color: 'text-emerald-400',bg: 'bg-emerald-400/10 border-emerald-400/20' },
-          { icon: TrendingUp,     label: 'Progress',  value: `${progress}%`, color: 'text-indigo-400', bg: 'bg-indigo-400/10 border-indigo-400/20' },
+          { icon: TrendingUp,     label: 'Progress',  value: `${progress}%`, color: 'text-primary-400', bg: 'bg-primary-400/10 border-primary-400/20' },
         ].map(({ icon: Icon, label, value, color, bg }) => (
           <div key={label} className={`card p-4 border ${bg} flex flex-col gap-1.5`}>
             <Icon size={15} className={color} />
@@ -214,7 +214,7 @@ function StudentDashboard() {
           </div>
           <div className="h-2 bg-white/5 rounded-full overflow-hidden">
             <motion.div initial={{ width: 0 }} animate={{ width: `${progress}%` }} transition={{ duration: 0.8, ease: 'easeOut' }}
-              className="h-full rounded-full" style={{ background: 'linear-gradient(90deg, #6366f1, #8b5cf6)' }} />
+              className="h-full rounded-full" style={{ background: 'linear-gradient(90deg, #0F2D52, #1D4E89)' }} />
           </div>
         </div>
       )}
@@ -239,7 +239,7 @@ function StudentDashboard() {
               {/* Course header */}
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
-                  <span className="text-[10px] font-bold bg-indigo-500/15 text-indigo-300 border border-indigo-500/20 px-2 py-1 rounded-lg font-mono-styled">
+                  <span className="text-[10px] font-bold bg-primary-500/15 text-primary-300 border border-primary-500/20 px-2 py-1 rounded-lg font-mono-styled">
                     {course.code}
                   </span>
                   <h2 className="text-sm font-bold text-slate-100 mt-2 line-clamp-1">{course.name}</h2>
@@ -268,7 +268,7 @@ function StudentDashboard() {
                       className={`flex items-center justify-between p-3 rounded-xl text-left text-xs border transition-all ${
                         tlfq.completed
                           ? 'bg-white/3 border-white/5 text-slate-500 cursor-default'
-                          : 'bg-indigo-500/5 border-indigo-500/20 hover:border-indigo-400/40 hover:bg-indigo-500/10 text-slate-200 cursor-pointer'
+                          : 'bg-primary-500/5 border-primary-500/20 hover:border-primary-400/40 hover:bg-primary-500/10 text-slate-200 cursor-pointer'
                       }`}>
                       <div className="min-w-0">
                         <div className="font-semibold truncate">{tlfq.faculty_name}</div>
@@ -276,7 +276,7 @@ function StudentDashboard() {
                       </div>
                       {tlfq.completed
                         ? <CheckCircle2 size={15} className="text-emerald-500 flex-shrink-0 ml-2" />
-                        : <ArrowRight size={13} className="text-indigo-400 flex-shrink-0 ml-2" />
+                        : <ArrowRight size={13} className="text-primary-400 flex-shrink-0 ml-2" />
                       }
                     </button>
                   ))}

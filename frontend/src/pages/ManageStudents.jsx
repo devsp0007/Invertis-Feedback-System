@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 
-const inputCls = 'bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-5 py-4 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 w-full transition-all shadow-sm';
+const inputCls = 'bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-5 py-4 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500/50 w-full transition-all shadow-sm';
 
 export default function ManageStudents() {
   const { user } = useAuth();
@@ -125,17 +125,17 @@ export default function ManageStudents() {
 
             {/* Header section with sophisticated design */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-10 rounded-[3rem] shadow-sm relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/5 blur-[120px] -mr-48 -mt-48 transition-opacity opacity-50 group-hover:opacity-100" />
+              <div className="absolute top-0 right-0 w-96 h-96 bg-primary-500/5 blur-[120px] -mr-48 -mt-48 transition-opacity opacity-50 group-hover:opacity-100" />
               <div className="z-10 flex items-start gap-8">
                 <button
                   onClick={() => window.history.back()}
-                  className="mt-1 h-14 w-14 flex items-center justify-center bg-slate-50 dark:bg-slate-800 hover:bg-indigo-600 text-slate-400 dark:text-slate-500 hover:text-white rounded-[1.5rem] transition-all cursor-pointer border border-slate-100 dark:border-slate-700 active:scale-90 shadow-sm"
+                  className="mt-1 h-14 w-14 flex items-center justify-center bg-slate-50 dark:bg-slate-800 hover:bg-primary-600 text-slate-400 dark:text-slate-500 hover:text-white rounded-[1.5rem] transition-all cursor-pointer border border-slate-100 dark:border-slate-700 active:scale-90 shadow-sm"
                 >
                   <ArrowLeft size={24} />
                 </button>
                 <div>
                   <div className="flex items-center gap-4">
-                    <div className="h-2 w-2 rounded-full bg-indigo-500" />
+                    <div className="h-2 w-2 rounded-full bg-primary-500" />
                     <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">Student Directory</h1>
                   </div>
                   <p className="text-slate-500 dark:text-slate-400 text-sm mt-4 max-w-lg font-bold leading-relaxed uppercase tracking-widest opacity-80">
@@ -156,7 +156,7 @@ export default function ManageStudents() {
                 </div>
                 <button
                   onClick={() => openModal()}
-                  className="flex items-center gap-3 px-10 py-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-[2rem] font-black text-xs uppercase tracking-[0.15em] transition-all shadow-2xl shadow-indigo-500/30 hover:scale-[1.03] active:scale-95 cursor-pointer"
+                  className="flex items-center gap-3 px-10 py-5 bg-primary-600 hover:bg-primary-700 text-white rounded-[2rem] font-black text-xs uppercase tracking-[0.15em] transition-all shadow-2xl shadow-primary-500/30 hover:scale-[1.03] active:scale-95 cursor-pointer"
                 >
                   <UserPlus size={18} />
                   <span>Onboard Student</span>
@@ -167,11 +167,11 @@ export default function ManageStudents() {
             {/* Advanced Filters */}
             <div className="flex flex-col lg:flex-row gap-6">
               <div className="flex-1 relative group">
-                <Search className="absolute left-8 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 group-focus-within:text-indigo-500 transition-all" size={24} />
+                <Search className="absolute left-8 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 group-focus-within:text-primary-500 transition-all" size={24} />
                 <input
                   type="text"
                   placeholder="Query names, ID tags, or digital handles..."
-                  className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] pl-20 pr-10 py-6 text-sm text-slate-800 dark:text-white font-bold focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all placeholder-slate-400 dark:placeholder-slate-700 shadow-sm"
+                  className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] pl-20 pr-10 py-6 text-sm text-slate-800 dark:text-white font-bold focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all placeholder-slate-400 dark:placeholder-slate-700 shadow-sm"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
@@ -179,9 +179,9 @@ export default function ManageStudents() {
 
               {user.role === 'admin' && (
                 <div className="lg:w-96 relative group">
-                  <Filter className="absolute left-8 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 group-focus-within:text-indigo-500 transition-all" size={22} />
+                  <Filter className="absolute left-8 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 group-focus-within:text-primary-500 transition-all" size={22} />
                   <select
-                    className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] pl-20 pr-14 py-6 text-sm font-black text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 appearance-none cursor-pointer shadow-sm uppercase tracking-widest transition-all"
+                    className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] pl-20 pr-14 py-6 text-sm font-black text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 appearance-none cursor-pointer shadow-sm uppercase tracking-widest transition-all"
                     value={selectedDept}
                     onChange={(e) => setSelectedDept(e.target.value)}
                   >
@@ -190,7 +190,7 @@ export default function ManageStudents() {
                       <option key={d._id} value={d.name}>{d.name}</option>
                     ))}
                   </select>
-                  <div className="absolute right-8 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none group-focus-within:text-indigo-500 transition-colors">
+                  <div className="absolute right-8 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none group-focus-within:text-primary-500 transition-colors">
                     <ChevronRight className="rotate-90" size={20} />
                   </div>
                 </div>
@@ -211,7 +211,7 @@ export default function ManageStudents() {
                     </div>
                     <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-3">No Records Identified</h3>
                     <p className="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-[10px] max-w-xs mx-auto">Try broadening your search criteria or scope selection.</p>
-                    <button onClick={() => { setSearch(''); setSelectedDept('all'); }} className="mt-10 px-10 py-4 bg-slate-50 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-[10px] font-black rounded-2xl uppercase tracking-[0.2em] transition-all border border-slate-100 dark:border-slate-700">Reset System View</button>
+                    <button onClick={() => { setSearch(''); setSelectedDept('all'); }} className="mt-10 px-10 py-4 bg-slate-50 dark:bg-slate-800 hover:bg-primary-50 dark:hover:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-[10px] font-black rounded-2xl uppercase tracking-[0.2em] transition-all border border-slate-100 dark:border-slate-700">Reset System View</button>
                   </motion.div>
                 ) : filteredStudents.map((student, idx) => (
                   <motion.div
@@ -221,17 +221,17 @@ export default function ManageStudents() {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, scale: 0.98 }}
                     transition={{ delay: idx * 0.04 }}
-                    className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-500/40 rounded-[2.5rem] p-8 transition-all shadow-sm hover:shadow-2xl hover:shadow-indigo-500/5 flex flex-col lg:flex-row lg:items-center gap-10 relative overflow-hidden"
+                    className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary-500/40 rounded-[2.5rem] p-8 transition-all shadow-sm hover:shadow-2xl hover:shadow-primary-500/5 flex flex-col lg:flex-row lg:items-center gap-10 relative overflow-hidden"
                   >
-                    <div className="absolute top-0 left-0 w-1.5 h-full bg-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="absolute top-0 left-0 w-1.5 h-full bg-primary-500 opacity-0 group-hover:opacity-100 transition-opacity" />
 
                     {/* Identity block */}
                     <div className="flex items-center gap-8 lg:w-[35%] shrink-0">
-                      <div className="h-20 w-20 rounded-[2rem] bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/40 flex items-center justify-center text-indigo-600 dark:text-indigo-400 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-700 shadow-inner overflow-hidden">
+                      <div className="h-20 w-20 rounded-[2rem] bg-primary-50 dark:bg-primary-950/30 border border-primary-100 dark:border-primary-900/40 flex items-center justify-center text-primary-600 dark:text-primary-400 group-hover:bg-primary-600 group-hover:text-white transition-all duration-700 shadow-inner overflow-hidden">
                         <GraduationCap size={40} className="group-hover:scale-110 transition-transform" />
                       </div>
                       <div className="min-w-0">
-                        <h3 className="font-black text-slate-900 dark:text-white text-2xl tracking-tight leading-tight group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors truncate mb-1">
+                        <h3 className="font-black text-slate-900 dark:text-white text-2xl tracking-tight leading-tight group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors truncate mb-1">
                           {student.name}
                         </h3>
                         <div className="flex items-center gap-3">
@@ -245,7 +245,7 @@ export default function ManageStudents() {
                     {/* Meta data block */}
                     <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-10">
                       <div className="flex items-center gap-5">
-                        <div className="h-12 w-12 rounded-2xl bg-slate-50 dark:bg-slate-850 flex items-center justify-center text-slate-400 group-hover:text-indigo-500 transition-all border border-slate-100 dark:border-slate-800 shrink-0 shadow-sm">
+                        <div className="h-12 w-12 rounded-2xl bg-slate-50 dark:bg-slate-850 flex items-center justify-center text-slate-400 group-hover:text-primary-500 transition-all border border-slate-100 dark:border-slate-800 shrink-0 shadow-sm">
                           <Building2 size={20} />
                         </div>
                         <div className="flex flex-col min-w-0">
@@ -255,7 +255,7 @@ export default function ManageStudents() {
                       </div>
 
                       <div className="flex items-center gap-5">
-                        <div className="h-12 w-12 rounded-2xl bg-slate-50 dark:bg-slate-850 flex items-center justify-center text-slate-400 group-hover:text-indigo-500 transition-all border border-slate-100 dark:border-slate-800 shrink-0 shadow-sm">
+                        <div className="h-12 w-12 rounded-2xl bg-slate-50 dark:bg-slate-850 flex items-center justify-center text-slate-400 group-hover:text-primary-500 transition-all border border-slate-100 dark:border-slate-800 shrink-0 shadow-sm">
                           <Mail size={20} />
                         </div>
                         <div className="flex flex-col min-w-0">
@@ -265,13 +265,13 @@ export default function ManageStudents() {
                       </div>
 
                       <div className="flex items-center gap-5">
-                        <div className="h-12 w-12 rounded-2xl bg-slate-50 dark:bg-slate-850 flex items-center justify-center text-slate-400 group-hover:text-indigo-500 transition-all border border-slate-100 dark:border-slate-800 shrink-0 shadow-sm">
+                        <div className="h-12 w-12 rounded-2xl bg-slate-50 dark:bg-slate-850 flex items-center justify-center text-slate-400 group-hover:text-primary-500 transition-all border border-slate-100 dark:border-slate-800 shrink-0 shadow-sm">
                           <Hash size={20} />
                         </div>
                         <div className="flex flex-col">
                           <span className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">Load Status</span>
                           <div className="flex items-center gap-2">
-                            <span className="text-xs font-black text-indigo-600 dark:text-indigo-400">{student.enrollment_count} Active Modules</span>
+                            <span className="text-xs font-black text-primary-600 dark:text-primary-400">{student.enrollment_count} Active Modules</span>
                           </div>
                         </div>
                       </div>
@@ -281,14 +281,14 @@ export default function ManageStudents() {
                     <div className="flex items-center justify-end gap-4 lg:w-[15%] shrink-0">
                       <button
                         onClick={() => openModal(student)}
-                        className="h-14 w-14 flex items-center justify-center bg-white dark:bg-slate-800 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 rounded-[1.5rem] transition-all border border-slate-100 dark:border-slate-700 cursor-pointer shadow-sm active:scale-90"
+                        className="h-14 w-14 flex items-center justify-center bg-white dark:bg-slate-800 text-slate-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/40 rounded-[1.5rem] transition-all border border-slate-100 dark:border-slate-700 cursor-pointer shadow-sm active:scale-90"
                         title="Edit Profile"
                       >
                         <Edit size={20} />
                       </button>
                       <button
                         onClick={() => handleDelete(student.id)}
-                        className="h-14 w-14 flex items-center justify-center bg-white dark:bg-slate-800 text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/40 rounded-[1.5rem] transition-all border border-slate-100 dark:border-slate-700 cursor-pointer shadow-sm active:scale-90"
+                        className="h-14 w-14 flex items-center justify-center bg-white dark:bg-slate-800 text-slate-400 hover:text-accent-500 hover:bg-accent-50 dark:hover:bg-accent-900/40 rounded-[1.5rem] transition-all border border-slate-100 dark:border-slate-700 cursor-pointer shadow-sm active:scale-90"
                         title="Purge Record"
                       >
                         <Trash2 size={20} />
@@ -309,7 +309,7 @@ export default function ManageStudents() {
                   <button
                     disabled={pagination.page <= 1 || loading}
                     onClick={() => fetchData(pagination.page - 1)}
-                    className="px-6 py-3 bg-slate-50 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-[10px] font-black rounded-xl uppercase tracking-widest transition-all border border-slate-100 dark:border-slate-700 disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="px-6 py-3 bg-slate-50 dark:bg-slate-800 hover:bg-primary-50 dark:hover:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-[10px] font-black rounded-xl uppercase tracking-widest transition-all border border-slate-100 dark:border-slate-700 disabled:opacity-30 disabled:cursor-not-allowed"
                   >
                     Previous
                   </button>
@@ -319,7 +319,7 @@ export default function ManageStudents() {
                   <button
                     disabled={pagination.page >= pagination.totalPages || loading}
                     onClick={() => fetchData(pagination.page + 1)}
-                    className="px-6 py-3 bg-slate-50 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-[10px] font-black rounded-xl uppercase tracking-widest transition-all border border-slate-100 dark:border-slate-700 disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="px-6 py-3 bg-slate-50 dark:bg-slate-800 hover:bg-primary-50 dark:hover:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-[10px] font-black rounded-xl uppercase tracking-widest transition-all border border-slate-100 dark:border-slate-700 disabled:opacity-30 disabled:cursor-not-allowed"
                   >
                     Next
                   </button>
@@ -349,7 +349,7 @@ export default function ManageStudents() {
                       <div className="flex items-center justify-between mb-12">
                         <div>
                           <div className="flex items-center gap-3">
-                            <div className="h-2 w-2 rounded-full bg-indigo-500" />
+                            <div className="h-2 w-2 rounded-full bg-primary-500" />
                             <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
                               {editingId ? 'Modify Record' : 'Student Intake'}
                             </h2>
@@ -358,7 +358,7 @@ export default function ManageStudents() {
                         </div>
                         <button
                           onClick={() => setShowModal(false)}
-                          className="h-14 w-14 flex items-center justify-center bg-slate-50 dark:bg-slate-800 hover:bg-rose-600 text-slate-400 hover:text-white rounded-2xl transition-all cursor-pointer border border-slate-100 dark:border-slate-700"
+                          className="h-14 w-14 flex items-center justify-center bg-slate-50 dark:bg-slate-800 hover:bg-accent-600 text-slate-400 hover:text-white rounded-2xl transition-all cursor-pointer border border-slate-100 dark:border-slate-700"
                         >
                           <X size={26} />
                         </button>
@@ -441,7 +441,7 @@ export default function ManageStudents() {
                           <button
                             type="submit"
                             disabled={modalLoading}
-                            className="flex-[2] px-8 py-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] transition-all shadow-2xl shadow-indigo-500/40 flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 cursor-pointer disabled:opacity-50"
+                            className="flex-[2] px-8 py-5 bg-primary-600 hover:bg-primary-700 text-white rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] transition-all shadow-2xl shadow-primary-500/40 flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 cursor-pointer disabled:opacity-50"
                           >
                             {modalLoading ? <Loader2 className="animate-spin" size={24} /> : <Save size={24} />}
                             <span>{editingId ? 'Push Updates' : 'Sync Profile'}</span>

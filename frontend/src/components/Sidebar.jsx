@@ -7,12 +7,12 @@ const NAV_ITEM = ({ to, icon: Icon, label, end = false }) => (
     {({ isActive }) => (
       <div className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-[12.5px] font-semibold transition-all duration-200 cursor-pointer ${
         isActive
-          ? 'text-indigo-200 bg-indigo-500/12 border border-indigo-500/20 shadow-sm'
+          ? 'text-primary-300 bg-primary-600/15 border border-primary-500/25 shadow-sm'
           : 'text-slate-500 hover:text-slate-200 hover:bg-white/5 border border-transparent'
       }`}>
-        <Icon size={15} className={isActive ? 'text-indigo-400' : ''} />
+        <Icon size={15} className={isActive ? 'text-primary-400' : ''} />
         <span>{label}</span>
-        {isActive && <div className="ml-auto h-1.5 w-1.5 rounded-full bg-indigo-400" />}
+        {isActive && <div className="ml-auto h-1.5 w-1.5 rounded-full bg-primary-400" />}
       </div>
     )}
   </NavLink>

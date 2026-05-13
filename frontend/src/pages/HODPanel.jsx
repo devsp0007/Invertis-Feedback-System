@@ -140,11 +140,11 @@ export default function HODPanel() {
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                       {[
                         { label: 'Sections', val: stats.sections, color: 'from-blue-500 to-cyan-600' },
-                        { label: 'Faculty', val: stats.faculty, color: 'from-violet-500 to-purple-600' },
-                        { label: 'Courses', val: stats.courses, color: 'from-indigo-500 to-blue-600' },
+                        { label: 'Faculty', val: stats.faculty, color: 'from-violet-500 to-primary-600' },
+                        { label: 'Courses', val: stats.courses, color: 'from-primary-500 to-blue-600' },
                         { label: 'Students', val: stats.students, color: 'from-emerald-500 to-teal-600' },
                         { label: 'My Forms', val: stats.myForms, color: 'from-amber-500 to-orange-600' },
-                        { label: 'Open Forms', val: stats.openForms, color: 'from-rose-500 to-pink-600' },
+                        { label: 'Open Forms', val: stats.openForms, color: 'from-accent-500 to-pink-600' },
                       ].map(({ label, val, color }) => (
                         <div key={label} className="card rounded-2xl p-5">
                           <div className="text-2xl font-black text-slate-100">{val ?? '—'}</div>
@@ -224,7 +224,7 @@ export default function HODPanel() {
                           className="flex-1 input-base rounded-xl px-4 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500" />
                         {questions.length > 1 && (
                           <button type="button" onClick={() => setQuestions(questions.filter((_, j) => j !== i))}
-                            className="text-slate-600 hover:text-rose-400 transition-colors cursor-pointer"><X size={16} /></button>
+                            className="text-slate-600 hover:text-accent-400 transition-colors cursor-pointer"><X size={16} /></button>
                         )}
                       </div>
                     ))}
@@ -259,7 +259,7 @@ export default function HODPanel() {
                       </div>
                       {!f.expired && (
                         <button onClick={() => toggleForm(f.id, f.is_active)}
-                          className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm transition-all cursor-pointer flex-shrink-0 ${f.is_active ? 'bg-rose-600/20 text-rose-400 hover:bg-rose-600/40 border border-rose-800/50' : 'bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600/40 border border-emerald-800/50'}`}>
+                          className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm transition-all cursor-pointer flex-shrink-0 ${f.is_active ? 'bg-accent-600/20 text-accent-400 hover:bg-accent-600/40 border border-accent-800/50' : 'bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600/40 border border-emerald-800/50'}`}>
                           {f.is_active ? <><ToggleRight size={16} /> Close Form</> : <><ToggleLeft size={16} /> Open Form</>}
                         </button>
                       )}

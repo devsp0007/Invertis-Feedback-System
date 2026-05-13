@@ -29,8 +29,8 @@ export default function RatingScale({ value, onChange }) {
               onClick={() => onChange(num)}
               className={`w-12 h-12 flex items-center justify-center rounded-2xl text-base font-bold transition-all duration-200 shadow-sm cursor-pointer border ${
                 isSelected
-                  ? 'bg-indigo-600 border-indigo-600 text-white scale-110 shadow-lg shadow-indigo-300 dark:shadow-indigo-950/40 ring-4 ring-indigo-100 dark:ring-indigo-900/30'
-                  : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 hover:border-indigo-300 dark:hover:border-indigo-700 border-slate-200 dark:border-slate-700'
+                  ? 'bg-primary-600 border-primary-600 text-white scale-110 shadow-lg shadow-primary-300 dark:shadow-primary-950/40 ring-4 ring-primary-100 dark:ring-primary-900/30'
+                  : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-300 dark:hover:border-primary-700 border-slate-200 dark:border-slate-700'
               }`}
             >
               {num}
@@ -43,7 +43,7 @@ export default function RatingScale({ value, onChange }) {
         <motion.p
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 mt-1"
+          className="text-sm font-semibold text-primary-600 dark:text-primary-400 mt-1"
         >
           Selected: {value} — {getRatingLabel(value)}
         </motion.p>

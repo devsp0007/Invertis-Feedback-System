@@ -129,7 +129,7 @@ export default function TLFQPage() {
               </div>
               <button
                 onClick={() => navigate('/dashboard')}
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-xl shadow-indigo-500/20 cursor-pointer flex items-center justify-center gap-3"
+                className="w-full bg-primary-600 hover:bg-primary-700 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-xl shadow-primary-500/20 cursor-pointer flex items-center justify-center gap-3"
               >
                 <GraduationCap size={18} /> Back to My Courses
               </button>
@@ -153,7 +153,7 @@ export default function TLFQPage() {
               <div>
                 <button
                   onClick={() => navigate(-1)}
-                  className="flex items-center gap-1.5 text-[10px] font-black text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition mb-4 cursor-pointer uppercase tracking-widest"
+                  className="flex items-center gap-1.5 text-[10px] font-black text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition mb-4 cursor-pointer uppercase tracking-widest"
                 >
                   <ArrowLeft size={14} /> Back to Course
                 </button>
@@ -163,7 +163,7 @@ export default function TLFQPage() {
                 <span className="flex items-center gap-2 text-[10px] font-black bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/40 text-emerald-600 dark:text-emerald-400 px-4 py-2 rounded-xl uppercase tracking-widest shadow-sm">
                   <Lock size={12} /> Anonymous
                 </span>
-                <span className="flex items-center gap-2 text-[10px] font-black bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800/40 text-indigo-600 dark:text-indigo-400 px-4 py-2 rounded-xl uppercase tracking-widest shadow-sm">
+                <span className="flex items-center gap-2 text-[10px] font-black bg-primary-50 dark:bg-primary-900/20 border border-primary-100 dark:border-primary-800/40 text-primary-600 dark:text-primary-400 px-4 py-2 rounded-xl uppercase tracking-widest shadow-sm">
                   <RefreshCw size={12} className="animate-spin-slow" /> Auto-Save
                 </span>
               </div>
@@ -171,15 +171,15 @@ export default function TLFQPage() {
 
             {loading ? (
               <div className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-24 flex flex-col items-center gap-4 shadow-sm">
-                <div className="h-12 w-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-2" />
+                <div className="h-12 w-12 border-4 border-primary-600 border-t-transparent rounded-full animate-spin mb-2" />
                 <span className="text-xs font-black uppercase tracking-widest text-slate-400 animate-pulse">Initializing Questionnaire...</span>
               </div>
             ) : !evaluation ? (
-              <div className="bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/40 text-rose-600 dark:text-rose-400 p-8 rounded-[2rem] text-sm font-bold text-center shadow-sm">Failed to load questionnaire.</div>
+              <div className="bg-accent-50 dark:bg-accent-950/20 border border-accent-100 dark:border-accent-900/40 text-accent-600 dark:text-accent-400 p-8 rounded-[2rem] text-sm font-bold text-center shadow-sm">Failed to load questionnaire.</div>
             ) : (
               <form onSubmit={handleSubmit} className="flex flex-col gap-10">
                 {/* Evaluation header */}
-                <div className="bg-white dark:bg-slate-900 border border-indigo-100 dark:border-indigo-900/40 rounded-[2.5rem] p-8 flex justify-between items-center shadow-sm">
+                <div className="bg-white dark:bg-slate-900 border border-primary-100 dark:border-primary-900/40 rounded-[2.5rem] p-8 flex justify-between items-center shadow-sm">
                   <div className="min-w-0">
                     <h2 className="text-xl font-black text-slate-900 dark:text-slate-100 truncate">{evaluation?.title}</h2>
                     <div className="flex items-center gap-4 mt-2">
@@ -196,7 +196,7 @@ export default function TLFQPage() {
                   </div>
                   <button
                     type="button" onClick={clearDraft}
-                    className="text-[10px] font-black text-slate-400 hover:text-rose-500 flex items-center gap-2 px-4 py-2 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl transition cursor-pointer uppercase tracking-widest shrink-0"
+                    className="text-[10px] font-black text-slate-400 hover:text-accent-500 flex items-center gap-2 px-4 py-2 hover:bg-accent-50 dark:hover:bg-accent-950/30 rounded-xl transition cursor-pointer uppercase tracking-widest shrink-0"
                   >
                     <RefreshCw size={12} /> Reset Draft
                   </button>
@@ -213,7 +213,7 @@ export default function TLFQPage() {
                      <motion.div
                        initial={{ width: 0 }}
                        animate={{ width: `${(Object.keys(answers).length / Math.max(questions.length, 1)) * 100}%` }}
-                       className="bg-indigo-600 h-full rounded-full transition-all duration-500 shadow-lg shadow-indigo-500/40"
+                       className="bg-primary-600 h-full rounded-full transition-all duration-500 shadow-lg shadow-primary-500/40"
                      />
                    </div>
                 </div>
@@ -226,18 +226,18 @@ export default function TLFQPage() {
                       initial={{ opacity: 0, x: -10 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
-                      className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-8 flex flex-col gap-8 shadow-sm hover:border-indigo-500/30 transition-all group"
+                      className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-8 flex flex-col gap-8 shadow-sm hover:border-primary-500/30 transition-all group"
                     >
                       <div className="flex justify-between items-start gap-6">
                         <div className="flex gap-5">
-                          <span className="shrink-0 flex items-center justify-center h-10 w-10 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-black rounded-2xl text-sm border border-indigo-100 dark:border-indigo-800/30 shadow-sm">
+                          <span className="shrink-0 flex items-center justify-center h-10 w-10 bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 font-black rounded-2xl text-sm border border-primary-100 dark:border-primary-800/30 shadow-sm">
                             {idx + 1}
                           </span>
                           <p className="text-base md:text-lg font-black text-slate-800 dark:text-slate-100 leading-tight pt-1.5">{q.question_text}</p>
                         </div>
                         <button
                           type="button" onClick={() => speakQuestion(q.question_text)}
-                          className="shrink-0 h-10 w-10 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all border border-slate-100 dark:border-slate-700 cursor-pointer flex items-center justify-center"
+                          className="shrink-0 h-10 w-10 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-all border border-slate-100 dark:border-slate-700 cursor-pointer flex items-center justify-center"
                           title="Narrate Question"
                         >
                           <Volume2 size={18} />
@@ -265,7 +265,7 @@ export default function TLFQPage() {
                         type="button" onClick={startVoiceInput}
                         className={`flex items-center gap-2 px-5 py-2.5 text-[10px] font-black rounded-xl transition border uppercase tracking-widest cursor-pointer shadow-sm ${
                           listening
-                            ? 'bg-rose-50 border-rose-200 text-rose-600 animate-pulse'
+                            ? 'bg-accent-50 border-accent-200 text-accent-600 animate-pulse'
                             : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
                         }`}
                       >
@@ -279,7 +279,7 @@ export default function TLFQPage() {
                        value={comment}
                        onChange={e => setComment(e.target.value)}
                        placeholder="Share any specific feedback about teaching style, course content, or improvement suggestions..."
-                       className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 text-sm text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all leading-relaxed font-medium shadow-inner"
+                       className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 text-sm text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-700 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all leading-relaxed font-medium shadow-inner"
                      />
                      <div className="absolute top-4 right-4 pointer-events-none opacity-10 group-focus-within:opacity-30 transition-opacity">
                         <MessageSquare size={40} className="text-slate-400" />
@@ -295,7 +295,7 @@ export default function TLFQPage() {
                 <div className="flex gap-6 pt-4">
                   <button
                     type="submit" disabled={submitting}
-                    className="flex-1 flex items-center justify-center gap-3 bg-indigo-600 hover:bg-indigo-700 text-white font-black py-5 rounded-[2rem] text-sm transition-all shadow-2xl shadow-indigo-500/30 cursor-pointer disabled:opacity-70 uppercase tracking-[0.2em]"
+                    className="flex-1 flex items-center justify-center gap-3 bg-primary-600 hover:bg-primary-700 text-white font-black py-5 rounded-[2rem] text-sm transition-all shadow-2xl shadow-primary-500/30 cursor-pointer disabled:opacity-70 uppercase tracking-[0.2em]"
                   >
                     {submitting
                       ? <span className="h-6 w-6 border-3 border-white border-t-transparent rounded-full animate-spin" />
