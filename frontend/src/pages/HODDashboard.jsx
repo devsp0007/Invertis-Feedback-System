@@ -18,7 +18,7 @@ const COLORS = ['#0F2D52', '#1D4E89', '#10B981', '#F59E0B', '#C62828', '#3B6EA5'
 function RatingBadge({ value, max = 7 }) {
   const pct = (value / max) * 100;
   const color = pct >= 70 ? 'text-emerald-400' : pct >= 50 ? 'text-amber-400' : 'text-accent-400';
-  return <span className={`text-lg font-black ${color}`}>{value.toFixed(1)}<span className="text-xs text-slate-500 font-normal">/{max}</span></span>;
+  return <span className={`text-lg font-black ${color}`}>{value.toFixed(1)}<span className="text-xs text-slate-500 dark:text-slate-400 font-normal">/{max}</span></span>;
 }
 
 export default function HODDashboard() {
@@ -57,7 +57,7 @@ export default function HODDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-500">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-[var(--text-main)] flex flex-col transition-colors duration-500">
       <Navbar />
       <div className="flex flex-col md:flex-row flex-1">
         <Sidebar />
@@ -70,7 +70,7 @@ export default function HODDashboard() {
                 <BarChart2 size={24} className="text-primary-600 dark:text-primary-400" />
                 <h1 className="text-3xl font-black tracking-tight">Department Portal</h1>
               </div>
-              <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
+              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-600 dark:text-slate-400 font-medium">
                 Feedback insights for your department — all data is strictly anonymous.
               </p>
             </div>
@@ -84,7 +84,7 @@ export default function HODDashboard() {
                   className={`flex items-center gap-2.5 px-6 py-4 text-sm font-black border-b-2 transition -mb-px cursor-pointer uppercase tracking-widest ${
                     activeTab === id
                       ? 'border-primary-600 text-primary-600 dark:text-primary-400'
-                      : 'border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
+                      : 'border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-600 dark:hover:text-[var(--text-main)]'
                   }`}
                 >
                   <Icon size={16} /> {label}
@@ -97,7 +97,7 @@ export default function HODDashboard() {
                 {[1, 2, 3, 4].map(n => <div key={n} className="h-44 bg-white dark:bg-slate-900/50 animate-pulse rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm" />)}
               </div>
             ) : !data ? (
-              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-20 text-center text-slate-500 dark:text-slate-400 font-bold shadow-sm">No analytics available for this department.</div>
+              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-20 text-center text-slate-500 dark:text-slate-400 dark:text-slate-600 dark:text-slate-400 font-bold shadow-sm">No analytics available for this department.</div>
             ) : (
               <div className="flex flex-col gap-8">
                 {/* OVERVIEW TAB */}
@@ -111,7 +111,7 @@ export default function HODDashboard() {
                         <div className="flex items-start justify-between mb-10 relative z-10">
                           <div>
                             <div className="flex items-center gap-3">
-                              <h3 className="text-lg font-bold text-slate-100">{dept.name}</h3>
+                              <h3 className="text-lg font-bold text-[var(--text-main)]">{dept.name}</h3>
                               <button
                                 onClick={() => handleTogglePortal(dept.id, dept.portal_open)}
                                 className={`px-2 py-0.5 rounded text-xs font-bold transition-all cursor-pointer ${
@@ -123,7 +123,7 @@ export default function HODDashboard() {
                                 {dept.portal_open ? '● Forms Open' : '○ Forms Closed'}
                               </button>
                             </div>
-                            <span className="text-xs text-slate-500 font-mono">{dept.code}</span>
+                            <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">{dept.code}</span>
                           </div>
                         </div>
                         <div className="grid grid-cols-3 gap-6 relative z-10">
@@ -134,8 +134,8 @@ export default function HODDashboard() {
                           ].map(({ icon: Icon, label, value, color }) => (
                             <div key={label} className="bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 rounded-[1.5rem] p-6 group-hover:border-primary-500/20 transition-all text-center">
                               <Icon size={18} className={`${color} mx-auto mb-2`} />
-                              <div className="text-2xl font-black text-slate-900 dark:text-slate-100">{value}</div>
-                              <div className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mt-1">{label}</div>
+                              <div className="text-2xl font-black text-slate-900 dark:text-[var(--text-main)]">{value}</div>
+                              <div className="text-[10px] font-black text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-widest mt-1">{label}</div>
                             </div>
                           ))}
                         </div>
@@ -143,8 +143,8 @@ export default function HODDashboard() {
                     ))}
                     {(data.deptOverview || []).length === 0 && (
                       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-20 text-center">
-                        <Building2 size={48} className="text-slate-200 dark:text-slate-700 mx-auto mb-6" />
-                        <p className="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-xs">No active departmental records.</p>
+                        <Building2 size={48} className="text-[var(--text-main)] dark:text-slate-700 mx-auto mb-6" />
+                        <p className="text-slate-500 dark:text-slate-400 dark:text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest text-xs">No active departmental records.</p>
                       </div>
                     )}
                   </div>
@@ -154,11 +154,11 @@ export default function HODDashboard() {
                 {activeTab === 'faculty' && (
                   <div className="flex flex-col gap-8">
                     <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-8 shadow-sm">
-                      <h3 className="text-sm font-black text-slate-900 dark:text-slate-200 mb-8 flex items-center gap-3 uppercase tracking-wider">
+                      <h3 className="text-sm font-black text-slate-900 dark:text-[var(--text-main)] mb-8 flex items-center gap-3 uppercase tracking-wider">
                         <TrendingUp size={18} className="text-primary-600 dark:text-primary-400" /> Faculty Performance Ranking
                       </h3>
                       {(data.avgRatingPerFaculty || []).length === 0 ? (
-                        <div className="p-12 text-center text-slate-400 font-bold uppercase text-xs tracking-widest">No evaluation data recorded for faculty.</div>
+                        <div className="p-12 text-center text-slate-600 dark:text-slate-400 font-bold uppercase text-xs tracking-widest">No evaluation data recorded for faculty.</div>
                       ) : (
                         <div className="h-80">
                           <ResponsiveContainer width="100%" height="100%">
@@ -200,13 +200,13 @@ export default function HODDashboard() {
                               i === 0 ? 'bg-gradient-to-br from-amber-300 to-amber-600' : 
                               i === 1 ? 'bg-gradient-to-br from-slate-300 to-slate-500' : 
                               i === 2 ? 'bg-gradient-to-br from-orange-400 to-orange-700' : 
-                              'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700'
+                              'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700'
                             }`}>
                               {i + 1}
                             </div>
                             <div className="flex-1 min-w-0">
                               <h3 className="font-black text-slate-900 dark:text-white text-lg truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{f.name}</h3>
-                              <div className="text-[10px] text-slate-400 dark:text-slate-500 font-black truncate uppercase tracking-[0.1em] mt-1.5">{f.total_responses} Evaluation Samples</div>
+                              <div className="text-[10px] text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-black truncate uppercase tracking-[0.1em] mt-1.5">{f.total_responses} Evaluation Samples</div>
                             </div>
                           </div>
                           <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-100 dark:border-slate-800">
@@ -215,7 +215,7 @@ export default function HODDashboard() {
                                 <span className={`text-2xl font-black ${f.avg_rating >= 5 ? 'text-emerald-500' : f.avg_rating >= 3.5 ? 'text-amber-500' : 'text-accent-500'}`}>
                                   {f.avg_rating.toFixed(1)}
                                 </span>
-                                <span className="text-xs text-slate-400 font-bold uppercase">Rating</span>
+                                <span className="text-xs text-slate-600 dark:text-slate-400 font-bold uppercase">Rating</span>
                              </div>
                           </div>
                         </motion.div>
@@ -233,13 +233,13 @@ export default function HODDashboard() {
                           <div className="min-w-0">
                             <div className="flex items-center gap-3 mb-2">
                               <span className="text-[10px] font-black bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 px-2.5 py-1 rounded-lg border border-primary-100 dark:border-primary-800/30 uppercase tracking-tighter">{c.course_code}</span>
-                              <h4 className="text-base font-black text-slate-900 dark:text-slate-200 truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{c.course_name}</h4>
+                              <h4 className="text-base font-black text-slate-900 dark:text-[var(--text-main)] truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{c.course_name}</h4>
                             </div>
-                            <p className="text-[10px] text-slate-400 dark:text-slate-500 font-black uppercase tracking-widest">{c.department_name}</p>
+                            <p className="text-[10px] text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-black uppercase tracking-widest">{c.department_name}</p>
                           </div>
                           <div className="text-right shrink-0 ml-4">
                             <span className={`text-3xl font-black ${c.rate >= 70 ? 'text-emerald-500' : c.rate >= 40 ? 'text-amber-500' : 'text-accent-500'}`}>{c.rate}%</span>
-                            <div className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mt-1">Submission Rate</div>
+                            <div className="text-[9px] font-black text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-widest mt-1">Submission Rate</div>
                           </div>
                         </div>
                         <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-3 overflow-hidden">
@@ -251,7 +251,7 @@ export default function HODDashboard() {
                           />
                         </div>
                         <div className="flex gap-6 mt-6 pt-4 border-t border-slate-50 dark:border-slate-800/50 text-[10px] font-black uppercase tracking-[0.1em]">
-                          <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
+                          <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 dark:text-slate-600 dark:text-slate-400">
                              <div className="h-2 w-2 rounded-full bg-slate-300 dark:bg-slate-700" />
                              <span>{c.enrolled} Enrolled</span>
                           </div>
@@ -277,8 +277,8 @@ export default function HODDashboard() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {(data.recentComments || []).length === 0 ? (
                         <div className="col-span-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-20 text-center shadow-sm">
-                           <MessageSquare size={48} className="text-slate-200 dark:text-slate-700 mx-auto mb-6" />
-                           <p className="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-xs">No feedback narratives received yet.</p>
+                           <MessageSquare size={48} className="text-[var(--text-main)] dark:text-slate-700 mx-auto mb-6" />
+                           <p className="text-slate-500 dark:text-slate-400 dark:text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest text-xs">No feedback narratives received yet.</p>
                         </div>
                       ) : (
                         (data.recentComments || []).map((c, i) => (
@@ -290,10 +290,10 @@ export default function HODDashboard() {
                           >
                             <div className="flex items-center gap-2 mb-6">
                                <div className="h-1.5 w-1.5 rounded-full bg-primary-500" />
-                               <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{c.faculty_name}</span>
+                               <span className="text-[10px] font-black text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-widest">{c.faculty_name}</span>
                             </div>
-                            <p className="text-sm text-slate-700 dark:text-slate-300 italic leading-relaxed font-medium">"{c.comment}"</p>
-                            <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-50 dark:border-slate-800/50 text-[10px] font-black text-slate-400 dark:text-slate-600 uppercase tracking-widest">
+                            <p className="text-sm text-slate-700 dark:text-slate-700 dark:text-slate-300 italic leading-relaxed font-medium">"{c.comment}"</p>
+                            <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-50 dark:border-slate-800/50 text-[10px] font-black text-slate-600 dark:text-slate-400 dark:text-slate-600 uppercase tracking-widest">
                               <span className="truncate max-w-[150px]">{c.course_name}</span>
                               <span>{new Date(c.submitted_at).toLocaleDateString()}</span>
                             </div>

@@ -18,7 +18,7 @@ export default function Leaderboard() {
   }, []);
 
   return (
-    <div className="min-h-screen mesh-bg text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] text-[var(--text-main)] flex flex-col">
       <Navbar />
       <div className="flex flex-col md:flex-row flex-1">
         <Sidebar />
@@ -30,8 +30,8 @@ export default function Leaderboard() {
               <div className="inline-flex h-16 w-16 bg-gradient-to-br from-accent-400 to-accent-600 rounded-3xl items-center justify-center shadow-xl shadow-accent-600/30 mb-4">
                 <Trophy size={32} className="text-white" />
               </div>
-              <h1 className="text-3xl font-black text-slate-100">Top Contributors</h1>
-              <p className="text-sm text-slate-400 mt-2">
+              <h1 className="text-3xl font-black text-[var(--text-main)]">Top Contributors</h1>
+              <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
                 Earn points by submitting feedback and improving teaching quality.
               </p>
             </div>
@@ -53,8 +53,8 @@ export default function Leaderboard() {
             ) : students.length === 0 ? (
               <div className="card rounded-3xl p-12 text-center flex flex-col items-center">
                 <Users size={40} className="text-slate-600 mb-4" />
-                <h3 className="text-lg font-bold text-slate-300">No data available yet</h3>
-                <p className="text-slate-500 text-sm mt-1">Submit feedback to appear on the leaderboard!</p>
+                <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300">No data available yet</h3>
+                <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Submit feedback to appear on the leaderboard!</p>
               </div>
             ) : (
               <div className="flex flex-col gap-3">
@@ -76,7 +76,7 @@ export default function Leaderboard() {
                       idx === 0 ? 'bg-gradient-to-br from-accent-300 to-accent-600 text-white' :
                       idx === 1 ? 'bg-gradient-to-br from-primary-300 to-primary-600 text-white' :
                       idx === 2 ? 'bg-gradient-to-br from-accent-600 to-accent-800 text-white' :
-                      'bg-slate-800 text-slate-500'
+                      'bg-slate-800 text-slate-500 dark:text-slate-400'
                     }`}>
                       #{s.rank}
                     </div>
@@ -84,14 +84,14 @@ export default function Leaderboard() {
                     {/* Anonymous ID */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-mono font-black text-slate-100 text-lg tracking-wider">
+                        <span className="font-mono font-black text-[var(--text-main)] text-lg tracking-wider">
                           {s.unique_feedback_id}
                         </span>
                         {idx === 0 && <Medal size={16} className="text-accent-400 flex-shrink-0" />}
                         {idx === 1 && <Medal size={16} className="text-primary-300 flex-shrink-0" />}
                         {idx === 2 && <Medal size={16} className="text-accent-600 flex-shrink-0" />}
                       </div>
-                      <div className="text-xs text-slate-500 mt-1 font-medium">
+                      <div className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
                         Anonymous Participant · Batch: {s.batch || '2025'}
                       </div>
                     </div>
@@ -101,7 +101,7 @@ export default function Leaderboard() {
                       <div className="flex items-center gap-1.5 bg-slate-950/60 px-3 py-1.5 rounded-xl border border-slate-800">
                         <Star size={14} className="text-accent-400 fill-accent-400" />
                         <span className="font-black text-accent-400 text-sm">{s.points}</span>
-                        <span className="text-xs text-slate-500 font-bold">PTS</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400 font-bold">PTS</span>
                       </div>
                     </div>
                   </motion.div>

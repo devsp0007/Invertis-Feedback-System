@@ -5,14 +5,13 @@ import { LayoutDashboard, GraduationCap, BarChart2, Trophy, Shield, Users, Layer
 const NAV_ITEM = ({ to, icon: Icon, label, end = false }) => (
   <NavLink to={to} end={end}>
     {({ isActive }) => (
-      <div className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-[12.5px] font-semibold transition-all duration-200 cursor-pointer ${
+      <div className={`flex items-center gap-3 px-4 py-3 rounded text-sm font-medium transition-all duration-200 cursor-pointer ${
         isActive
-          ? 'text-primary-300 bg-primary-600/15 border border-primary-500/25 shadow-sm'
-          : 'text-slate-500 hover:text-slate-200 hover:bg-white/5 border border-transparent'
+          ? 'bg-[#E63946] text-white shadow-md'
+          : 'text-white/70 hover:text-white hover:hover:bg-black/5 dark:hover:bg-white/5 border border-transparent'
       }`}>
-        <Icon size={15} className={isActive ? 'text-primary-400' : ''} />
+        <Icon size={18} className={isActive ? 'text-white' : ''} />
         <span>{label}</span>
-        {isActive && <div className="ml-auto h-1.5 w-1.5 rounded-full bg-primary-400" />}
       </div>
     )}
   </NavLink>
@@ -24,7 +23,7 @@ export default function Sidebar() {
 
   const sections = {
     student: [
-      { to: '/dashboard', icon: LayoutDashboard, label: 'My Courses', end: true },
+      { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', end: true },
       { to: '/leaderboard', icon: Trophy, label: 'Leaderboard' },
     ],
     hod: [
@@ -33,7 +32,7 @@ export default function Sidebar() {
       { to: '/leaderboard', icon: Trophy, label: 'Leaderboard' },
     ],
     coordinator: [
-      { to: '/coordinator', icon: Layers, label: 'Coordinator Panel', end: true },
+      { to: '/coordinator', icon: Layers, label: 'Dashboard', end: true },
       { to: '/leaderboard', icon: Trophy, label: 'Leaderboard' },
     ],
     super_admin: [
@@ -57,15 +56,16 @@ export default function Sidebar() {
   const links = sections[role] || sections.student;
 
   return (
-    <aside
-      className="w-full md:w-52 shrink-0 border-b md:border-b-0 md:border-r border-[var(--border-base)] p-3 flex flex-row md:flex-col gap-1 overflow-x-auto no-scrollbar md:overflow-visible bg-black/5 dark:bg-white/5"
-    >
+    <aside className="w-full md:w-64 shrink-0 border-b md:border-b-0 md:border-r border-[#152740] p-4 flex flex-row md:flex-col gap-2 overflow-x-auto no-scrollbar md:overflow-visible bg-[#1D3557] min-h-[calc(100vh-64px)]">
       {/* Role indicator */}
-      <div className="hidden md:flex items-center gap-2 px-3 py-2 mb-2">
-        <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50 animate-pulse" />
-        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-          {role?.replace('_', ' ')}
-        </span>
+      <div className="hidden md:flex items-center gap-3 px-2 py-3 mb-2 border-b border-white/10">
+        <div className="h-10 w-10 rounded-full bg-[#E63946] flex items-center justify-center text-white font-bold">
+          {user?.name?.charAt(0) || 'U'}
+        </div>
+        <div className="flex flex-col">
+          <span className="text-sm font-bold text-white">{user?.name}</span>
+          <span className="text-[10px] text-white/50 uppercase tracking-widest">{role?.replace('_', ' ')}</span>
+        </div>
       </div>
 
       {links.map(item => (

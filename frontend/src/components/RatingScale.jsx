@@ -30,7 +30,7 @@ export default function RatingScale({ value, onChange }) {
               className={`w-12 h-12 flex items-center justify-center rounded-2xl text-base font-bold transition-all duration-200 shadow-sm cursor-pointer border ${
                 isSelected
                   ? 'bg-primary-600 border-primary-600 text-white scale-110 shadow-lg shadow-primary-300 dark:shadow-primary-950/40 ring-4 ring-primary-100 dark:ring-primary-900/30'
-                  : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-300 dark:hover:border-primary-700 border-slate-200 dark:border-slate-700'
+                  : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-[var(--text-main)] hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-300 dark:hover:border-primary-700 border-slate-200 dark:border-slate-700'
               }`}
             >
               {num}

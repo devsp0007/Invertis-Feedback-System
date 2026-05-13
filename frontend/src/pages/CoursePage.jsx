@@ -37,7 +37,7 @@ export default function CoursePage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-500">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-[var(--text-main)] flex flex-col transition-colors duration-500">
       <Navbar />
 
       <div className="flex flex-col md:flex-row flex-1">
@@ -52,7 +52,7 @@ export default function CoursePage() {
             <div>
               <button
                 onClick={() => navigate('/dashboard')}
-                className="flex items-center gap-1.5 text-xs font-black text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition mb-6 cursor-pointer uppercase tracking-widest"
+                className="flex items-center gap-1.5 text-xs font-black text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition mb-6 cursor-pointer uppercase tracking-widest"
               >
                 <ArrowLeft size={14} /> Back to Dashboard
               </button>
@@ -60,7 +60,7 @@ export default function CoursePage() {
               <h1 className="text-3xl md:text-4xl font-black tracking-tight flex items-center gap-2">
                 Course Evaluations
               </h1>
-              <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 font-medium">
+              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-600 dark:text-slate-400 mt-2 font-medium">
                 Your feedback helps us understand and improve course teaching methods.
               </p>
             </div>
@@ -68,7 +68,7 @@ export default function CoursePage() {
             {loading ? (
               <div className="bg-white dark:bg-slate-900/50 p-24 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center min-h-[400px] shadow-sm">
                 <div className="h-12 w-12 border-4 border-primary-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-                <span className="text-xs font-black uppercase tracking-[0.2em] text-slate-400 animate-pulse">Scanning Forms...</span>
+                <span className="text-xs font-black uppercase tracking-[0.2em] text-slate-600 dark:text-slate-400 animate-pulse">Scanning Forms...</span>
               </div>
             ) : error || evaluations.length === 0 ? (
               <div className="bg-white dark:bg-slate-900/50 p-12 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 text-center flex flex-col items-center justify-center min-h-[400px] gap-6 shadow-sm">
@@ -76,8 +76,8 @@ export default function CoursePage() {
                   <FileText size={32} />
                 </div>
                 <div>
-                  <h3 className="font-black text-xl text-slate-900 dark:text-slate-100 mb-2">Evaluations Missing</h3>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 max-w-xs leading-relaxed font-medium mx-auto">
+                  <h3 className="font-black text-xl text-slate-900 dark:text-[var(--text-main)] mb-2">Evaluations Missing</h3>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-600 dark:text-slate-400 max-w-xs leading-relaxed font-medium mx-auto">
                     {error || 'There are no active evaluation questionnaires published for this course yet.'}
                   </p>
                 </div>
@@ -91,10 +91,10 @@ export default function CoursePage() {
             ) : (
               <div className="flex flex-col gap-6">
                 <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
-                  <h3 className="font-black text-slate-900 dark:text-slate-300 text-xs uppercase tracking-[0.15em]">
+                  <h3 className="font-black text-slate-900 dark:text-slate-700 dark:text-slate-300 text-xs uppercase tracking-[0.15em]">
                     Available Forms ({evaluations.length})
                   </h3>
-                  <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Select form to begin</span>
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-black uppercase tracking-widest">Select form to begin</span>
                 </div>
 
                 {evaluations.map((ev, idx) => {
@@ -121,7 +121,7 @@ export default function CoursePage() {
                             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 px-3 py-1 rounded-lg border border-primary-100 dark:border-primary-800/30">
                               Form Identifier #{idx + 1}
                             </span>
-                            <h2 className="text-xl md:text-2xl font-black text-slate-900 dark:text-slate-100 mt-3 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                            <h2 className="text-xl md:text-2xl font-black text-slate-900 dark:text-[var(--text-main)] mt-3 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
                               {ev.title}
                             </h2>
                           </div>
@@ -138,7 +138,7 @@ export default function CoursePage() {
                           </div>
                         </div>
 
-                        <div className={`h-12 w-12 rounded-2xl flex items-center justify-center transition-all duration-500 ${isOpen ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/30 rotate-180' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
+                        <div className={`h-12 w-12 rounded-2xl flex items-center justify-center transition-all duration-500 ${isOpen ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/30 rotate-180' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'}`}>
                           <ChevronDown size={24} />
                         </div>
                       </button>
@@ -158,8 +158,8 @@ export default function CoursePage() {
                                   <BookOpen size={20} />
                                 </div>
                                 <div>
-                                  <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Course Module</p>
-                                  <h4 className="text-sm font-black text-slate-900 dark:text-slate-100">
+                                  <p className="text-[10px] font-black text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-widest">Course Module</p>
+                                  <h4 className="text-sm font-black text-slate-900 dark:text-[var(--text-main)]">
                                     {ev.course_name || 'Generic University Course'}
                                   </h4>
                                 </div>
@@ -170,8 +170,8 @@ export default function CoursePage() {
                                   <Award size={20} />
                                 </div>
                                 <div>
-                                  <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Instructor Record</p>
-                                  <h4 className="text-sm font-black text-slate-900 dark:text-slate-100">
+                                  <p className="text-[10px] font-black text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-widest">Instructor Record</p>
+                                  <h4 className="text-sm font-black text-slate-900 dark:text-[var(--text-main)]">
                                     {ev.faculty_name}
                                   </h4>
                                 </div>

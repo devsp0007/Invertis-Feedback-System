@@ -5,7 +5,7 @@ import api from '../services/api';
 import { motion } from 'framer-motion';
 import { BookOpen, Users, Plus, Trash2, Settings, Building2, Download, Upload, RefreshCw } from 'lucide-react';
 
-const inputCls = 'bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-5 py-4 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500/50 w-full transition-all shadow-sm';
+const inputCls = 'bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-5 py-4 text-sm text-slate-800 dark:text-[var(--text-main)] placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500/50 w-full transition-all shadow-sm';
 
 export default function ManageDirectory() {
   const [activeTab, setActiveTab] = useState('departments');
@@ -115,7 +115,7 @@ export default function ManageDirectory() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-500">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-[var(--text-main)] flex flex-col transition-colors duration-500">
       <Navbar />
       <div className="flex flex-col md:flex-row flex-1">
         <Sidebar />
@@ -126,7 +126,7 @@ export default function ManageDirectory() {
                 <Settings size={24} className="text-primary-500" />
                 <h1 className="text-3xl font-black">Directory Hub</h1>
               </div>
-              <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Manage the structural entities of the feedback system.</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-600 dark:text-slate-400 font-medium">Manage the structural entities of the feedback system.</p>
             </div>
 
             {msg.text && (
@@ -146,7 +146,7 @@ export default function ManageDirectory() {
                   className={`flex items-center gap-2.5 px-6 py-4 text-sm font-black border-b-2 transition -mb-px cursor-pointer uppercase tracking-widest ${
                     activeTab === id
                       ? 'border-primary-600 text-primary-600 dark:text-primary-400'
-                      : 'border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
+                      : 'border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-600 dark:hover:text-[var(--text-main)]'
                   }`}
                 >
                   <Icon size={16} /> {label}
@@ -157,7 +157,7 @@ export default function ManageDirectory() {
             {loading ? (
               <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-24 flex flex-col items-center gap-4 shadow-sm">
                 <div className="h-12 w-12 border-4 border-primary-600 border-t-transparent rounded-full animate-spin" />
-                <span className="text-xs font-black uppercase tracking-[0.2em] text-slate-400 animate-pulse">Syncing Directory...</span>
+                <span className="text-xs font-black uppercase tracking-[0.2em] text-slate-600 dark:text-slate-400 animate-pulse">Syncing Directory...</span>
               </div>
             ) : (
               <div className="flex flex-col gap-8">
@@ -165,7 +165,7 @@ export default function ManageDirectory() {
                 {activeTab === 'departments' && (
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col gap-6 h-fit shadow-sm">
-                      <h3 className="font-black text-slate-900 dark:text-slate-200 flex items-center gap-2 text-sm uppercase tracking-wider"><Plus size={18} className="text-primary-500" /> New Department</h3>
+                      <h3 className="font-black text-slate-900 dark:text-[var(--text-main)] flex items-center gap-2 text-sm uppercase tracking-wider"><Plus size={18} className="text-primary-500" /> New Department</h3>
                       <form onSubmit={handleCreateDept} className="flex flex-col gap-4">
                         <input type="text" placeholder="Engineering Name" value={deptName} onChange={e => setDeptName(e.target.value)} className={inputCls} />
                         <input type="text" placeholder="Short Code (e.g. CSE)" value={deptCode} onChange={e => setDeptCode(e.target.value)} className={inputCls} />
@@ -174,7 +174,7 @@ export default function ManageDirectory() {
                     </div>
                     <div className="lg:col-span-2 flex flex-col gap-6">
                       <div className="flex items-center justify-between mb-2 px-2">
-                        <h3 className="font-black text-slate-900 dark:text-slate-200 text-sm flex items-center gap-2 uppercase tracking-wider"><Building2 size={18} className="text-primary-500" /> Registered Entities</h3>
+                        <h3 className="font-black text-slate-900 dark:text-[var(--text-main)] text-sm flex items-center gap-2 uppercase tracking-wider"><Building2 size={18} className="text-primary-500" /> Registered Entities</h3>
                         <span className="text-[10px] font-black bg-primary-50 dark:bg-primary-900/40 text-primary-600 dark:text-primary-300 border border-primary-100 dark:border-primary-800/40 px-3 py-1 rounded-full uppercase tracking-widest">{departments.length} Units</span>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -199,7 +199,7 @@ export default function ManageDirectory() {
                               </div>
                               <div className="flex-1 min-w-0">
                                 <h3 className="font-black text-slate-900 dark:text-white text-base truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{d.name}</h3>
-                                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 dark:bg-slate-800/50 rounded-lg text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest border border-slate-200/50 dark:border-slate-700/50 mt-1.5">
+                                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 dark:bg-slate-800/50 rounded-lg text-[10px] font-black text-slate-500 dark:text-slate-400 dark:text-slate-600 dark:text-slate-400 uppercase tracking-widest border border-slate-200/50 dark:border-slate-700/50 mt-1.5">
                                   {d.code}
                                 </div>
                               </div>
@@ -215,7 +215,7 @@ export default function ManageDirectory() {
                 {activeTab === 'courses' && (
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col gap-6 h-fit shadow-sm">
-                      <h3 className="font-black text-slate-900 dark:text-slate-200 flex items-center gap-2 text-sm uppercase tracking-wider"><Plus size={18} className="text-primary-500" /> New Course</h3>
+                      <h3 className="font-black text-slate-900 dark:text-[var(--text-main)] flex items-center gap-2 text-sm uppercase tracking-wider"><Plus size={18} className="text-primary-500" /> New Course</h3>
                       <form onSubmit={handleCreateCourse} className="flex flex-col gap-4">
                         <input type="text" placeholder="CS-XXX" value={courseCode} onChange={e => setCourseCode(e.target.value)} className={inputCls} />
                         <input type="text" placeholder="Course Title" value={courseName} onChange={e => setCourseName(e.target.value)} className={inputCls} />
@@ -228,7 +228,7 @@ export default function ManageDirectory() {
                     </div>
                     <div className="lg:col-span-2 flex flex-col gap-6">
                       <div className="flex items-center justify-between mb-2 px-2">
-                        <h3 className="font-black text-slate-900 dark:text-slate-200 text-sm flex items-center gap-2 uppercase tracking-wider"><BookOpen size={18} className="text-primary-500" /> Academic Catalog</h3>
+                        <h3 className="font-black text-slate-900 dark:text-[var(--text-main)] text-sm flex items-center gap-2 uppercase tracking-wider"><BookOpen size={18} className="text-primary-500" /> Academic Catalog</h3>
                         <span className="text-[10px] font-black bg-primary-50 dark:bg-primary-900/40 text-primary-600 dark:text-primary-300 border border-primary-100 dark:border-primary-800/40 px-3 py-1 rounded-full uppercase tracking-widest">{courses.length} Courses</span>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -255,7 +255,7 @@ export default function ManageDirectory() {
                                 <h3 className="font-black text-slate-900 dark:text-white text-base truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{c.name}</h3>
                                 <div className="flex items-center gap-3 mt-2">
                                   <span className="text-[9px] font-black text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/30 px-2.5 py-1 rounded-lg border border-primary-100 dark:border-primary-800/30 uppercase tracking-tighter">{c.code}</span>
-                                  <span className="text-[10px] text-slate-400 font-bold truncate uppercase tracking-widest">{c.department_name}</span>
+                                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-bold truncate uppercase tracking-widest">{c.department_name}</span>
                                 </div>
                               </div>
                             </div>
@@ -270,8 +270,8 @@ export default function ManageDirectory() {
                 {activeTab === 'faculty' && (
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col gap-6 h-fit shadow-sm">
-                      <h3 className="font-black text-slate-900 dark:text-slate-200 flex items-center gap-2 text-sm uppercase tracking-wider"><Plus size={18} className="text-primary-500" /> New Faculty</h3>
-                      <p className="text-[11px] text-slate-500 dark:text-slate-500 font-medium leading-relaxed">Adding a faculty record allows them to be assigned to feedback questionnaires. These are informational entities.</p>
+                      <h3 className="font-black text-slate-900 dark:text-[var(--text-main)] flex items-center gap-2 text-sm uppercase tracking-wider"><Plus size={18} className="text-primary-500" /> New Faculty</h3>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-medium leading-relaxed">Adding a faculty record allows them to be assigned to feedback questionnaires. These are informational entities.</p>
                       <form onSubmit={handleCreateFaculty} className="flex flex-col gap-4">
                         <input type="text" placeholder="Full Professional Name" value={facultyName} onChange={e => setFacultyName(e.target.value)} className={inputCls} />
                         <select value={facultyDept} onChange={e => setFacultyDept(e.target.value)} className={inputCls + ' cursor-pointer'}>
@@ -283,7 +283,7 @@ export default function ManageDirectory() {
                     </div>
                     <div className="lg:col-span-2 flex flex-col gap-6">
                       <div className="flex items-center justify-between mb-2 px-2">
-                        <h3 className="font-black text-slate-900 dark:text-slate-200 text-sm flex items-center gap-2 uppercase tracking-wider"><Users size={18} className="text-primary-500" /> Faculty Directory</h3>
+                        <h3 className="font-black text-slate-900 dark:text-[var(--text-main)] text-sm flex items-center gap-2 uppercase tracking-wider"><Users size={18} className="text-primary-500" /> Faculty Directory</h3>
                         <span className="text-[10px] font-black bg-primary-50 dark:bg-primary-900/40 text-primary-600 dark:text-primary-300 border border-primary-100 dark:border-primary-800/40 px-3 py-1 rounded-full uppercase tracking-widest">{faculty.length} Records</span>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -308,7 +308,7 @@ export default function ManageDirectory() {
                               </div>
                               <div className="flex-1 min-w-0">
                                 <h3 className="font-black text-slate-900 dark:text-white text-base truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{f.name}</h3>
-                                <div className="text-[10px] text-slate-400 dark:text-slate-500 font-black uppercase tracking-[0.1em] mt-2">{f.department_name}</div>
+                                <div className="text-[10px] text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-black uppercase tracking-[0.1em] mt-2">{f.department_name}</div>
                               </div>
                             </div>
                           </motion.div>
@@ -327,8 +327,8 @@ export default function ManageDirectory() {
                           <Download size={24} />
                         </div>
                         <div>
-                          <h3 className="font-black text-slate-900 dark:text-slate-200 uppercase tracking-wider">Export Ledger</h3>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Securely download the entire system state.</p>
+                          <h3 className="font-black text-slate-900 dark:text-[var(--text-main)] uppercase tracking-wider">Export Ledger</h3>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-600 dark:text-slate-400 mt-0.5">Securely download the entire system state.</p>
                         </div>
                       </div>
                       <button onClick={handleExportData} className="w-full bg-primary-600 hover:bg-primary-500 text-white font-black py-4.5 rounded-2xl text-xs flex items-center justify-center gap-3 cursor-pointer uppercase tracking-widest transition-all shadow-xl shadow-primary-500/20 active:scale-95">
@@ -341,19 +341,19 @@ export default function ManageDirectory() {
                           <Upload size={24} />
                         </div>
                         <div>
-                          <h3 className="font-black text-slate-900 dark:text-slate-200 uppercase tracking-wider">State Synchronizer</h3>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Upload and reconcile directory records.</p>
+                          <h3 className="font-black text-slate-900 dark:text-[var(--text-main)] uppercase tracking-wider">State Synchronizer</h3>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-600 dark:text-slate-400 mt-0.5">Upload and reconcile directory records.</p>
                         </div>
                       </div>
-                      <input type="file" accept="application/json" onChange={e => setImportFile(e.target.files[0])} className="text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 text-slate-500 dark:text-slate-400 cursor-pointer focus:outline-none" />
+                      <input type="file" accept="application/json" onChange={e => setImportFile(e.target.files[0])} className="text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 text-slate-500 dark:text-slate-400 dark:text-slate-600 dark:text-slate-400 cursor-pointer focus:outline-none" />
                       <div className="grid grid-cols-2 gap-3">
                         {['merge', 'overwrite'].map(m => (
-                          <button key={m} onClick={() => setSyncMode(m)} className={`py-3.5 px-4 rounded-2xl border text-[10px] font-black transition-all cursor-pointer uppercase tracking-widest ${syncMode === m ? 'bg-primary-600 border-primary-600 text-white shadow-lg shadow-primary-500/20' : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500'}`}>
+                          <button key={m} onClick={() => setSyncMode(m)} className={`py-3.5 px-4 rounded-2xl border text-[10px] font-black transition-all cursor-pointer uppercase tracking-widest ${syncMode === m ? 'bg-primary-600 border-primary-600 text-white shadow-lg shadow-primary-500/20' : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400'}`}>
                             {m === 'merge' ? 'Merge (Add)' : 'Full Wipe & Set'}
                           </button>
                         ))}
                       </div>
-                      <button onClick={handleImportData} disabled={!importFile} className={`w-full font-black py-4.5 rounded-2xl text-xs flex items-center justify-center gap-3 cursor-pointer uppercase tracking-widest transition-all ${importFile ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-xl shadow-emerald-500/20 active:scale-95' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed'}`}>
+                      <button onClick={handleImportData} disabled={!importFile} className={`w-full font-black py-4.5 rounded-2xl text-xs flex items-center justify-center gap-3 cursor-pointer uppercase tracking-widest transition-all ${importFile ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-xl shadow-emerald-500/20 active:scale-95' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 dark:text-slate-600 cursor-not-allowed'}`}>
                         <RefreshCw size={16} className={importFile ? 'animate-spin-slow' : ''} /> Execute Synchronization
                       </button>
                     </div>

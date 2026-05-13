@@ -10,7 +10,7 @@ function Input({ ...props }) {
   return (
     <input
       {...props}
-      className={`bg-slate-950/80 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-600
+      className={`bg-slate-950/80 border border-white/10 rounded-xl px-4 py-3 text-sm text-[var(--text-main)] placeholder-slate-600
         focus:outline-none focus:ring-2 focus:ring-accent-500/50 focus:border-accent-500/50
         hover:border-white/20 transition-all duration-300 w-full ${props.className || ''}`}
     />
@@ -70,7 +70,7 @@ export default function SupremePanel() {
   };
 
   return (
-    <div className="min-h-screen mesh-bg text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] text-[var(--text-main)] flex flex-col">
       <Navbar />
       <div className="flex flex-col md:flex-row flex-1">
         <Sidebar />
@@ -84,7 +84,7 @@ export default function SupremePanel() {
             </div>
             <div>
               <h1 className="text-2xl font-black gradient-text">Supreme Authority Panel</h1>
-              <p className="text-sm text-slate-400 mt-0.5">Only Supreme Accounts can access this panel.</p>
+              <p className="text-sm text-slate-600 dark:text-slate-400 mt-0.5">Only Supreme Accounts can access this panel.</p>
             </div>
           </div>
 
@@ -100,17 +100,17 @@ export default function SupremePanel() {
 
 
           {/* Create Super Admin Form */}
-          <div className="glass-card p-6 mb-6">
-            <h2 className="text-sm font-bold text-slate-200 mb-1 flex items-center gap-2">
+          <div className="card-main p-6 mb-6">
+            <h2 className="text-sm font-bold text-[var(--text-main)] mb-1 flex items-center gap-2">
               <Plus size={15} className="text-accent-400" />
               Create New Super Admin Account
             </h2>
-            <p className="text-xs text-slate-500 mb-5">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-5">
               Super Admins can manage HODs, Coordinators, view all analytics, and assign teaching staff.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="flex flex-col gap-1.5">
-                <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Full Name</label>
+                <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Full Name</label>
                 <Input
                   value={name}
                   onChange={e => setName(e.target.value)}
@@ -118,7 +118,7 @@ export default function SupremePanel() {
                 />
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Email Address</label>
+                <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Email Address</label>
                 <Input
                   type="email"
                   value={email}
@@ -127,7 +127,7 @@ export default function SupremePanel() {
                 />
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Password</label>
+                <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Password</label>
                 <div className="relative">
                   <Input
                     type={showPass ? 'text' : 'password'}
@@ -138,7 +138,7 @@ export default function SupremePanel() {
                   <button
                     type="button"
                     onClick={() => setShowPass(!showPass)}
-                    className="absolute right-3 top-3.5 text-slate-500 hover:text-slate-300 cursor-pointer transition-colors"
+                    className="absolute right-3 top-3.5 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-300 cursor-pointer transition-colors"
                   >
                     {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
                   </button>
@@ -161,9 +161,9 @@ export default function SupremePanel() {
           {/* Super Admin List */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <Users size={16} className="text-slate-400" />
-              <h2 className="text-sm font-bold text-slate-300">Existing Super Admins</h2>
-              <span className="text-xs bg-white/10 text-slate-400 px-2 py-0.5 rounded-full">{superAdmins.length}</span>
+              <Users size={16} className="text-slate-600 dark:text-slate-400" />
+              <h2 className="text-sm font-bold text-slate-700 dark:text-slate-300">Existing Super Admins</h2>
+              <span className="text-xs bg-white/10 text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded-full">{superAdmins.length}</span>
             </div>
 
             {loading ? (
@@ -175,7 +175,7 @@ export default function SupremePanel() {
             ) : superAdmins.length === 0 ? (
               <div className="card p-8 text-center rounded-2xl">
                 <Users size={32} className="text-slate-600 mx-auto mb-3" />
-                <p className="text-slate-400 text-sm font-semibold">No Super Admins yet</p>
+                <p className="text-slate-600 dark:text-slate-400 text-sm font-semibold">No Super Admins yet</p>
                 <p className="text-slate-600 text-xs mt-1">Create the first Super Admin account above.</p>
               </div>
             ) : (
@@ -192,8 +192,8 @@ export default function SupremePanel() {
                         {admin.name?.charAt(0).toUpperCase()}
                       </div>
                       <div>
-                        <div className="text-sm font-bold text-slate-100">{admin.name}</div>
-                        <div className="text-xs text-slate-500 mt-0.5">{admin.email}</div>
+                        <div className="text-sm font-bold text-[var(--text-main)]">{admin.name}</div>
+                        <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{admin.email}</div>
                         <span className="badge-role mt-1 inline-flex">Super Admin</span>
                       </div>
                     </div>

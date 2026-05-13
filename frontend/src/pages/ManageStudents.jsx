@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 
-const inputCls = 'bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-5 py-4 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500/50 w-full transition-all shadow-sm';
+const inputCls = 'bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-5 py-4 text-sm text-slate-800 dark:text-[var(--text-main)] placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500/50 w-full transition-all shadow-sm';
 
 export default function ManageStudents() {
   const { user } = useAuth();
@@ -116,7 +116,7 @@ export default function ManageStudents() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-500">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-[var(--text-main)] flex flex-col transition-colors duration-500">
       <Navbar />
       <div className="flex flex-col md:flex-row flex-1">
         <Sidebar />
@@ -129,7 +129,7 @@ export default function ManageStudents() {
               <div className="z-10 flex items-start gap-8">
                 <button
                   onClick={() => window.history.back()}
-                  className="mt-1 h-14 w-14 flex items-center justify-center bg-slate-50 dark:bg-slate-800 hover:bg-primary-600 text-slate-400 dark:text-slate-500 hover:text-white rounded-[1.5rem] transition-all cursor-pointer border border-slate-100 dark:border-slate-700 active:scale-90 shadow-sm"
+                  className="mt-1 h-14 w-14 flex items-center justify-center bg-slate-50 dark:bg-slate-800 hover:bg-primary-600 text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 hover:text-white rounded-[1.5rem] transition-all cursor-pointer border border-slate-100 dark:border-slate-700 active:scale-90 shadow-sm"
                 >
                   <ArrowLeft size={24} />
                 </button>
@@ -138,7 +138,7 @@ export default function ManageStudents() {
                     <div className="h-2 w-2 rounded-full bg-primary-500" />
                     <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">Student Directory</h1>
                   </div>
-                  <p className="text-slate-500 dark:text-slate-400 text-sm mt-4 max-w-lg font-bold leading-relaxed uppercase tracking-widest opacity-80">
+                  <p className="text-slate-500 dark:text-slate-400 dark:text-slate-600 dark:text-slate-400 text-sm mt-4 max-w-lg font-bold leading-relaxed uppercase tracking-widest opacity-80">
                     {user.role === 'admin'
                       ? 'Managing global academic identities across the TLFQ infrastructure.'
                       : `Reviewing departmental student roster and access protocol.`}
@@ -148,10 +148,10 @@ export default function ManageStudents() {
 
               <div className="flex items-center gap-8 z-10">
                 <div className="hidden lg:flex flex-col items-end">
-                  <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] mb-1">Active Profiles</span>
+                  <span className="text-[10px] font-black text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-[0.2em] mb-1">Active Profiles</span>
                   <div className="flex items-baseline gap-1">
                     <span className="text-4xl font-black text-slate-900 dark:text-white">{students.length}</span>
-                    <span className="text-xs font-black text-slate-400">Synced</span>
+                    <span className="text-xs font-black text-slate-600 dark:text-slate-400">Synced</span>
                   </div>
                 </div>
                 <button
@@ -167,7 +167,7 @@ export default function ManageStudents() {
             {/* Advanced Filters */}
             <div className="flex flex-col lg:flex-row gap-6">
               <div className="flex-1 relative group">
-                <Search className="absolute left-8 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 group-focus-within:text-primary-500 transition-all" size={24} />
+                <Search className="absolute left-8 top-1/2 -translate-y-1/2 text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 group-focus-within:text-primary-500 transition-all" size={24} />
                 <input
                   type="text"
                   placeholder="Query names, ID tags, or digital handles..."
@@ -179,9 +179,9 @@ export default function ManageStudents() {
 
               {user.role === 'admin' && (
                 <div className="lg:w-96 relative group">
-                  <Filter className="absolute left-8 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 group-focus-within:text-primary-500 transition-all" size={22} />
+                  <Filter className="absolute left-8 top-1/2 -translate-y-1/2 text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 group-focus-within:text-primary-500 transition-all" size={22} />
                   <select
-                    className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] pl-20 pr-14 py-6 text-sm font-black text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 appearance-none cursor-pointer shadow-sm uppercase tracking-widest transition-all"
+                    className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] pl-20 pr-14 py-6 text-sm font-black text-slate-700 dark:text-[var(--text-main)] focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 appearance-none cursor-pointer shadow-sm uppercase tracking-widest transition-all"
                     value={selectedDept}
                     onChange={(e) => setSelectedDept(e.target.value)}
                   >
@@ -190,7 +190,7 @@ export default function ManageStudents() {
                       <option key={d._id} value={d.name}>{d.name}</option>
                     ))}
                   </select>
-                  <div className="absolute right-8 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none group-focus-within:text-primary-500 transition-colors">
+                  <div className="absolute right-8 top-1/2 -translate-y-1/2 text-slate-600 dark:text-slate-400 pointer-events-none group-focus-within:text-primary-500 transition-colors">
                     <ChevronRight className="rotate-90" size={20} />
                   </div>
                 </div>
@@ -206,11 +206,11 @@ export default function ManageStudents() {
                   ))
                 ) : filteredStudents.length === 0 ? (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center py-32 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[4rem] text-center shadow-sm">
-                    <div className="h-28 w-28 bg-slate-50 dark:bg-slate-800/50 rounded-[2.5rem] flex items-center justify-center mb-8 text-slate-200 dark:text-slate-700">
+                    <div className="h-28 w-28 bg-slate-50 dark:bg-slate-800/50 rounded-[2.5rem] flex items-center justify-center mb-8 text-[var(--text-main)] dark:text-slate-700">
                       <Users size={56} />
                     </div>
                     <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-3">No Records Identified</h3>
-                    <p className="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-[10px] max-w-xs mx-auto">Try broadening your search criteria or scope selection.</p>
+                    <p className="text-slate-500 dark:text-slate-400 dark:text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest text-[10px] max-w-xs mx-auto">Try broadening your search criteria or scope selection.</p>
                     <button onClick={() => { setSearch(''); setSelectedDept('all'); }} className="mt-10 px-10 py-4 bg-slate-50 dark:bg-slate-800 hover:bg-primary-50 dark:hover:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-[10px] font-black rounded-2xl uppercase tracking-[0.2em] transition-all border border-slate-100 dark:border-slate-700">Reset System View</button>
                   </motion.div>
                 ) : filteredStudents.map((student, idx) => (
@@ -235,7 +235,7 @@ export default function ManageStudents() {
                           {student.name}
                         </h3>
                         <div className="flex items-center gap-3">
-                          <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">ID: {student.college_id}</span>
+                          <span className="text-[10px] font-black text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-[0.2em]">ID: {student.college_id}</span>
                           <div className="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-700" />
                           <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Active</span>
                         </div>
@@ -245,31 +245,31 @@ export default function ManageStudents() {
                     {/* Meta data block */}
                     <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-10">
                       <div className="flex items-center gap-5">
-                        <div className="h-12 w-12 rounded-2xl bg-slate-50 dark:bg-slate-850 flex items-center justify-center text-slate-400 group-hover:text-primary-500 transition-all border border-slate-100 dark:border-slate-800 shrink-0 shadow-sm">
+                        <div className="h-12 w-12 rounded-2xl bg-slate-50 dark:bg-slate-850 flex items-center justify-center text-slate-600 dark:text-slate-400 group-hover:text-primary-500 transition-all border border-slate-100 dark:border-slate-800 shrink-0 shadow-sm">
                           <Building2 size={20} />
                         </div>
                         <div className="flex flex-col min-w-0">
-                          <span className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">Unit</span>
-                          <span className="font-black text-slate-700 dark:text-slate-100 text-xs truncate uppercase tracking-tighter">{student.department_name}</span>
+                          <span className="text-[9px] font-black text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1">Unit</span>
+                          <span className="font-black text-slate-700 dark:text-[var(--text-main)] text-xs truncate uppercase tracking-tighter">{student.department_name}</span>
                         </div>
                       </div>
 
                       <div className="flex items-center gap-5">
-                        <div className="h-12 w-12 rounded-2xl bg-slate-50 dark:bg-slate-850 flex items-center justify-center text-slate-400 group-hover:text-primary-500 transition-all border border-slate-100 dark:border-slate-800 shrink-0 shadow-sm">
+                        <div className="h-12 w-12 rounded-2xl bg-slate-50 dark:bg-slate-850 flex items-center justify-center text-slate-600 dark:text-slate-400 group-hover:text-primary-500 transition-all border border-slate-100 dark:border-slate-800 shrink-0 shadow-sm">
                           <Mail size={20} />
                         </div>
                         <div className="flex flex-col min-w-0">
-                          <span className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">Correspondence</span>
-                          <span className="font-bold text-slate-500 dark:text-slate-400 text-xs truncate">{student.email || 'N/A'}</span>
+                          <span className="text-[9px] font-black text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1">Correspondence</span>
+                          <span className="font-bold text-slate-500 dark:text-slate-400 dark:text-slate-600 dark:text-slate-400 text-xs truncate">{student.email || 'N/A'}</span>
                         </div>
                       </div>
 
                       <div className="flex items-center gap-5">
-                        <div className="h-12 w-12 rounded-2xl bg-slate-50 dark:bg-slate-850 flex items-center justify-center text-slate-400 group-hover:text-primary-500 transition-all border border-slate-100 dark:border-slate-800 shrink-0 shadow-sm">
+                        <div className="h-12 w-12 rounded-2xl bg-slate-50 dark:bg-slate-850 flex items-center justify-center text-slate-600 dark:text-slate-400 group-hover:text-primary-500 transition-all border border-slate-100 dark:border-slate-800 shrink-0 shadow-sm">
                           <Hash size={20} />
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">Load Status</span>
+                          <span className="text-[9px] font-black text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1">Load Status</span>
                           <div className="flex items-center gap-2">
                             <span className="text-xs font-black text-primary-600 dark:text-primary-400">{student.enrollment_count} Active Modules</span>
                           </div>
@@ -281,14 +281,14 @@ export default function ManageStudents() {
                     <div className="flex items-center justify-end gap-4 lg:w-[15%] shrink-0">
                       <button
                         onClick={() => openModal(student)}
-                        className="h-14 w-14 flex items-center justify-center bg-white dark:bg-slate-800 text-slate-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/40 rounded-[1.5rem] transition-all border border-slate-100 dark:border-slate-700 cursor-pointer shadow-sm active:scale-90"
+                        className="h-14 w-14 flex items-center justify-center bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/40 rounded-[1.5rem] transition-all border border-slate-100 dark:border-slate-700 cursor-pointer shadow-sm active:scale-90"
                         title="Edit Profile"
                       >
                         <Edit size={20} />
                       </button>
                       <button
                         onClick={() => handleDelete(student.id)}
-                        className="h-14 w-14 flex items-center justify-center bg-white dark:bg-slate-800 text-slate-400 hover:text-accent-500 hover:bg-accent-50 dark:hover:bg-accent-900/40 rounded-[1.5rem] transition-all border border-slate-100 dark:border-slate-700 cursor-pointer shadow-sm active:scale-90"
+                        className="h-14 w-14 flex items-center justify-center bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-accent-500 hover:bg-accent-50 dark:hover:bg-accent-900/40 rounded-[1.5rem] transition-all border border-slate-100 dark:border-slate-700 cursor-pointer shadow-sm active:scale-90"
                         title="Purge Record"
                       >
                         <Trash2 size={20} />
@@ -302,7 +302,7 @@ export default function ManageStudents() {
             {/* Pagination Controls */}
             {pagination.totalPages > 1 && (
               <div className="flex items-center justify-between bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-[2rem] shadow-sm">
-                <div className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                <div className="text-[10px] font-black text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-widest">
                   Showing {students.length} of {pagination.total} records
                 </div>
                 <div className="flex items-center gap-4">
@@ -313,7 +313,7 @@ export default function ManageStudents() {
                   >
                     Previous
                   </button>
-                  <div className="text-xs font-black text-slate-700 dark:text-slate-300">
+                  <div className="text-xs font-black text-slate-700 dark:text-slate-700 dark:text-slate-300">
                     Page {pagination.page} of {pagination.totalPages}
                   </div>
                   <button
@@ -354,11 +354,11 @@ export default function ManageStudents() {
                               {editingId ? 'Modify Record' : 'Student Intake'}
                             </h2>
                           </div>
-                          <p className="text-slate-500 dark:text-slate-400 text-[10px] mt-3 uppercase tracking-[0.2em] font-black opacity-80">Security Protocol Mapping: Enabled</p>
+                          <p className="text-slate-500 dark:text-slate-400 dark:text-slate-600 dark:text-slate-400 text-[10px] mt-3 uppercase tracking-[0.2em] font-black opacity-80">Security Protocol Mapping: Enabled</p>
                         </div>
                         <button
                           onClick={() => setShowModal(false)}
-                          className="h-14 w-14 flex items-center justify-center bg-slate-50 dark:bg-slate-800 hover:bg-accent-600 text-slate-400 hover:text-white rounded-2xl transition-all cursor-pointer border border-slate-100 dark:border-slate-700"
+                          className="h-14 w-14 flex items-center justify-center bg-slate-50 dark:bg-slate-800 hover:bg-accent-600 text-slate-600 dark:text-slate-400 hover:text-white rounded-2xl transition-all cursor-pointer border border-slate-100 dark:border-slate-700"
                         >
                           <X size={26} />
                         </button>
@@ -367,7 +367,7 @@ export default function ManageStudents() {
                       <form onSubmit={handleSubmit} className="space-y-8">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                           <div className="flex flex-col gap-3">
-                            <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Legal Name</label>
+                            <label className="text-[10px] font-black text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Legal Name</label>
                             <input
                               type="text" required
                               className={inputCls}
@@ -377,7 +377,7 @@ export default function ManageStudents() {
                             />
                           </div>
                           <div className="flex flex-col gap-3">
-                            <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Academic ID Tag</label>
+                            <label className="text-[10px] font-black text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Academic ID Tag</label>
                             <input
                               type="text" required
                               className={inputCls}
@@ -389,7 +389,7 @@ export default function ManageStudents() {
                         </div>
 
                         <div className="flex flex-col gap-3">
-                          <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Institutional Handle</label>
+                          <label className="text-[10px] font-black text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Institutional Handle</label>
                           <input
                             type="email"
                             className={inputCls}
@@ -400,7 +400,7 @@ export default function ManageStudents() {
                         </div>
 
                         <div className="flex flex-col gap-3">
-                          <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Faculty Affiliation</label>
+                          <label className="text-[10px] font-black text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Faculty Affiliation</label>
                           <select
                             disabled={user.role === 'hod'}
                             className={inputCls + ' cursor-pointer appearance-none'}
@@ -416,7 +416,7 @@ export default function ManageStudents() {
 
                         {!editingId && (
                           <div className="flex flex-col gap-3">
-                            <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Master Access Key</label>
+                            <label className="text-[10px] font-black text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Master Access Key</label>
                             <div className="relative">
                               <input
                                 type="password" required
@@ -425,7 +425,7 @@ export default function ManageStudents() {
                                 onChange={e => setFormData({ ...formData, password: e.target.value })}
                                 placeholder="••••••••"
                               />
-                              <Lock className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
+                              <Lock className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-700 dark:text-slate-300" size={18} />
                             </div>
                           </div>
                         )}
@@ -434,7 +434,7 @@ export default function ManageStudents() {
                           <button
                             type="button"
                             onClick={() => setShowModal(false)}
-                            className="flex-1 px-8 py-5 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-750 text-slate-400 dark:text-slate-500 rounded-[2rem] font-black text-xs uppercase tracking-widest transition-all cursor-pointer border border-slate-100 dark:border-slate-700 shadow-sm"
+                            className="flex-1 px-8 py-5 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-750 text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 rounded-[2rem] font-black text-xs uppercase tracking-widest transition-all cursor-pointer border border-slate-100 dark:border-slate-700 shadow-sm"
                           >
                             Discard
                           </button>

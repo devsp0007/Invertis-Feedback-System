@@ -21,7 +21,7 @@ function Card({ children, className = '' }) {
 }
 
 function Label({ children }) {
-  return <label className="text-[10px] font-bold uppercase text-slate-500 tracking-widest">{children}</label>;
+  return <label className="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400 tracking-widest">{children}</label>;
 }
 
 function Input({ ...props }) {
@@ -43,7 +43,7 @@ function Btn({ children, variant = 'primary', ...props }) {
     ? 'btn-primary'
     : variant === 'danger'
       ? 'bg-accent-600/20 hover:bg-accent-600 hover:text-white text-accent-400 border border-accent-500/30 px-5 py-2.5 rounded-xl text-sm font-bold transition-all'
-      : 'bg-slate-500/10 hover:bg-slate-500/20 text-slate-500 hover:text-[var(--text-main)] border border-[var(--border-base)] px-5 py-2.5 rounded-xl text-sm font-bold transition-all';
+      : 'bg-slate-500/10 hover:bg-slate-500/20 text-slate-500 dark:text-slate-400 hover:text-[var(--text-main)] border border-[var(--border-base)] px-5 py-2.5 rounded-xl text-sm font-bold transition-all';
 
   return (
     <button {...props} className={`flex items-center gap-2 transition-all cursor-pointer disabled:opacity-50 active:scale-95 ${cls} ${props.className || ''}`}>
@@ -66,7 +66,7 @@ function DepartmentsTab({ departments, onRefresh }) {
   return (
     <div className="flex flex-col gap-4">
       <Card>
-        <h3 className="text-sm font-bold text-slate-200 mb-3">Add Department</h3>
+        <h3 className="text-sm font-bold text-[var(--text-main)] mb-3">Add Department</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <div className="flex flex-col gap-1"><Label>Name</Label><Input value={name} onChange={e => setName(e.target.value)} placeholder="B.Tech Computer Science" /></div>
           <div className="flex flex-col gap-1"><Label>Code</Label><Input value={code} onChange={e => setCode(e.target.value.toUpperCase())} placeholder="BCS" /></div>
@@ -77,8 +77,8 @@ function DepartmentsTab({ departments, onRefresh }) {
         {departments.map(d => (
           <Card key={d.id} className="flex items-center justify-between">
             <div>
-              <div className="text-sm font-bold text-slate-100">{d.name}</div>
-              <div className="text-xs text-slate-500 font-mono mt-0.5">{d.code}</div>
+              <div className="text-sm font-bold text-[var(--text-main)]">{d.name}</div>
+              <div className="text-xs text-slate-500 dark:text-slate-400 font-mono mt-0.5">{d.code}</div>
             </div>
             <Btn variant="danger" onClick={() => del(d.id)}><Trash2 size={14} /></Btn>
           </Card>
@@ -102,7 +102,7 @@ function SectionsTab({ departments, sections, onRefresh }) {
   return (
     <div className="flex flex-col gap-4">
       <Card>
-        <h3 className="text-sm font-bold text-slate-200 mb-3">Create Section</h3>
+        <h3 className="text-sm font-bold text-[var(--text-main)] mb-3">Create Section</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <div className="flex flex-col gap-1 col-span-2 md:col-span-1"><Label>Department</Label>
             <Select value={deptId} onChange={e => setDeptId(e.target.value)}>
@@ -127,8 +127,8 @@ function SectionsTab({ departments, sections, onRefresh }) {
         {sections.map(s => (
           <Card key={s.id} className="flex items-center justify-between">
             <div>
-              <div className="text-sm font-bold text-slate-100">{s.name}</div>
-              <div className="text-xs text-slate-500 mt-0.5">{s.department_name} • Semester {s.semester}</div>
+              <div className="text-sm font-bold text-[var(--text-main)]">{s.name}</div>
+              <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{s.department_name} • Semester {s.semester}</div>
             </div>
             <Btn variant="danger" onClick={() => del(s.id)}><Trash2 size={14} /></Btn>
           </Card>
@@ -152,7 +152,7 @@ function CoursesTab({ departments, courses, onRefresh }) {
   return (
     <div className="flex flex-col gap-4">
       <Card>
-        <h3 className="text-sm font-bold text-slate-200 mb-3">Add Course</h3>
+        <h3 className="text-sm font-bold text-[var(--text-main)] mb-3">Add Course</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <div className="flex flex-col gap-1 col-span-2 md:col-span-1"><Label>Course Name</Label><Input value={name} onChange={e => setName(e.target.value)} placeholder="Data Structures" /></div>
           <div className="flex flex-col gap-1"><Label>Code</Label><Input value={code} onChange={e => setCode(e.target.value.toUpperCase())} placeholder="BCS201" /></div>
@@ -169,8 +169,8 @@ function CoursesTab({ departments, courses, onRefresh }) {
         {courses.map(c => (
           <Card key={c.id} className="flex items-center justify-between">
             <div>
-              <div className="text-sm font-bold text-slate-100">{c.name}</div>
-              <div className="text-xs text-slate-500 mt-0.5 font-mono">{c.code} • {c.department_name}</div>
+              <div className="text-sm font-bold text-[var(--text-main)]">{c.name}</div>
+              <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-mono">{c.code} • {c.department_name}</div>
             </div>
             <Btn variant="danger" onClick={() => del(c.id)}><Trash2 size={14} /></Btn>
           </Card>
@@ -201,7 +201,7 @@ function FacultyTab({ departments, faculty, onRefresh }) {
   return (
     <div className="flex flex-col gap-4">
       <Card>
-        <h3 className="text-sm font-bold text-slate-200 mb-3">Add Faculty Member</h3>
+        <h3 className="text-sm font-bold text-[var(--text-main)] mb-3">Add Faculty Member</h3>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
           <div className="flex flex-col gap-1 md:col-span-2"><Label>Faculty Name</Label><Input value={name} onChange={e => setName(e.target.value)} placeholder="Dr. Alan Turing" /></div>
           <div className="flex flex-col gap-1"><Label>Department</Label>
@@ -223,8 +223,8 @@ function FacultyTab({ departments, faculty, onRefresh }) {
         {faculty.map(f => (
           <Card key={f.id} className="flex items-center justify-between">
             <div>
-              <div className="text-sm font-bold text-slate-100">{f.name}</div>
-              <div className="text-xs text-slate-500 mt-0.5">{f.department_name}</div>
+              <div className="text-sm font-bold text-[var(--text-main)]">{f.name}</div>
+              <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{f.department_name}</div>
               <span className={`inline-flex mt-1.5 text-[10px] font-bold px-2 py-0.5 rounded-md border ${f.teacher_type === 'trainer'
                   ? 'text-cyan-300 bg-cyan-500/10 border-cyan-500/25'
                   : 'text-violet-300 bg-violet-500/10 border-violet-500/25'
@@ -258,7 +258,7 @@ function AssignmentsTab({ departments, sections, faculty, courses, onRefresh }) 
   return (
     <div className="flex flex-col gap-4">
       <Card>
-        <h3 className="text-sm font-bold text-slate-200 mb-3">Assign Faculty to Section</h3>
+        <h3 className="text-sm font-bold text-[var(--text-main)] mb-3">Assign Faculty to Section</h3>
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-1"><Label>Filter by Department</Label>
             <Select value={deptFilter} onChange={e => setDeptFilter(e.target.value)}>
@@ -290,7 +290,7 @@ function AssignmentsTab({ departments, sections, faculty, courses, onRefresh }) 
         </div>
       </Card>
       <Card>
-        <p className="text-xs text-slate-400">Assignments are shown per section. Manage existing assignments by deleting a section or recreating assignments.</p>
+        <p className="text-xs text-slate-600 dark:text-slate-400">Assignments are shown per section. Manage existing assignments by deleting a section or recreating assignments.</p>
       </Card>
     </div>
   );
@@ -369,7 +369,7 @@ function StudentsTab({ departments, sections, students, onRefresh }) {
   return (
     <div className="flex flex-col gap-4">
       <Card>
-        <h3 className="text-sm font-bold text-slate-200 mb-3">Pre-Create Student Account</h3>
+        <h3 className="text-sm font-bold text-[var(--text-main)] mb-3">Pre-Create Student Account</h3>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           <div className="flex flex-col gap-1"><Label>Full Name</Label><Input value={name} onChange={e => setName(e.target.value)} placeholder="Rahul Sharma" /></div>
           <div className="flex flex-col gap-1"><Label>Student ID</Label><Input value={stdId} onChange={e => setStdId(e.target.value.toUpperCase())} placeholder="BCS2025_55" className="font-mono" /></div>
@@ -399,11 +399,11 @@ function StudentsTab({ departments, sections, students, onRefresh }) {
       <Card className="border border-primary-500/20 bg-primary-950/10">
         <div className="flex items-center gap-3 mb-4">
           <Upload size={18} className="text-primary-400" />
-          <h3 className="text-sm font-bold text-slate-200">Bulk Import via CSV</h3>
+          <h3 className="text-sm font-bold text-[var(--text-main)]">Bulk Import via CSV</h3>
         </div>
         <div className="flex flex-col md:flex-row gap-6">
           <div className="flex-1">
-            <p className="text-[11px] text-slate-400 mb-4 leading-relaxed">
+            <p className="text-[11px] text-slate-600 dark:text-slate-400 mb-4 leading-relaxed">
               Upload a <span className="text-primary-300 font-bold">CSV file</span> with the following headers:
               <br />
               <code className="bg-slate-900 px-2 py-1 rounded mt-2 inline-block text-primary-400 border border-primary-500/10 font-mono text-[9px]">
@@ -420,15 +420,15 @@ function StudentsTab({ departments, sections, students, onRefresh }) {
           </div>
 
           <div className="w-full md:w-64 bg-slate-950/50 rounded-2xl p-4 border border-white/5">
-            <h4 className="text-[9px] font-black uppercase text-slate-500 tracking-[0.2em] mb-3 flex items-center gap-2">
+            <h4 className="text-[9px] font-black uppercase text-slate-500 dark:text-slate-400 tracking-[0.2em] mb-3 flex items-center gap-2">
               <Info size={10} /> Data Hints
             </h4>
             <ul className="flex flex-col gap-2">
-              <li className="text-[10px] text-slate-400 flex items-start gap-2">
+              <li className="text-[10px] text-slate-600 dark:text-slate-400 flex items-start gap-2">
                 <div className="h-1 w-1 rounded-full bg-primary-500 mt-1.5" />
                 IDs are case-insensitive
               </li>
-              <li className="text-[10px] text-slate-400 flex items-start gap-2">
+              <li className="text-[10px] text-slate-600 dark:text-slate-400 flex items-start gap-2">
                 <div className="h-1 w-1 rounded-full bg-primary-500 mt-1.5" />
                 Dupes will be skipped
               </li>
@@ -439,8 +439,8 @@ function StudentsTab({ departments, sections, students, onRefresh }) {
         {importResults && (
           <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mt-6 pt-6 border-t border-white/5">
             <div className="flex items-center justify-between mb-3">
-              <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">Import Results</div>
-              <button onClick={() => setImportResults(null)} className="text-[10px] font-bold text-slate-500 hover:text-white">Clear</button>
+              <div className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Import Results</div>
+              <button onClick={() => setImportResults(null)} className="text-[10px] font-bold text-slate-500 dark:text-slate-400 hover:text-white">Clear</button>
             </div>
             <div className="grid grid-cols-2 gap-3 mb-4">
               <div className="bg-emerald-500/10 border border-emerald-500/20 p-3 rounded-xl">
@@ -476,9 +476,9 @@ function StudentsTab({ departments, sections, students, onRefresh }) {
           <Card key={s.id} className="flex flex-col gap-3">
             <div className="flex items-start justify-between">
               <div>
-                <div className="text-sm font-bold text-slate-100">{s.name}</div>
-                <div className="text-xs text-slate-500 font-mono mt-0.5">{s.student_id}</div>
-                <div className="text-xs text-slate-500 mt-0.5">{s.section_name} • Sem {s.semester}</div>
+                <div className="text-sm font-bold text-[var(--text-main)]">{s.name}</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 font-mono mt-0.5">{s.student_id}</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{s.section_name} • Sem {s.semester}</div>
               </div>
               <span className={`text-xs font-bold px-2 py-0.5 rounded-lg ${s.status === 'active' ? 'bg-emerald-900/40 text-emerald-400' : 'bg-amber-900/40 text-amber-400'}`}>
                 {s.status}
@@ -491,7 +491,7 @@ function StudentsTab({ departments, sections, students, onRefresh }) {
                 <Btn variant="secondary" onClick={() => setResetId('')}><X size={14} /></Btn>
               </div>
             ) : (
-              <button onClick={() => setResetId(s.id)} className="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-primary-400 transition-colors cursor-pointer">
+              <button onClick={() => setResetId(s.id)} className="flex items-center gap-2 text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-primary-400 transition-colors cursor-pointer">
                 <Key size={13} /> Reset Password
               </button>
             )}
@@ -531,7 +531,7 @@ export default function CoordinatorPanel() {
   useEffect(() => { loadAll(); }, []);
 
   return (
-    <div className="min-h-screen mesh-bg">
+    <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)]">
       <Navbar />
       <div className="admin-layout">
         <Sidebar />
@@ -550,7 +550,7 @@ export default function CoordinatorPanel() {
                   onClick={() => setTab(t.id)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${tab === t.id
                       ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/25'
-                      : 'text-slate-500 hover:text-primary-500 hover:bg-primary-500/5'
+                      : 'text-slate-500 dark:text-slate-400 hover:text-primary-500 hover:bg-primary-500/5'
                     }`}
                 >
                   <Icon size={14} />

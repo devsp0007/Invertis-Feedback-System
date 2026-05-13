@@ -102,7 +102,7 @@ export default function TLFQPage() {
   // ── Success screen
   if (submitted) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-500">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-[var(--text-main)] flex flex-col transition-colors duration-500">
         <Navbar />
         <div className="flex flex-col md:flex-row flex-1">
           <Sidebar />
@@ -116,16 +116,16 @@ export default function TLFQPage() {
                 <CheckCircle2 size={48} className="text-emerald-500" />
               </div>
               <div>
-                <h2 className="text-3xl font-black text-slate-900 dark:text-slate-100 tracking-tight">Submission Successful</h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-4 leading-relaxed font-medium">
+                <h2 className="text-3xl font-black text-slate-900 dark:text-[var(--text-main)] tracking-tight">Submission Successful</h2>
+                <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-600 dark:text-slate-400 mt-4 leading-relaxed font-medium">
                   Your feedback has been recorded anonymously. Your contribution is vital for our continuous academic improvement.
                 </p>
               </div>
               <div className="bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-[2rem] p-6 w-full text-left">
-                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2">
+                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 mb-2">
                   <Lock size={12} className="text-emerald-500" /> Security Protocol Active
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-600 font-bold leading-relaxed">Identity hashing completed. Response is now immutable and decoupled from your student profile.</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-600 font-bold leading-relaxed">Identity hashing completed. Response is now immutable and decoupled from your student profile.</p>
               </div>
               <button
                 onClick={() => navigate('/dashboard')}
@@ -141,7 +141,7 @@ export default function TLFQPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-500">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-[var(--text-main)] flex flex-col transition-colors duration-500">
       <Navbar />
       <div className="flex flex-col md:flex-row flex-1">
         <Sidebar />
@@ -153,7 +153,7 @@ export default function TLFQPage() {
               <div>
                 <button
                   onClick={() => navigate(-1)}
-                  className="flex items-center gap-1.5 text-[10px] font-black text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition mb-4 cursor-pointer uppercase tracking-widest"
+                  className="flex items-center gap-1.5 text-[10px] font-black text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition mb-4 cursor-pointer uppercase tracking-widest"
                 >
                   <ArrowLeft size={14} /> Back to Course
                 </button>
@@ -172,7 +172,7 @@ export default function TLFQPage() {
             {loading ? (
               <div className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-24 flex flex-col items-center gap-4 shadow-sm">
                 <div className="h-12 w-12 border-4 border-primary-600 border-t-transparent rounded-full animate-spin mb-2" />
-                <span className="text-xs font-black uppercase tracking-widest text-slate-400 animate-pulse">Initializing Questionnaire...</span>
+                <span className="text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 animate-pulse">Initializing Questionnaire...</span>
               </div>
             ) : !evaluation ? (
               <div className="bg-accent-50 dark:bg-accent-950/20 border border-accent-100 dark:border-accent-900/40 text-accent-600 dark:text-accent-400 p-8 rounded-[2rem] text-sm font-bold text-center shadow-sm">Failed to load questionnaire.</div>
@@ -181,22 +181,22 @@ export default function TLFQPage() {
                 {/* Evaluation header */}
                 <div className="bg-white dark:bg-slate-900 border border-primary-100 dark:border-primary-900/40 rounded-[2.5rem] p-8 flex justify-between items-center shadow-sm">
                   <div className="min-w-0">
-                    <h2 className="text-xl font-black text-slate-900 dark:text-slate-100 truncate">{evaluation?.title}</h2>
+                    <h2 className="text-xl font-black text-slate-900 dark:text-[var(--text-main)] truncate">{evaluation?.title}</h2>
                     <div className="flex items-center gap-4 mt-2">
                        <div className="flex items-center gap-1.5">
-                          <Users size={12} className="text-slate-400" />
-                          <span className="text-[11px] text-slate-500 font-bold">{evaluation?.faculty_name}</span>
+                          <Users size={12} className="text-slate-600 dark:text-slate-400" />
+                          <span className="text-[11px] text-slate-500 dark:text-slate-400 font-bold">{evaluation?.faculty_name}</span>
                        </div>
                        <div className="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-700" />
                        <div className="flex items-center gap-1.5">
-                          <BookOpen size={12} className="text-slate-400" />
-                          <span className="text-[11px] text-slate-500 font-bold">{evaluation?.course_name}</span>
+                          <BookOpen size={12} className="text-slate-600 dark:text-slate-400" />
+                          <span className="text-[11px] text-slate-500 dark:text-slate-400 font-bold">{evaluation?.course_name}</span>
                        </div>
                     </div>
                   </div>
                   <button
                     type="button" onClick={clearDraft}
-                    className="text-[10px] font-black text-slate-400 hover:text-accent-500 flex items-center gap-2 px-4 py-2 hover:bg-accent-50 dark:hover:bg-accent-950/30 rounded-xl transition cursor-pointer uppercase tracking-widest shrink-0"
+                    className="text-[10px] font-black text-slate-600 dark:text-slate-400 hover:text-accent-500 flex items-center gap-2 px-4 py-2 hover:bg-accent-50 dark:hover:bg-accent-950/30 rounded-xl transition cursor-pointer uppercase tracking-widest shrink-0"
                   >
                     <RefreshCw size={12} /> Reset Draft
                   </button>
@@ -205,7 +205,7 @@ export default function TLFQPage() {
 
                 {/* Progress */}
                 <div className="flex flex-col gap-3">
-                   <div className="flex items-center justify-between text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                   <div className="flex items-center justify-between text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">
                      <span>Completion Status</span>
                      <span>{Object.keys(answers).length} / {questions.length} Questions</span>
                    </div>
@@ -233,11 +233,11 @@ export default function TLFQPage() {
                           <span className="shrink-0 flex items-center justify-center h-10 w-10 bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 font-black rounded-2xl text-sm border border-primary-100 dark:border-primary-800/30 shadow-sm">
                             {idx + 1}
                           </span>
-                          <p className="text-base md:text-lg font-black text-slate-800 dark:text-slate-100 leading-tight pt-1.5">{q.question_text}</p>
+                          <p className="text-base md:text-lg font-black text-slate-800 dark:text-[var(--text-main)] leading-tight pt-1.5">{q.question_text}</p>
                         </div>
                         <button
                           type="button" onClick={() => speakQuestion(q.question_text)}
-                          className="shrink-0 h-10 w-10 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-all border border-slate-100 dark:border-slate-700 cursor-pointer flex items-center justify-center"
+                          className="shrink-0 h-10 w-10 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-all border border-slate-100 dark:border-slate-700 cursor-pointer flex items-center justify-center"
                           title="Narrate Question"
                         >
                           <Volume2 size={18} />
@@ -257,8 +257,8 @@ export default function TLFQPage() {
                 <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-8 flex flex-col gap-6 shadow-sm">
                   <div className="flex items-center justify-between gap-4">
                     <div>
-                      <h3 className="text-lg font-black text-slate-900 dark:text-slate-100">Narrative Feedback</h3>
-                      <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 font-bold uppercase tracking-widest">Optional subjective input</p>
+                      <h3 className="text-lg font-black text-slate-900 dark:text-[var(--text-main)]">Narrative Feedback</h3>
+                      <p className="text-xs text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 mt-1 font-bold uppercase tracking-widest">Optional subjective input</p>
                     </div>
                     {voiceSupported && (
                       <button
@@ -266,7 +266,7 @@ export default function TLFQPage() {
                         className={`flex items-center gap-2 px-5 py-2.5 text-[10px] font-black rounded-xl transition border uppercase tracking-widest cursor-pointer shadow-sm ${
                           listening
                             ? 'bg-accent-50 border-accent-200 text-accent-600 animate-pulse'
-                            : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
+                            : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
                         }`}
                       >
                         <Mic size={14} /> {listening ? 'Listening...' : 'Voice Dictation'}
@@ -279,13 +279,13 @@ export default function TLFQPage() {
                        value={comment}
                        onChange={e => setComment(e.target.value)}
                        placeholder="Share any specific feedback about teaching style, course content, or improvement suggestions..."
-                       className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 text-sm text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-700 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all leading-relaxed font-medium shadow-inner"
+                       className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 text-sm text-slate-700 dark:text-[var(--text-main)] placeholder-slate-400 dark:placeholder-slate-700 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all leading-relaxed font-medium shadow-inner"
                      />
                      <div className="absolute top-4 right-4 pointer-events-none opacity-10 group-focus-within:opacity-30 transition-opacity">
-                        <MessageSquare size={40} className="text-slate-400" />
+                        <MessageSquare size={40} className="text-slate-600 dark:text-slate-400" />
                      </div>
                   </div>
-                  <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-50 dark:bg-slate-950/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800/50">
+                  <div className="flex items-center gap-2 text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest bg-slate-50 dark:bg-slate-950/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800/50">
                      <Lock size={12} className="text-emerald-500" /> 
                      System strictly protects narrator anonymity.
                   </div>
@@ -304,7 +304,7 @@ export default function TLFQPage() {
                   </button>
                   <button
                     type="button" onClick={() => navigate(-1)}
-                    className="bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 font-black py-5 px-12 rounded-[2rem] text-sm border border-slate-200 dark:border-slate-800 transition cursor-pointer uppercase tracking-widest shadow-sm"
+                    className="bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 dark:text-slate-600 dark:text-slate-400 font-black py-5 px-12 rounded-[2rem] text-sm border border-slate-200 dark:border-slate-800 transition cursor-pointer uppercase tracking-widest shadow-sm"
                   >
                     Discard
                   </button>

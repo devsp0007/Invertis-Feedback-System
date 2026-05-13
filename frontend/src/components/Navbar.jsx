@@ -50,7 +50,7 @@ function ChangePasswordModal({ onClose }) {
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.92, y: 20 }}
         transition={{ duration: 0.25 }}
-        className="w-full max-w-md glass-card p-6"
+        className="w-full max-w-md card-main p-6"
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -59,11 +59,11 @@ function ChangePasswordModal({ onClose }) {
               <KeyRound size={18} className="text-white" />
             </div>
             <div>
-              <h2 className="text-base font-black text-slate-100">Change Password</h2>
-              <p className="text-xs text-slate-500">Update your account password</p>
+              <h2 className="text-base font-black text-[var(--text-main)]">Change Password</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Update your account password</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-2 text-slate-500 hover:text-slate-200 hover:bg-white/10 rounded-xl transition-all cursor-pointer">
+          <button onClick={onClose} className="p-2 text-slate-500 dark:text-slate-400 hover:text-[var(--text-main)] hover:bg-white/10 rounded-xl transition-all cursor-pointer">
             <X size={16} />
           </button>
         </div>
@@ -71,45 +71,45 @@ function ChangePasswordModal({ onClose }) {
         {/* Fields */}
         <div className="flex flex-col gap-4">
           <div>
-            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1.5">Current Password</label>
+            <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">Current Password</label>
             <div className="relative">
               <input
                 type={showCur ? 'text' : 'password'}
                 value={current}
                 onChange={e => setCurrent(e.target.value)}
                 placeholder="Your current password"
-                className="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-primary-500/50 pr-10"
+                className="w-full bg-[var(--bg-input)] border border-white/10 rounded-xl px-4 py-3 text-sm text-[var(--text-main)] placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-primary-500/50 pr-10"
               />
-              <button type="button" onClick={() => setShowCur(!showCur)} className="absolute right-3 top-3.5 text-slate-500 hover:text-slate-300 cursor-pointer">
+              <button type="button" onClick={() => setShowCur(!showCur)} className="absolute right-3 top-3.5 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-300 cursor-pointer">
                 {showCur ? <EyeOff size={15} /> : <Eye size={15} />}
               </button>
             </div>
           </div>
 
           <div>
-            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1.5">New Password</label>
+            <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">New Password</label>
             <div className="relative">
               <input
                 type={showNew ? 'text' : 'password'}
                 value={newPwd}
                 onChange={e => setNewPwd(e.target.value)}
                 placeholder="Min. 8 characters"
-                className="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-primary-500/50 pr-10"
+                className="w-full bg-[var(--bg-input)] border border-white/10 rounded-xl px-4 py-3 text-sm text-[var(--text-main)] placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-primary-500/50 pr-10"
               />
-              <button type="button" onClick={() => setShowNew(!showNew)} className="absolute right-3 top-3.5 text-slate-500 hover:text-slate-300 cursor-pointer">
+              <button type="button" onClick={() => setShowNew(!showNew)} className="absolute right-3 top-3.5 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-300 cursor-pointer">
                 {showNew ? <EyeOff size={15} /> : <Eye size={15} />}
               </button>
             </div>
           </div>
 
           <div>
-            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1.5">Confirm New Password</label>
+            <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1.5">Confirm New Password</label>
             <input
               type="password"
               value={confirm}
               onChange={e => setConfirm(e.target.value)}
               placeholder="Repeat new password"
-              className="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-primary-500/50"
+              className="w-full bg-[var(--bg-input)] border border-white/10 rounded-xl px-4 py-3 text-sm text-[var(--text-main)] placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-primary-500/50"
             />
           </div>
 
@@ -153,18 +153,17 @@ export default function Navbar() {
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.4 }}
-        className="sticky top-0 z-50 flex items-center justify-between px-5 py-3 border-b border-[var(--border-base)] select-none glass-card !rounded-none !bg-opacity-80"
-        style={{ backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
+        className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 bg-[#1D3557] border-b-4 border-[#E63946] select-none"
+        
       >
         {/* Brand */}
-        <div className="flex items-center gap-3">
-          <div className="relative flex h-9 w-9 items-center justify-center rounded-xl flex-shrink-0"
-            style={{ background: 'linear-gradient(135deg, #0F2D52 0%, #1D4E89 100%)', boxShadow: '0 0 20px rgba(15, 45, 82, 0.6)' }}>
-            <span className="text-white font-black text-xs tracking-tight">IF</span>
+        <div className="flex items-center gap-4 cursor-pointer" onClick={() => window.location.href = '/'}>
+          <div className="w-12 h-12 rounded-full border-2 border-white/20 flex items-center justify-center bg-white/10">
+            <GraduationCap className="w-7 h-7 text-white" />
           </div>
           <div className="hidden sm:block">
-            <div className="text-[13px] font-bold text-white leading-none">Invertis Feedback</div>
-            <div className="text-[10px] text-slate-500 mt-0.5 leading-none">Teaching-Learning Feedback System</div>
+            <h1 className="text-xl font-bold text-white tracking-wide leading-tight">INVERTIS</h1>
+            <p className="text-[10px] text-[#A8DADC] tracking-widest uppercase leading-tight">University Bareilly</p>
           </div>
         </div>
 
@@ -173,8 +172,8 @@ export default function Navbar() {
           {user && (
             <div className="hidden md:flex items-center gap-3 mr-1">
               <div className="text-right">
-                <div className="text-xs font-bold text-slate-200 leading-none">{user.name}</div>
-                {user.student_id && <div className="text-[10px] text-slate-500 mt-0.5 font-mono-styled">{user.student_id}</div>}
+                <div className="text-xs font-bold text-[var(--text-main)] leading-none">{user.name}</div>
+                {user.student_id && <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-mono-styled">{user.student_id}</div>}
               </div>
               <div className={`flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1.5 rounded-lg border ${role.bg} ${role.color}`}>
                 <RoleIcon size={10} />
@@ -187,7 +186,7 @@ export default function Navbar() {
           <button
             onClick={toggleTheme}
             title="Toggle Theme"
-            className="flex items-center justify-center p-2 rounded-xl text-slate-400 hover:text-amber-400 hover:bg-amber-500/10 border border-white/8 hover:border-amber-500/25 transition-all duration-200 cursor-pointer"
+            className="flex items-center justify-center p-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-amber-400 hover:bg-amber-500/10 border border-white/8 hover:border-amber-500/25 transition-all duration-200 cursor-pointer"
           >
             {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
           </button>
@@ -198,7 +197,7 @@ export default function Navbar() {
               id="change-password-btn"
               onClick={() => setShowChangePwd(true)}
               title="Change Password"
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-bold text-slate-400 hover:text-primary-400 hover:bg-primary-500/10 border border-white/8 hover:border-primary-500/25 transition-all duration-200 cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-bold text-slate-600 dark:text-slate-400 hover:text-primary-400 hover:bg-primary-500/10 border border-white/8 hover:border-primary-500/25 transition-all duration-200 cursor-pointer"
             >
               <KeyRound size={14} />
               <span className="hidden sm:inline">Password</span>
@@ -207,7 +206,7 @@ export default function Navbar() {
 
           <button
             onClick={logout}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-bold text-slate-400 hover:text-accent-400 hover:bg-accent-500/10 border border-white/8 hover:border-accent-500/25 transition-all duration-200 cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-bold text-slate-600 dark:text-slate-400 hover:text-accent-400 hover:bg-accent-500/10 border border-white/8 hover:border-accent-500/25 transition-all duration-200 cursor-pointer"
           >
             <LogOut size={14} />
             <span className="hidden sm:inline">Logout</span>

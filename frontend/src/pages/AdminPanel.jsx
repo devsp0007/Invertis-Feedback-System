@@ -79,7 +79,7 @@ export default function AdminPanel() {
   }, {});
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-500">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-[var(--text-main)] flex flex-col transition-colors duration-500">
       <Navbar />
       <div className="flex flex-col md:flex-row flex-1">
         <Sidebar />
@@ -93,12 +93,12 @@ export default function AdminPanel() {
                   <ClipboardList size={28} className="text-primary-600 dark:text-primary-400" />
                   <h1 className="text-3xl font-black tracking-tight">Evaluation Forge</h1>
                 </div>
-                <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Design and deploy high-fidelity academic feedback instruments.</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-600 dark:text-slate-400 font-medium">Design and deploy high-fidelity academic feedback instruments.</p>
               </div>
               <div className="flex gap-3">
                  <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-6 py-3 rounded-2xl flex items-center gap-3 shadow-sm">
                     <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">Global Repository Sync: Active</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Global Repository Sync: Active</span>
                  </div>
               </div>
             </div>
@@ -121,16 +121,16 @@ export default function AdminPanel() {
             {loading ? (
               <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[3rem] p-32 flex flex-col items-center gap-4 shadow-sm">
                 <div className="h-12 w-12 border-4 border-primary-600 border-t-transparent rounded-full animate-spin mb-4" />
-                <span className="text-xs font-black uppercase tracking-[0.2em] text-slate-400 animate-pulse">Synchronizing Data Pools...</span>
+                <span className="text-xs font-black uppercase tracking-[0.2em] text-slate-600 dark:text-slate-400 animate-pulse">Synchronizing Data Pools...</span>
               </div>
             ) : (
               <form onSubmit={handleCreateTlfq} className="flex flex-col gap-5 bg-slate-800 border border-slate-700 rounded-2xl p-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Select Course</label>
+                    <label className="text-xs font-bold uppercase text-slate-600 dark:text-slate-400 tracking-wider">Select Course</label>
                     <select
                       value={courseId} onChange={e => setCourseId(e.target.value)}
-                      className="bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-3 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer"
+                      className="bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-3 text-sm text-[var(--text-main)] focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer"
                     >
                       <option value="">Choose Course…</option>
                       {Object.values(coursesByDept).map(({ name, courses: dCourses }) => (
@@ -151,10 +151,10 @@ export default function AdminPanel() {
                     </h2>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                       <div className="flex flex-col gap-3">
-                        <label className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-[0.2em] ml-1">Target Course Module</label>
+                        <label className="text-[10px] font-black uppercase text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.2em] ml-1">Target Course Module</label>
                         <select
                           value={courseId} onChange={e => setCourseId(e.target.value)}
-                          className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-4 text-sm text-slate-700 dark:text-slate-200 font-bold focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all cursor-pointer shadow-inner appearance-none"
+                          className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-4 text-sm text-slate-700 dark:text-[var(--text-main)] font-bold focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all cursor-pointer shadow-inner appearance-none"
                         >
                           <option value="">Select Course...</option>
                           {Object.values(coursesByDept).map(({ name, courses: dCourses }) => (
@@ -168,10 +168,10 @@ export default function AdminPanel() {
                       </div>
 
                       <div className="flex flex-col gap-3">
-                        <label className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-[0.2em] ml-1">Assigned Academic Staff</label>
+                        <label className="text-[10px] font-black uppercase text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.2em] ml-1">Assigned Academic Staff</label>
                         <select
                           value={facultyId} onChange={e => setFacultyId(e.target.value)}
-                          className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-4 text-sm text-slate-700 dark:text-slate-200 font-bold focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all cursor-pointer shadow-inner appearance-none"
+                          className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-4 text-sm text-slate-700 dark:text-[var(--text-main)] font-bold focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all cursor-pointer shadow-inner appearance-none"
                         >
                           <option value="">Select Faculty...</option>
                           {(faculty || []).map(f => (
@@ -181,20 +181,20 @@ export default function AdminPanel() {
                       </div>
 
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Evaluation Title</label>
+                  <label className="text-xs font-bold uppercase text-slate-600 dark:text-slate-400 tracking-wider">Evaluation Title</label>
                   <input
                     type="text" value={title} onChange={e => setTitle(e.target.value)}
                     placeholder="E.g. Advanced Algorithms (CS401) Feedback"
-                    className="bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-[var(--text-main)] placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-primary-500"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Semester</label>
+                    <label className="text-xs font-bold uppercase text-slate-600 dark:text-slate-400 tracking-wider">Semester</label>
                     <select
                       value={semester} onChange={e => setSemester(e.target.value)}
-                      className="bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-3 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer"
+                      className="bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-3 text-sm text-[var(--text-main)] focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer"
                     >
                       {[1, 2, 3, 4, 5, 6, 7, 8].map(sem => (
                         <option key={sem} value={sem}>Semester {sem}</option>
@@ -202,10 +202,10 @@ export default function AdminPanel() {
                     </select>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Section</label>
+                    <label className="text-xs font-bold uppercase text-slate-600 dark:text-slate-400 tracking-wider">Section</label>
                     <select
                       value={section} onChange={e => setSection(e.target.value)}
-                      className="bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-3 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer"
+                      className="bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-3 text-sm text-[var(--text-main)] focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer"
                     >
                       {['A', 'B', 'C', 'D'].map(sec => (
                         <option key={sec} value={sec}>Section {sec}</option>
@@ -215,10 +215,10 @@ export default function AdminPanel() {
                 </div>
 
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Closing Time</label>
+                  <label className="text-xs font-bold uppercase text-slate-600 dark:text-slate-400 tracking-wider">Closing Time</label>
                   <input
                     type="datetime-local" value={closingTime} onChange={e => setClosingTime(e.target.value)}
-                    className="bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-[var(--text-main)] placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-primary-500"
                   />
                 </div>
 
@@ -253,13 +253,13 @@ export default function AdminPanel() {
                           type="text" value={qText}
                           onChange={e => { const u = [...questions]; u[idx] = e.target.value; setQuestions(u); }}
                           placeholder="Compose evaluation instrument text..."
-                          className="flex-1 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-6 py-4 text-sm text-slate-700 dark:text-slate-200 font-bold placeholder-slate-400 dark:placeholder-slate-700 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all shadow-inner"
+                          className="flex-1 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-6 py-4 text-sm text-slate-700 dark:text-[var(--text-main)] font-bold placeholder-slate-400 dark:placeholder-slate-700 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all shadow-inner"
                         />
                         {questions.length > 1 && (
                           <button
                             type="button"
                             onClick={() => setQuestions(questions.filter((_, i) => i !== idx))}
-                            className="h-14 w-14 flex items-center justify-center text-slate-300 hover:text-accent-500 hover:bg-accent-50 dark:hover:bg-accent-950/30 rounded-2xl transition-all cursor-pointer"
+                            className="h-14 w-14 flex items-center justify-center text-slate-700 dark:text-slate-300 hover:text-accent-500 hover:bg-accent-50 dark:hover:bg-accent-950/30 rounded-2xl transition-all cursor-pointer"
                             title="Decommission Instrument"
                           >
                             <Trash2 size={18} />
@@ -273,7 +273,7 @@ export default function AdminPanel() {
                      <div className="h-8 w-8 bg-primary-100 dark:bg-primary-900/50 rounded-lg flex items-center justify-center shrink-0">
                         <ClipboardList size={16} className="text-primary-600 dark:text-primary-400" />
                      </div>
-                     <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest leading-relaxed">
+                     <p className="text-[10px] font-black text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-widest leading-relaxed">
                         Evaluations use a standardized Likert scale (1-7). Questions should be objective and focused on instructional quality.
                      </p>
                   </div>
@@ -289,7 +289,7 @@ export default function AdminPanel() {
                   </button>
                   <button
                     type="button" onClick={() => { setQuestions([...DEFAULT_QUESTIONS]); setTitle(''); }}
-                    className="bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-400 font-black py-5 px-12 rounded-[2.5rem] text-sm border border-slate-200 dark:border-slate-800 transition cursor-pointer uppercase tracking-widest shadow-sm"
+                    className="bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 font-black py-5 px-12 rounded-[2.5rem] text-sm border border-slate-200 dark:border-slate-800 transition cursor-pointer uppercase tracking-widest shadow-sm"
                   >
                     Clear Slate
                   </button>

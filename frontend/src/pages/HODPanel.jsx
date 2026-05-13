@@ -101,10 +101,10 @@ export default function HODPanel() {
     } catch { toast.error('Failed to update portal status.'); }
   };
 
-  const statusColor = s => s === 'open' ? 'text-emerald-400 bg-emerald-900/30 border-emerald-800/40' : s === 'expired' ? 'text-slate-500 bg-slate-800/40 border-slate-700/40' : 'text-amber-400 bg-amber-900/30 border-amber-800/40';
+  const statusColor = s => s === 'open' ? 'text-emerald-400 bg-emerald-900/30 border-emerald-800/40' : s === 'expired' ? 'text-slate-500 dark:text-slate-400 bg-slate-800/40 border-slate-700/40' : 'text-amber-400 bg-amber-900/30 border-amber-800/40';
 
   return (
-    <div className="min-h-screen mesh-bg text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] text-[var(--text-main)] flex flex-col">
       <Navbar />
       <div className="flex flex-col md:flex-row flex-1">
         <Sidebar />
@@ -114,8 +114,8 @@ export default function HODPanel() {
               <LayoutDashboard size={20} className="text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-black text-slate-100">HOD Panel</h1>
-              <p className="text-sm text-slate-400">Manage evaluation forms and departmental portal</p>
+              <h1 className="text-2xl font-black text-[var(--text-main)]">HOD Panel</h1>
+              <p className="text-sm text-slate-600 dark:text-slate-400">Manage evaluation forms and departmental portal</p>
             </div>
           </div>
 
@@ -124,7 +124,7 @@ export default function HODPanel() {
           <div className="flex gap-1.5 p-1.5 card rounded-2xl mb-6 w-fit">
             {TABS.map(({ id, label, icon: Icon }) => (
               <button key={id} onClick={() => setTab(id)}
-                className={`flex items-center gap-2 px-5 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${tab === id ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'text-slate-500 hover:text-slate-200 hover:bg-white/5'}`}>
+                className={`flex items-center gap-2 px-5 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${tab === id ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'text-slate-500 dark:text-slate-400 hover:text-[var(--text-main)] hover:hover:bg-black/5 dark:hover:bg-white/5'}`}>
                 <Icon size={14} /> {label}
               </button>
             ))}
@@ -147,8 +147,8 @@ export default function HODPanel() {
                         { label: 'Open Forms', val: stats.openForms, color: 'from-accent-500 to-pink-600' },
                       ].map(({ label, val, color }) => (
                         <div key={label} className="card rounded-2xl p-5">
-                          <div className="text-2xl font-black text-slate-100">{val ?? '—'}</div>
-                          <div className="text-xs text-slate-400 mt-1 font-medium">{label}</div>
+                          <div className="text-2xl font-black text-[var(--text-main)]">{val ?? '—'}</div>
+                          <div className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">{label}</div>
                         </div>
                       ))}
                     </div>
@@ -158,13 +158,13 @@ export default function HODPanel() {
                   {portal && (
                     <div className="card rounded-2xl p-6 flex items-center justify-between">
                       <div>
-                        <h3 className="text-base font-bold text-slate-100">Department Portal</h3>
-                        <p className="text-sm text-slate-400 mt-1">
+                        <h3 className="text-base font-bold text-[var(--text-main)]">Department Portal</h3>
+                        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
                           When closed, students cannot see or submit any feedback forms.
                         </p>
                       </div>
                       <button onClick={togglePortal}
-                        className={`flex items-center gap-2 px-5 py-3 rounded-xl font-bold text-sm transition-all cursor-pointer ${portal.portal_open ? 'bg-emerald-600 hover:bg-emerald-500 text-white' : 'bg-slate-700 hover:bg-slate-600 text-slate-200'}`}>
+                        className={`flex items-center gap-2 px-5 py-3 rounded-xl font-bold text-sm transition-all cursor-pointer ${portal.portal_open ? 'bg-emerald-600 hover:bg-emerald-500 text-white' : 'bg-slate-700 hover:bg-slate-600 text-[var(--text-main)]'}`}>
                         {portal.portal_open ? <><ToggleRight size={20} /> Portal Open</> : <><ToggleLeft size={20} /> Portal Closed</>}
                       </button>
                     </div>
@@ -177,41 +177,41 @@ export default function HODPanel() {
                 <form onSubmit={handleCreate} className="flex flex-col gap-5 card rounded-2xl p-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Section</label>
+                      <label className="text-xs font-bold uppercase text-slate-600 dark:text-slate-400 tracking-wider">Section</label>
                       <select value={sectionId} onChange={e => setSectionId(e.target.value)}
-                        className="input-base rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
+                        className="input-base rounded-xl px-4 py-2.5 text-sm text-[var(--text-main)] focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
                         <option value="">Select Section…</option>
                         {sections.map(s => <option key={s.id} value={s.id}>{s.name} (Sem {s.semester})</option>)}
                       </select>
                     </div>
 
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Faculty & Course</label>
+                      <label className="text-xs font-bold uppercase text-slate-600 dark:text-slate-400 tracking-wider">Faculty & Course</label>
                       <select value={selectedSf} onChange={e => setSelectedSf(e.target.value)} disabled={!sectionId}
-                        className="input-base rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer disabled:opacity-50">
+                        className="input-base rounded-xl px-4 py-2.5 text-sm text-[var(--text-main)] focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer disabled:opacity-50">
                         <option value="">Select Faculty & Course…</option>
                         {sfList.map(sf => <option key={sf.id} value={sf.id}>{sf.faculty_name} — [{sf.course_code}] {sf.course_name}</option>)}
                       </select>
                     </div>
 
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Form Title</label>
+                      <label className="text-xs font-bold uppercase text-slate-600 dark:text-slate-400 tracking-wider">Form Title</label>
                       <input type="text" value={title} onChange={e => setTitle(e.target.value)}
                         placeholder="e.g. Spring 2025 — DSA Feedback"
-                        className="input-base rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                        className="input-base rounded-xl px-4 py-2.5 text-sm text-[var(--text-main)] focus:outline-none focus:ring-2 focus:ring-blue-500" />
                     </div>
 
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Closing Time</label>
+                      <label className="text-xs font-bold uppercase text-slate-600 dark:text-slate-400 tracking-wider">Closing Time</label>
                       <input type="datetime-local" value={closingTime} onChange={e => setClosingTime(e.target.value)}
-                        className="input-base rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                        className="input-base rounded-xl px-4 py-2.5 text-sm text-[var(--text-main)] focus:outline-none focus:ring-2 focus:ring-blue-500" />
                     </div>
                   </div>
 
                   {/* Questions */}
                   <div className="border-t border-slate-800 pt-5">
                     <div className="flex items-center justify-between mb-3">
-                      <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Questions</label>
+                      <label className="text-xs font-bold uppercase text-slate-600 dark:text-slate-400 tracking-wider">Questions</label>
                       <button type="button" onClick={() => setQuestions([...questions, ''])}
                         className="text-xs font-bold text-blue-400 hover:text-blue-300 cursor-pointer flex items-center gap-1">
                         <Plus size={13} /> Add Question
@@ -221,7 +221,7 @@ export default function HODPanel() {
                       <div key={i} className="flex gap-2 items-center mb-2">
                         <span className="h-7 w-7 text-xs font-black text-blue-300 bg-blue-900/30 border border-blue-800/40 rounded-lg flex items-center justify-center flex-shrink-0">Q{i + 1}</span>
                         <input type="text" value={q} onChange={e => { const u = [...questions]; u[i] = e.target.value; setQuestions(u); }}
-                          className="flex-1 input-base rounded-xl px-4 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                          className="flex-1 input-base rounded-xl px-4 py-2 text-sm text-[var(--text-main)] focus:outline-none focus:ring-2 focus:ring-blue-500" />
                         {questions.length > 1 && (
                           <button type="button" onClick={() => setQuestions(questions.filter((_, j) => j !== i))}
                             className="text-slate-600 hover:text-accent-400 transition-colors cursor-pointer"><X size={16} /></button>
@@ -241,7 +241,7 @@ export default function HODPanel() {
               {tab === 'forms' && (
                 <div className="flex flex-col gap-4">
                   {forms.length === 0 ? (
-                    <div className="card rounded-2xl p-12 text-center text-slate-400 text-sm">
+                    <div className="card rounded-2xl p-12 text-center text-slate-600 dark:text-slate-400 text-sm">
                       No forms created yet. Use "Create Form" to get started.
                     </div>
                   ) : forms.map(f => (
@@ -249,11 +249,11 @@ export default function HODPanel() {
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           <span className={`text-xs font-bold px-2 py-0.5 rounded-lg border ${statusColor(f.status)}`}>{f.status}</span>
-                          <span className="text-xs text-slate-500 font-mono">{f.responses} responses</span>
+                          <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">{f.responses} responses</span>
                         </div>
-                        <div className="text-sm font-bold text-slate-100">{f.title}</div>
-                        <div className="text-xs text-slate-400 mt-1">{f.section_name} • {f.faculty_name} • {f.course_code}</div>
-                        <div className="text-xs text-slate-500 mt-0.5 flex items-center gap-1">
+                        <div className="text-sm font-bold text-[var(--text-main)]">{f.title}</div>
+                        <div className="text-xs text-slate-600 dark:text-slate-400 mt-1">{f.section_name} • {f.faculty_name} • {f.course_code}</div>
+                        <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-1">
                           <Clock size={11} /> Closes: {new Date(f.closing_time).toLocaleString()}
                         </div>
                       </div>

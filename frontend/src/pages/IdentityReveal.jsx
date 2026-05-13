@@ -57,7 +57,7 @@ export default function IdentityRevealPage() {
   };
 
   return (
-    <div className="min-h-screen mesh-bg text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] text-[var(--text-main)] flex flex-col">
       <Navbar />
       <div className="flex flex-col md:flex-row flex-1">
         <Sidebar />
@@ -76,8 +76,8 @@ export default function IdentityRevealPage() {
                 <Fingerprint size={22} className="text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-black text-slate-100">Student Identity Reveal</h1>
-                <p className="text-sm text-slate-400 mt-0.5">
+                <h1 className="text-2xl font-black text-[var(--text-main)]">Student Identity Reveal</h1>
+                <p className="text-sm text-slate-600 dark:text-slate-400 mt-0.5">
                   Reveal the real identity behind an anonymous student ID
                 </p>
               </div>
@@ -102,13 +102,13 @@ export default function IdentityRevealPage() {
             </div>
 
             {/* ── Search Box ───────────────────────────────────────────── */}
-            <div className="glass-card p-6">
-              <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest block mb-3">
+            <div className="card-main p-6">
+              <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest block mb-3">
                 Enter Anonymous Student ID
               </label>
               <div className="flex gap-3">
                 <div className="relative flex-1">
-                  <Hash size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
+                  <Hash size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400" />
                   <input
                     type="text"
                     value={query}
@@ -128,7 +128,7 @@ export default function IdentityRevealPage() {
                     spellCheck={false}
                   />
                   {query && (
-                    <button onClick={handleReset} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 cursor-pointer transition-colors">
+                    <button onClick={handleReset} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-300 cursor-pointer transition-colors">
                       <X size={15} />
                     </button>
                   )}
@@ -166,7 +166,7 @@ export default function IdentityRevealPage() {
               </AnimatePresence>
 
               <p className="text-xs text-slate-600 mt-3">
-                Anonymous IDs are in the format <span className="font-mono text-slate-400">ANO-XXXXXX</span> (e.g. <span className="font-mono text-emerald-500/80">ANO-A3F2B1</span>).
+                Anonymous IDs are in the format <span className="font-mono text-slate-600 dark:text-slate-400">ANO-XXXXXX</span> (e.g. <span className="font-mono text-emerald-500/80">ANO-A3F2B1</span>).
                 Copy the ID from the feedback response or leaderboard.
               </p>
             </div>
@@ -179,7 +179,7 @@ export default function IdentityRevealPage() {
                   initial={{ opacity: 0, scale: 0.95, y: 12 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  className="glass-card p-6 border border-amber-500/30"
+                  className="card-main p-6 border border-amber-500/30"
                 >
                   <div className="flex items-start gap-4">
                     <div className="h-12 w-12 bg-amber-500/20 border border-amber-500/30 rounded-2xl
@@ -188,7 +188,7 @@ export default function IdentityRevealPage() {
                     </div>
                     <div className="flex-1">
                       <h3 className="text-base font-black text-amber-200">Student Record Found</h3>
-                      <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                      <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
                         A student record matching <span className="font-mono font-bold text-emerald-400">{query}</span> was located.
                         Do you confirm you have valid grounds to reveal this student's identity?
                       </p>
@@ -205,7 +205,7 @@ export default function IdentityRevealPage() {
                         <button
                           onClick={handleReset}
                           className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm
-                            bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10
+                            hover:bg-black/5 dark:hover:bg-white/5 hover:bg-white/10 text-slate-700 dark:text-slate-300 border border-white/10
                             transition-all cursor-pointer"
                         >
                           <X size={15} /> Cancel
@@ -222,7 +222,7 @@ export default function IdentityRevealPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ type: 'spring', damping: 20 }}
-                  className="glass-card overflow-hidden border border-emerald-500/30"
+                  className="card-main overflow-hidden border border-emerald-500/30"
                 >
                   {/* Top stripe */}
                   <div className="h-1.5 w-full bg-gradient-to-r from-accent-500 via-accent-500 to-primary-500" />
@@ -234,20 +234,20 @@ export default function IdentityRevealPage() {
                         <CheckCircle2 size={15} className="text-emerald-400" />
                         <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">Identity Revealed</span>
                       </div>
-                      <span className="text-[10px] font-mono text-slate-500 bg-white/5 px-2 py-1 rounded-lg border border-white/10">
+                      <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 hover:bg-black/5 dark:hover:bg-white/5 px-2 py-1 rounded-lg border border-white/10">
                         Session #{searchCount}
                       </span>
                     </div>
 
                     {/* Avatar + name */}
-                    <div className="flex items-center gap-4 mb-6 p-4 bg-white/5 rounded-2xl border border-white/8">
+                    <div className="flex items-center gap-4 mb-6 p-4 hover:bg-black/5 dark:hover:bg-white/5 rounded-2xl border border-white/8">
                       <div className="h-14 w-14 bg-gradient-to-br from-primary-500 to-accent-600
                         rounded-2xl flex items-center justify-center text-2xl font-black text-white shadow-xl flex-shrink-0">
                         {result.name?.charAt(0).toUpperCase()}
                       </div>
                       <div>
                         <div className="text-xl font-black text-white">{result.name}</div>
-                        <div className="text-xs text-slate-400 mt-0.5">{result.email || 'No email registered'}</div>
+                        <div className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">{result.email || 'No email registered'}</div>
                       </div>
                     </div>
 
@@ -261,7 +261,7 @@ export default function IdentityRevealPage() {
                         <div className="font-mono font-black text-emerald-400 text-lg tracking-widest">
                           {result.unique_feedback_id || query}
                         </div>
-                        <div className="text-[10px] text-slate-500">This is what everyone else sees</div>
+                        <div className="text-[10px] text-slate-500 dark:text-slate-400">This is what everyone else sees</div>
                       </div>
 
                       <div className="flex flex-col gap-1.5 p-4 bg-accent-950/30 border border-accent-500/20 rounded-2xl">
@@ -271,29 +271,29 @@ export default function IdentityRevealPage() {
                         <div className="font-mono font-black text-accent-300 text-lg">
                           {result.student_id || '—'}
                         </div>
-                        <div className="text-[10px] text-slate-500">Official university roll number</div>
+                        <div className="text-[10px] text-slate-500 dark:text-slate-400">Official university roll number</div>
                       </div>
 
-                      <div className="flex flex-col gap-1.5 p-4 bg-white/5 border border-white/8 rounded-2xl">
-                        <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                      <div className="flex flex-col gap-1.5 p-4 hover:bg-black/5 dark:hover:bg-white/5 border border-white/8 rounded-2xl">
+                        <div className="flex items-center gap-2 text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">
                           <Mail size={11} /> Email Address
                         </div>
-                        <div className="text-sm font-semibold text-slate-200">
+                        <div className="text-sm font-semibold text-[var(--text-main)]">
                           {result.email || 'Not registered yet'}
                         </div>
                       </div>
 
-                      <div className="flex flex-col gap-1.5 p-4 bg-white/5 border border-white/8 rounded-2xl">
-                        <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                      <div className="flex flex-col gap-1.5 p-4 hover:bg-black/5 dark:hover:bg-white/5 border border-white/8 rounded-2xl">
+                        <div className="flex items-center gap-2 text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">
                           <BookOpen size={11} /> Section & Semester
                         </div>
-                        <div className="text-sm font-semibold text-slate-200">
+                        <div className="text-sm font-semibold text-[var(--text-main)]">
                           {result.section_name || 'N/A'} {result.semester ? `· Sem ${result.semester}` : ''}
                         </div>
                       </div>
 
-                      <div className="flex flex-col gap-1.5 p-4 bg-white/5 border border-white/8 rounded-2xl">
-                        <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                      <div className="flex flex-col gap-1.5 p-4 hover:bg-black/5 dark:hover:bg-white/5 border border-white/8 rounded-2xl">
+                        <div className="flex items-center gap-2 text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">
                           <User size={11} /> Account Status
                         </div>
                         <div className={`text-sm font-bold ${result.status === 'active' ? 'text-emerald-400' : 'text-amber-400'}`}>
@@ -301,11 +301,11 @@ export default function IdentityRevealPage() {
                         </div>
                       </div>
 
-                      <div className="flex flex-col gap-1.5 p-4 bg-white/5 border border-white/8 rounded-2xl">
-                        <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                      <div className="flex flex-col gap-1.5 p-4 hover:bg-black/5 dark:hover:bg-white/5 border border-white/8 rounded-2xl">
+                        <div className="flex items-center gap-2 text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">
                           <GraduationCap size={11} /> Batch / Points
                         </div>
-                        <div className="text-sm font-semibold text-slate-200">
+                        <div className="text-sm font-semibold text-[var(--text-main)]">
                           Batch {result.batch || '—'} · <span className="text-amber-400">{result.points ?? 0} pts</span>
                         </div>
                       </div>
@@ -317,7 +317,7 @@ export default function IdentityRevealPage() {
                       <button
                         onClick={handleReset}
                         className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm
-                          bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10
+                          hover:bg-black/5 dark:hover:bg-white/5 hover:bg-white/10 text-slate-700 dark:text-slate-300 border border-white/10
                           transition-all cursor-pointer"
                       >
                         <Search size={15} /> Search Another

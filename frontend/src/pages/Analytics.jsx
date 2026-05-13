@@ -51,7 +51,7 @@ export default function Analytics() {
     : 0;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-primary-500/30">
+    <div className="min-h-screen bg-slate-950 text-[var(--text-main)] flex flex-col font-sans selection:bg-primary-500/30">
       <Navbar />
       <div className="flex flex-col md:flex-row flex-1">
         <Sidebar />
@@ -73,16 +73,16 @@ export default function Analytics() {
                     System Intelligence
                   </h1>
                 </div>
-                <p className="text-sm text-slate-400 font-medium ml-1">Advanced multi-dimensional feedback analytics.</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400 font-medium ml-1">Advanced multi-dimensional feedback analytics.</p>
               </div>
 
               <div className="flex flex-wrap items-center gap-3 w-full xl:w-auto">
                 <div className="flex items-center gap-3 bg-slate-950/50 p-1.5 rounded-2xl border border-slate-800/80">
-                  <div className="pl-3 text-slate-500"><Filter size={16} /></div>
+                  <div className="pl-3 text-slate-500 dark:text-slate-400"><Filter size={16} /></div>
                   <select
                     value={selectedDeptId}
                     onChange={e => setSelectedDeptId(e.target.value)}
-                    className="bg-transparent pl-1 pr-10 py-2.5 text-sm font-bold text-slate-200 focus:outline-none cursor-pointer appearance-none w-full md:w-52"
+                    className="bg-transparent pl-1 pr-10 py-2.5 text-sm font-bold text-[var(--text-main)] focus:outline-none cursor-pointer appearance-none w-full md:w-52"
                     style={{ backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center', backgroundSize: '16px' }}
                   >
                     <option value="all" className="bg-slate-900">All Departments</option>
@@ -96,7 +96,7 @@ export default function Analytics() {
                     <button key={val} onClick={() => setTeacherTypeFilter(val)}
                       className={`px-3 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${teacherTypeFilter === val
                           ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/20'
-                          : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-[var(--text-main)] hover:hover:bg-black/5 dark:hover:bg-white/5'
                         }`}>
                       {lbl}
                     </button>
@@ -125,8 +125,8 @@ export default function Analytics() {
                     <stat.icon size={20} className={stat.color} />
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">{stat.label}</div>
-                    <div className="text-2xl font-black text-slate-100">{stat.value}</div>
+                    <div className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{stat.label}</div>
+                    <div className="text-2xl font-black text-[var(--text-main)]">{stat.value}</div>
                   </div>
                 </motion.div>
               ))}
@@ -137,7 +137,7 @@ export default function Analytics() {
                 <div className="h-12 w-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin shadow-lg shadow-primary-500/20" />
               </div>
             ) : !data ? (
-              <div className="bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 rounded-3xl p-16 text-center text-slate-400 font-medium">No analytics data available.</div>
+              <div className="bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 rounded-3xl p-16 text-center text-slate-600 dark:text-slate-400 font-medium">No analytics data available.</div>
             ) : (
               <div className="flex flex-col gap-6">
                 {/* Tabs */}
@@ -150,7 +150,7 @@ export default function Analytics() {
                       whileTap={{ scale: 0.95 }}
                       className={`flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-xl transition-all cursor-pointer ${activeTab === id
                           ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/25'
-                          : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-[var(--text-main)] hover:bg-slate-800/50'
                         }`}
                     >
                       <Icon size={16} /> {label}
@@ -170,11 +170,11 @@ export default function Analytics() {
                     {activeTab === 'faculty' && (
                       <div className="flex flex-col gap-6">
                         <div className="bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 rounded-3xl p-8 shadow-xl">
-                          <h3 className="text-base font-black text-slate-100 mb-6 flex items-center gap-2">
+                          <h3 className="text-base font-black text-[var(--text-main)] mb-6 flex items-center gap-2">
                             <TrendingUp size={18} className="text-primary-400" /> Leaderboard Rankings (out of 7)
                           </h3>
                           {filteredAvgRatingPerFaculty.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center py-16 text-slate-500">
+                            <div className="flex flex-col items-center justify-center py-16 text-slate-500 dark:text-slate-400">
                               <BarChart2 size={40} className="mb-3 text-slate-700" />
                               <p className="text-sm font-medium">No feedback data yet for this selection.</p>
                             </div>
@@ -204,7 +204,7 @@ export default function Analytics() {
                     {activeTab === 'performance' && (
                       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
                         <div className="lg:col-span-3 bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 rounded-3xl p-8 shadow-xl">
-                          <h3 className="text-base font-black text-slate-100 mb-6 flex items-center gap-2">
+                          <h3 className="text-base font-black text-[var(--text-main)] mb-6 flex items-center gap-2">
                             <Activity size={18} className="text-primary-400" /> Attribute Breakdown
                           </h3>
                           <div style={{ height: '400px' }}>
@@ -230,7 +230,7 @@ export default function Analytics() {
                         <div className="lg:col-span-2 flex flex-col gap-4">
                           {(data?.attributeAnalytics || []).map((attr, i) => (
                             <div key={i} className="bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 rounded-2xl p-4 flex justify-between items-center">
-                              <span className="text-sm font-bold text-slate-300">{attr.full_text}</span>
+                              <span className="text-sm font-bold text-slate-700 dark:text-slate-300">{attr.full_text}</span>
                               <div className="flex items-center gap-2">
                                 <div className="h-1.5 w-16 bg-slate-800 rounded-full overflow-hidden">
                                   <div className="h-full bg-primary-500 rounded-full" style={{ width: `${(attr.score / 7) * 100}%` }} />
@@ -257,18 +257,18 @@ export default function Analytics() {
                               </span>
                             </div>
                             <div>
-                              <h4 className="text-xl font-black text-slate-100">{d.name}</h4>
-                              <p className="text-xs text-slate-500 font-bold uppercase mt-1 tracking-widest">{d.code}</p>
+                              <h4 className="text-xl font-black text-[var(--text-main)]">{d.name}</h4>
+                              <p className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase mt-1 tracking-widest">{d.code}</p>
                             </div>
                             <div className="grid grid-cols-2 gap-4 mt-2 bg-slate-950/30 p-4 rounded-2xl border border-slate-800/50">
                               <div>
-                                <p className="text-[10px] text-slate-500 uppercase font-black mb-1">Avg Rating</p>
+                                <p className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-black mb-1">Avg Rating</p>
                                 <p className="text-lg font-black text-white flex items-center gap-1.5">
                                   <Star size={14} className="text-amber-400 fill-amber-400" /> {d.avg_rating}
                                 </p>
                               </div>
                               <div>
-                                <p className="text-[10px] text-slate-500 uppercase font-black mb-1">Faculty</p>
+                                <p className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-black mb-1">Faculty</p>
                                 <p className="text-lg font-black text-white">{d.faculty_count}</p>
                               </div>
                             </div>
@@ -280,11 +280,11 @@ export default function Analytics() {
                     {/* TRENDS TAB */}
                     {activeTab === 'trends' && (
                       <div className="bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 rounded-3xl p-8 shadow-xl">
-                        <h3 className="text-base font-black text-slate-100 mb-6 flex items-center gap-2">
+                        <h3 className="text-base font-black text-[var(--text-main)] mb-6 flex items-center gap-2">
                           <Activity size={18} className="text-primary-400" /> Submission Volume Trends
                         </h3>
                         {data?.timelineData?.length === 0 ? (
-                           <div className="flex flex-col items-center justify-center py-16 text-slate-500 text-center">
+                           <div className="flex flex-col items-center justify-center py-16 text-slate-500 dark:text-slate-400 text-center">
                             <Activity size={40} className="mb-3 text-slate-700" />
                             <p className="text-sm font-medium">Not enough historical data to show trends.</p>
                           </div>
@@ -321,7 +321,7 @@ export default function Analytics() {
                               <div className="flex items-start justify-between mb-4">
                                 <div className="pr-4">
                                   <span className="inline-block text-[10px] font-black bg-primary-500/10 text-primary-400 px-2 py-0.5 rounded-md border border-primary-500/20 mb-2 tracking-widest uppercase">{c.course_code}</span>
-                                  <h4 className="text-base font-black text-slate-100 leading-tight group-hover:text-primary-300 transition-colors">{c.course_name}</h4>
+                                  <h4 className="text-base font-black text-[var(--text-main)] leading-tight group-hover:text-primary-300 transition-colors">{c.course_name}</h4>
                                 </div>
                                 <span className={`text-xl font-black ${c.rate >= 70 ? 'text-emerald-400' : c.rate >= 40 ? 'text-amber-400' : 'text-accent-400'}`}>{c.rate}%</span>
                               </div>
@@ -334,15 +334,15 @@ export default function Analytics() {
                                 />
                               </div>
                             </div>
-                            <div className="flex items-center gap-4 text-xs font-black text-slate-400 bg-slate-950/30 p-3 rounded-2xl border border-slate-800/50">
+                            <div className="flex items-center gap-4 text-xs font-black text-slate-600 dark:text-slate-400 bg-slate-950/30 p-3 rounded-2xl border border-slate-800/50">
                               <div className="flex flex-col">
-                                <span className="text-slate-500 text-[10px] uppercase tracking-widest mb-0.5">Enrolled</span>
-                                <span className="text-slate-200">{c.enrolled}</span>
+                                <span className="text-slate-500 dark:text-slate-400 text-[10px] uppercase tracking-widest mb-0.5">Enrolled</span>
+                                <span className="text-[var(--text-main)]">{c.enrolled}</span>
                               </div>
                               <div className="w-px h-6 bg-slate-700" />
                               <div className="flex flex-col">
-                                <span className="text-slate-500 text-[10px] uppercase tracking-widest mb-0.5">Responses</span>
-                                <span className="text-slate-200">{c.submitted}</span>
+                                <span className="text-slate-500 dark:text-slate-400 text-[10px] uppercase tracking-widest mb-0.5">Responses</span>
+                                <span className="text-[var(--text-main)]">{c.submitted}</span>
                               </div>
                             </div>
                           </div>
@@ -358,7 +358,7 @@ export default function Analytics() {
                           Student feedback is rigorously anonymized. No identifying details are exposed here.
                         </div>
                         {data?.recentComments?.length === 0 ? (
-                          <div className="bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 rounded-3xl p-12 text-center text-slate-400 font-medium">No comments submitted yet for this selection.</div>
+                          <div className="bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 rounded-3xl p-12 text-center text-slate-600 dark:text-slate-400 font-medium">No comments submitted yet for this selection.</div>
                         ) : (
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {(data?.recentComments || []).map((c, i) => (
@@ -372,12 +372,12 @@ export default function Analytics() {
                                 <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                                   <MessageSquare size={40} className="text-primary-500" />
                                 </div>
-                                <p className="text-base text-slate-300 italic leading-relaxed mb-6 flex-1 relative z-10">"{c.comment}"</p>
+                                <p className="text-base text-slate-700 dark:text-slate-300 italic leading-relaxed mb-6 flex-1 relative z-10">"{c.comment}"</p>
                                 <div className="pt-4 border-t border-slate-800/60 flex flex-col gap-1.5 relative z-10">
-                                  <div className="flex items-center gap-2 text-sm text-slate-400 font-bold">
+                                  <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 font-bold">
                                     <span className="text-primary-400 font-black">{c.faculty_name}</span>
                                     <span className="text-slate-700">•</span>
-                                    <span className="text-slate-500">{c.course_name}</span>
+                                    <span className="text-slate-500 dark:text-slate-400">{c.course_name}</span>
                                   </div>
                                   <div className="text-[10px] text-slate-600 font-black uppercase tracking-widest">
                                     Submitted on {new Date(c.submitted_at).toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}
