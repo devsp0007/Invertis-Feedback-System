@@ -75,8 +75,10 @@ export const initDb = async () => {
 
       const depts = {};
       for (const d of deptsData) {
-        depts[d.code] = await Department.create({
-          data: { ...d, portal_open: true }
+        depts[d.code] = await Department.upsert({
+          where: { code: d.code },
+          update: {},
+          create: { ...d, portal_open: true }
         });
       }
 
