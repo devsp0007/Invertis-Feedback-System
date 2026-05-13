@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: tlfq-frontend
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm install -g serve && serve -s dist -l 3000
+    envVars:
+      - key: VITE_API_URL
+        value: https://invertis-feedback-system-6s1e.onrender.com/
+    autoDeploy: true
+    healthCheckPath: /
