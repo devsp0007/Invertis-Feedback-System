@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GraduationCap, Lock, Mail, ArrowRight, CheckCircle2, ChevronLeft } from 'lucide-react';
+import { GraduationCap, ArrowRight, CheckCircle2, ChevronLeft, Mail, Lock } from 'lucide-react';
+import { Button, Input, Alert } from '../components/ui';
 import api from '../services/api';
 
 export default function StudentRegister() {
@@ -99,10 +100,8 @@ export default function StudentRegister() {
 
         <div className="card-main rounded-2xl p-7">
           {error && (
-            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
-              className="mb-4 p-3.5 bg-accent-500/10 text-accent-400 border border-accent-500/20 text-xs font-semibold rounded-xl flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent-400 flex-shrink-0" />
-              {error}
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mb-4">
+              <Alert variant="error" closeable onClose={() => setError('')}>{error}</Alert>
             </motion.div>
           )}
 
@@ -112,15 +111,17 @@ export default function StudentRegister() {
                 <h2 className="text-base font-bold text-white mb-1">Enter your Student ID</h2>
                 <p className="text-[12px] text-slate-500 dark:text-slate-400 mb-5">Provided by your department coordinator. (e.g. BCS2025_01)</p>
                 <form onSubmit={handleCheckId} className="flex flex-col gap-4">
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400 tracking-widest">Student ID</label>
-                    <input type="text" value={studentId} onChange={e => setStudentId(e.target.value.toUpperCase())}
-                      placeholder="BCS2025_01"
-                      className="input-base font-mono-styled tracking-widest text-base" />
-                  </div>
-                  <button type="submit" disabled={loading} className="btn-success justify-center py-3 glow-emerald">
-                    {loading ? <span className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <><span>Continue</span><ArrowRight size={16} /></>}
-                  </button>
+                  <Input
+                    type="text"
+                    value={studentId}
+                    onChange={(e) => setStudentId(e.target.value.toUpperCase())}
+                    placeholder="BCS2025_01"
+                    className="font-mono-styled tracking-widest"
+                  />
+                  <Button type="submit" disabled={loading} loading={loading} fullWidth size="lg">
+                    <ArrowRight size={16} />
+                    Continue
+                  </Button>
                 </form>
               </motion.div>
             )}
@@ -135,36 +136,31 @@ export default function StudentRegister() {
                 </div>
                 <p className="text-[12px] text-slate-500 dark:text-slate-400 mb-5 ml-7">Set your email and password to activate your account.</p>
                 <form onSubmit={handleRegister} className="flex flex-col gap-3.5">
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400 tracking-widest">Your Email</label>
-                    <div className="relative">
-                      <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-600" size={15} />
-                      <input type="email" value={email} onChange={e => setEmail(e.target.value)}
-                        placeholder="yourname@email.com" className="input-base pl-10" />
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400 tracking-widest">Create Password</label>
-                    <div className="relative">
-                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-600" size={15} />
-                      <input type="password" value={password} onChange={e => setPassword(e.target.value)}
-                        placeholder="Min. 8 characters" className="input-base pl-10" />
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400 tracking-widest">Confirm Password</label>
-                    <div className="relative">
-                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-600" size={15} />
-                      <input type="password" value={confirm} onChange={e => setConfirm(e.target.value)}
-                        placeholder="Re-enter password" className="input-base pl-10" />
-                    </div>
-                  </div>
-                  <button type="submit" disabled={loading} className="btn-success justify-center py-3 mt-1 glow-emerald">
-                    {loading
-                      ? <span className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      : <><CheckCircle2 size={16} /><span>Activate & Login</span></>
-                    }
-                  </button>
+                  <Input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="yourname@email.com"
+                    leadingIcon={Mail}
+                  />
+                  <Input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Min. 8 characters"
+                    leadingIcon={Lock}
+                  />
+                  <Input
+                    type="password"
+                    value={confirm}
+                    onChange={(e) => setConfirm(e.target.value)}
+                    placeholder="Re-enter password"
+                    leadingIcon={Lock}
+                  />
+                  <Button type="submit" disabled={loading} loading={loading} fullWidth size="lg" variant="success" className="mt-1">
+                    <CheckCircle2 size={16} />
+                    Activate & Login
+                  </Button>
                 </form>
               </motion.div>
             )}

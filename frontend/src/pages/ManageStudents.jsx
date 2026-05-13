@@ -8,10 +8,9 @@ import {
   UserPlus, X, Save, Lock, Info, ArrowLeft
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Input, Button } from '../components/ui';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
-
-const inputCls = 'bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-5 py-4 text-sm text-slate-800 dark:text-[var(--text-main)] placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500/50 w-full transition-all shadow-sm';
 
 export default function ManageStudents() {
   const { user } = useAuth();
@@ -124,7 +123,7 @@ export default function ManageStudents() {
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-10 pb-10 max-w-7xl mx-auto w-full">
 
             {/* Header section with sophisticated design */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-10 rounded-[3rem] shadow-sm relative overflow-hidden group">
+            <div className="card-main relative overflow-hidden group flex flex-col md:flex-row md:items-end justify-between gap-8 p-10">
               <div className="absolute top-0 right-0 w-96 h-96 bg-primary-500/5 blur-[120px] -mr-48 -mt-48 transition-opacity opacity-50 group-hover:opacity-100" />
               <div className="z-10 flex items-start gap-8">
                 <button
@@ -205,7 +204,7 @@ export default function ManageStudents() {
                     <div key={i} className="h-32 bg-white dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-[2.5rem] animate-pulse shadow-sm" />
                   ))
                 ) : filteredStudents.length === 0 ? (
-                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center py-32 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[4rem] text-center shadow-sm">
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="card-main flex flex-col items-center justify-center py-32 text-center">
                     <div className="h-28 w-28 bg-slate-50 dark:bg-slate-800/50 rounded-[2.5rem] flex items-center justify-center mb-8 text-[var(--text-main)] dark:text-slate-700">
                       <Users size={56} />
                     </div>
@@ -221,7 +220,7 @@ export default function ManageStudents() {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, scale: 0.98 }}
                     transition={{ delay: idx * 0.04 }}
-                    className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary-500/40 rounded-[2.5rem] p-8 transition-all shadow-sm hover:shadow-2xl hover:shadow-primary-500/5 flex flex-col lg:flex-row lg:items-center gap-10 relative overflow-hidden"
+                    className="card-main group relative overflow-hidden flex flex-col lg:flex-row lg:items-center gap-10"
                   >
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-primary-500 opacity-0 group-hover:opacity-100 transition-opacity" />
 
@@ -366,46 +365,36 @@ export default function ManageStudents() {
 
                       <form onSubmit={handleSubmit} className="space-y-8">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                          <div className="flex flex-col gap-3">
-                            <label className="text-[10px] font-black text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Legal Name</label>
-                            <input
-                              type="text" required
-                              className={inputCls}
-                              value={formData.name}
-                              onChange={e => setFormData({ ...formData, name: e.target.value })}
-                              placeholder="e.g. Alok Yadav"
-                            />
-                          </div>
-                          <div className="flex flex-col gap-3">
-                            <label className="text-[10px] font-black text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Academic ID Tag</label>
-                            <input
-                              type="text" required
-                              className={inputCls}
-                              value={formData.college_id}
-                              onChange={e => setFormData({ ...formData, college_id: e.target.value })}
-                              placeholder="REF-XXXXXX"
-                            />
-                          </div>
-                        </div>
-
-                        <div className="flex flex-col gap-3">
-                          <label className="text-[10px] font-black text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Institutional Handle</label>
-                          <input
-                            type="email"
-                            className={inputCls}
-                            value={formData.email}
-                            onChange={e => setFormData({ ...formData, email: e.target.value })}
-                            placeholder="user@university.edu"
+                          <Input
+                            type="text"
+                            required
+                            value={formData.name}
+                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            placeholder="e.g. Alok Yadav"
+                          />
+                          <Input
+                            type="text"
+                            required
+                            value={formData.college_id}
+                            onChange={(e) => setFormData({ ...formData, college_id: e.target.value })}
+                            placeholder="REF-XXXXXX"
                           />
                         </div>
+
+                        <Input
+                          type="email"
+                          value={formData.email}
+                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                          placeholder="user@university.edu"
+                        />
 
                         <div className="flex flex-col gap-3">
                           <label className="text-[10px] font-black text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Faculty Affiliation</label>
                           <select
                             disabled={user.role === 'hod'}
-                            className={inputCls + ' cursor-pointer appearance-none'}
+                            className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-5 py-4 text-sm text-slate-800 dark:text-[var(--text-main)] placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500/50 w-full transition-all shadow-sm cursor-pointer appearance-none"
                             value={formData.department_id}
-                            onChange={e => setFormData({ ...formData, department_id: e.target.value })}
+                            onChange={(e) => setFormData({ ...formData, department_id: e.target.value })}
                           >
                             <option value="">Choose Department…</option>
                             {depts.map(d => (
@@ -415,37 +404,34 @@ export default function ManageStudents() {
                         </div>
 
                         {!editingId && (
-                          <div className="flex flex-col gap-3">
-                            <label className="text-[10px] font-black text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Master Access Key</label>
-                            <div className="relative">
-                              <input
-                                type="password" required
-                                className={inputCls + ' pr-14'}
-                                value={formData.password}
-                                onChange={e => setFormData({ ...formData, password: e.target.value })}
-                                placeholder="••••••••"
-                              />
-                              <Lock className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-700 dark:text-slate-300" size={18} />
-                            </div>
-                          </div>
+                          <Input
+                            type="password"
+                            required
+                            value={formData.password}
+                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                            placeholder="••••••••"
+                            trailingIcon={Lock}
+                          />
                         )}
 
                         <div className="flex gap-6 mt-12 pt-4">
-                          <button
+                          <Button
                             type="button"
                             onClick={() => setShowModal(false)}
-                            className="flex-1 px-8 py-5 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-750 text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 rounded-[2rem] font-black text-xs uppercase tracking-widest transition-all cursor-pointer border border-slate-100 dark:border-slate-700 shadow-sm"
+                            variant="secondary"
+                            className="flex-1"
                           >
                             Discard
-                          </button>
-                          <button
+                          </Button>
+                          <Button
                             type="submit"
                             disabled={modalLoading}
-                            className="flex-[2] px-8 py-5 bg-primary-600 hover:bg-primary-700 text-white rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] transition-all shadow-2xl shadow-primary-500/40 flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 cursor-pointer disabled:opacity-50"
+                            loading={modalLoading}
+                            className="flex-[2]"
                           >
-                            {modalLoading ? <Loader2 className="animate-spin" size={24} /> : <Save size={24} />}
+                            <Save size={24} />
                             <span>{editingId ? 'Push Updates' : 'Sync Profile'}</span>
-                          </button>
+                          </Button>
                         </div>
                       </form>
                     </div>

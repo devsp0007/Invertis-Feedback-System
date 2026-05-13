@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import {
-  User as UserIcon, GraduationCap, Loader2, AlertCircle, ShieldCheck
+  User as UserIcon, GraduationCap, AlertCircle, ShieldCheck
 } from 'lucide-react';
+import { Button, Input, Alert } from '../components/ui';
 import api from '../services/api';
 
 const roleHint = (id) => {
@@ -148,31 +149,21 @@ export default function Login() {
             </div>
 
             <div className="px-8 py-8 space-y-5">
-              {error && (
-                <div className="flex items-center gap-2 rounded bg-red-50 border border-red-200 px-3 py-2.5">
-                  <AlertCircle className="w-4 h-4 text-[#E63946] shrink-0" />
-                  <p className="text-sm text-[#E63946]">{error}</p>
-                </div>
-              )}
+              {error && <Alert variant="error" closeable onClose={() => setError('')}>{error}</Alert>}
 
               {step === 1 && (
                 <form onSubmit={handleNext} className="space-y-5">
-                  <div className="space-y-1.5">
-                    <label className="block text-sm font-medium text-[#1D3557]">User Name / Student ID</label>
-                    <input
-                      type="text"
-                      placeholder="Username or ID"
-                      value={identifier}
-                      onChange={(e) => setIdentifier(e.target.value)}
-                      disabled={loading}
-                      className="w-full h-11 px-3 border border-[#DEE2E6] rounded focus:outline-none focus:border-[#1D3557] focus:ring-1 focus:ring-[#1D3557]/20 text-[#212529] placeholder:text-[#6C757D]"
-                    />
-                    {hint && <p className="text-xs text-[#457B9D] mt-1 pr-1">{hint.label}</p>}
-                  </div>
-                  <button type="submit" disabled={loading}
-                    className="w-full h-11 flex items-center justify-center gap-2 text-sm font-semibold bg-[#1D3557] hover:bg-[#2A4A6A] text-white shadow-md rounded transition-colors disabled:opacity-75">
-                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <span>Next</span>}
-                  </button>
+                  <Input
+                    type="text"
+                    placeholder="Username or ID"
+                    value={identifier}
+                    onChange={(e) => setIdentifier(e.target.value)}
+                    disabled={loading}
+                    hint={hint?.label}
+                  />
+                  <Button type="submit" disabled={loading} loading={loading} fullWidth>
+                    Next
+                  </Button>
                 </form>
               )}
 
@@ -182,21 +173,17 @@ export default function Login() {
                     <p className="text-xs text-gray-500 uppercase font-bold">Signing in as</p>
                     <p className="text-sm font-medium text-[#1D3557] truncate">{identifier}</p>
                   </div>
-                  <div className="space-y-1.5">
-                    <label className="block text-sm font-medium text-[#1D3557]">Password</label>
-                    <input
-                      type="password"
-                      placeholder="Password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      disabled={loading}
-                      className="w-full h-11 px-3 border border-[#DEE2E6] rounded focus:outline-none focus:border-[#1D3557] focus:ring-1 focus:ring-[#1D3557]/20 text-[#212529] placeholder:text-[#6C757D]"
-                    />
-                  </div>
-                  <button type="submit" disabled={loading}
-                    className="w-full h-11 flex items-center justify-center gap-2 text-sm font-semibold bg-[#1D3557] hover:bg-[#2A4A6A] text-white shadow-md rounded transition-colors disabled:opacity-75">
-                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><UserIcon className="w-4 h-4" />Sign In</>}
-                  </button>
+                  <Input
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    disabled={loading}
+                  />
+                  <Button type="submit" disabled={loading} loading={loading} fullWidth>
+                    <UserIcon className="w-4 h-4" />
+                    Sign In
+                  </Button>
                 </form>
               )}
 
@@ -206,22 +193,27 @@ export default function Login() {
                     <p className="text-xs text-green-700 uppercase font-bold">Welcome,</p>
                     <p className="text-sm font-medium text-green-900 truncate">{pendingStudent?.name} ({pendingStudent?.student_id})</p>
                   </div>
-                  <div>
-                    <label className="block text-xs font-medium text-[#1D3557] mb-1">Email Address</label>
-                    <input type="email" placeholder="Your current email" value={regEmail} onChange={e => setRegEmail(e.target.value)} className="w-full h-10 px-3 border border-[#DEE2E6] rounded focus:outline-none focus:border-[#1D3557] focus:ring-1 focus:ring-[#1D3557]/20 text-sm text-[#212529]" />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-[#1D3557] mb-1">New Password</label>
-                    <input type="password" placeholder="Min 8 chars" value={regPass} onChange={e => setRegPass(e.target.value)} className="w-full h-10 px-3 border border-[#DEE2E6] rounded focus:outline-none focus:border-[#1D3557] focus:ring-1 focus:ring-[#1D3557]/20 text-sm text-[#212529]" />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-[#1D3557] mb-1">Confirm Password</label>
-                    <input type="password" placeholder="Confirm password" value={regConfirm} onChange={e => setRegConfirm(e.target.value)} className="w-full h-10 px-3 border border-[#DEE2E6] rounded focus:outline-none focus:border-[#1D3557] focus:ring-1 focus:ring-[#1D3557]/20 text-sm text-[#212529]" />
-                  </div>
-                  <button type="submit" disabled={loading}
-                    className="w-full h-11 flex items-center justify-center gap-2 mt-4 text-sm font-semibold bg-[#E63946] hover:bg-[#CF333F] text-white shadow-md rounded transition-colors disabled:opacity-75">
-                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Activate & Login'}
-                  </button>
+                  <Input
+                    type="email"
+                    placeholder="Your current email"
+                    value={regEmail}
+                    onChange={(e) => setRegEmail(e.target.value)}
+                  />
+                  <Input
+                    type="password"
+                    placeholder="Min 8 chars"
+                    value={regPass}
+                    onChange={(e) => setRegPass(e.target.value)}
+                  />
+                  <Input
+                    type="password"
+                    placeholder="Confirm password"
+                    value={regConfirm}
+                    onChange={(e) => setRegConfirm(e.target.value)}
+                  />
+                  <Button type="submit" disabled={loading} loading={loading} fullWidth variant="danger">
+                    Activate & Login
+                  </Button>
                 </form>
               )}
 

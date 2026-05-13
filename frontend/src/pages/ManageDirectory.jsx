@@ -155,7 +155,7 @@ export default function ManageDirectory() {
             </div>
 
             {loading ? (
-              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-24 flex flex-col items-center gap-4 shadow-sm">
+              <div className="card-main p-24 flex flex-col items-center gap-4">
                 <div className="h-12 w-12 border-4 border-primary-600 border-t-transparent rounded-full animate-spin" />
                 <span className="text-xs font-black uppercase tracking-[0.2em] text-slate-600 dark:text-slate-400 animate-pulse">Syncing Directory...</span>
               </div>
@@ -164,7 +164,7 @@ export default function ManageDirectory() {
                 {/* DEPARTMENTS */}
                 {activeTab === 'departments' && (
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col gap-6 h-fit shadow-sm">
+                    <div className="card-main flex flex-col gap-6 h-fit">
                       <h3 className="font-black text-slate-900 dark:text-[var(--text-main)] flex items-center gap-2 text-sm uppercase tracking-wider"><Plus size={18} className="text-primary-500" /> New Department</h3>
                       <form onSubmit={handleCreateDept} className="flex flex-col gap-4">
                         <input type="text" placeholder="Engineering Name" value={deptName} onChange={e => setDeptName(e.target.value)} className={inputCls} />
@@ -183,7 +183,7 @@ export default function ManageDirectory() {
                             key={d.id}
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary-500/40 rounded-[2rem] p-6 transition-all shadow-sm hover:shadow-xl hover:shadow-primary-500/5 relative overflow-hidden"
+                            className="card-main group hover:border-primary-500/40 relative overflow-hidden"
                           >
                             <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-all flex gap-2 translate-y-2 group-hover:translate-y-0">
                               <button
@@ -214,7 +214,7 @@ export default function ManageDirectory() {
                 {/* COURSES */}
                 {activeTab === 'courses' && (
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col gap-6 h-fit shadow-sm">
+                    <div className="card-main flex flex-col gap-6 h-fit">
                       <h3 className="font-black text-slate-900 dark:text-[var(--text-main)] flex items-center gap-2 text-sm uppercase tracking-wider"><Plus size={18} className="text-primary-500" /> New Course</h3>
                       <form onSubmit={handleCreateCourse} className="flex flex-col gap-4">
                         <input type="text" placeholder="CS-XXX" value={courseCode} onChange={e => setCourseCode(e.target.value)} className={inputCls} />
@@ -237,7 +237,7 @@ export default function ManageDirectory() {
                             key={c.id}
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary-500/40 rounded-[2rem] p-6 transition-all shadow-sm hover:shadow-xl hover:shadow-primary-500/5 relative overflow-hidden"
+                            className="card-main group hover:border-primary-500/40 relative overflow-hidden"
                           >
                             <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-all flex gap-2 translate-y-2 group-hover:translate-y-0">
                               <button
@@ -269,7 +269,7 @@ export default function ManageDirectory() {
                 {/* FACULTY */}
                 {activeTab === 'faculty' && (
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col gap-6 h-fit shadow-sm">
+                    <div className="card-main flex flex-col gap-6 h-fit">
                       <h3 className="font-black text-slate-900 dark:text-[var(--text-main)] flex items-center gap-2 text-sm uppercase tracking-wider"><Plus size={18} className="text-primary-500" /> New Faculty</h3>
                       <p className="text-[11px] text-slate-500 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 font-medium leading-relaxed">Adding a faculty record allows them to be assigned to feedback questionnaires. These are informational entities.</p>
                       <form onSubmit={handleCreateFaculty} className="flex flex-col gap-4">
@@ -292,7 +292,7 @@ export default function ManageDirectory() {
                             key={f.id}
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary-500/40 rounded-[2rem] p-6 transition-all shadow-sm hover:shadow-xl hover:shadow-primary-500/5 relative overflow-hidden"
+                            className="card-main group hover:border-primary-500/40 relative overflow-hidden"
                           >
                             <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-all flex gap-2 translate-y-2 group-hover:translate-y-0">
                               <button
@@ -321,7 +321,7 @@ export default function ManageDirectory() {
                 {/* SYNC */}
                 {activeTab === 'sync' && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-10 flex flex-col gap-6 shadow-sm">
+                    <div className="card-main flex flex-col gap-6">
                       <div className="flex items-center gap-4">
                         <div className="h-12 w-12 rounded-2xl bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center text-primary-600">
                           <Download size={24} />
@@ -335,7 +335,7 @@ export default function ManageDirectory() {
                         <Download size={18} /> Download Backup Manifest
                       </button>
                     </div>
-                    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-10 flex flex-col gap-6 shadow-sm">
+                    <div className="card-main flex flex-col gap-6">
                       <div className="flex items-center gap-4">
                         <div className="h-12 w-12 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600">
                           <Upload size={24} />

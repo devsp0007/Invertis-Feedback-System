@@ -5,9 +5,38 @@
 
 @layer base {
   :root {
+    /* Backgrounds */
     --bg-main: #F1FAEE;
+    --bg-surface: #FFFFFF;
+    --bg-surface-alt: #F8FAFC;
+    --bg-input: #FFFFFF;
+
+    /* Text Hierarchy */
+    --text-primary: #212529;
+    --text-secondary: #6C757D;
+    --text-tertiary: #A0A8B2;
+    --text-inverse: #FFFFFF;
+
+    /* State Colors */
+    --color-success: #10B981;
+    --color-warning: #F59E0B;
+    --color-error: #E63946;
+    --color-info: #3B82F6;
+
+    /* Interaction */
+    --border-divider: #DEE2E6;
+    --border-input: #C5CED5;
+    --border-focus: #1D3557;
+    --focus-ring: rgba(29, 53, 87, 0.1);
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);
+
+    /* Legacy/Gradients */
     --bg-card: #ffffff;
-    --bg-input: #ffffff;
     --text-main: #212529;
     --text-muted: #6C757D;
     --border-base: #DEE2E6;
@@ -22,9 +51,38 @@
   }
 
   .dark {
+    /* Backgrounds */
     --bg-main: #06172E;
-    --bg-card: #0F2D52;
+    --bg-surface: #0F2D52;
+    --bg-surface-alt: #1A3F5C;
     --bg-input: #0B2340;
+
+    /* Text Hierarchy */
+    --text-primary: #F1F5F9;
+    --text-secondary: #94A3B8;
+    --text-tertiary: #78909E;
+    --text-inverse: #212529;
+
+    /* State Colors (universal) */
+    --color-success: #10B981;
+    --color-warning: #F59E0B;
+    --color-error: #E63946;
+    --color-info: #3B82F6;
+
+    /* Interaction */
+    --border-divider: #1E3A52;
+    --border-input: #233F52;
+    --border-focus: #A6BACF;
+    --focus-ring: rgba(166, 186, 207, 0.2);
+
+    /* Shadows */
+    --shadow-sm: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-md: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 4px 6px rgba(0, 0, 0, 0.4);
+    --shadow-lg: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 10px 15px rgba(0, 0, 0, 0.5);
+    --shadow-xl: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 20px 25px rgba(0, 0, 0, 0.6);
+
+    /* Legacy/Gradients */
+    --bg-card: #0F2D52;
     --text-main: #f8fafc;
     --text-muted: #94a3b8;
     --border-base: rgba(255, 255, 255, 0.1);
