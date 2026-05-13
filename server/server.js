@@ -23,26 +23,27 @@ const __dirname  = path.dirname(__filename);
 const app  = express();
 const PORT = process.env.PORT || 5000;
 
-// ── CORS — allow localhost + all Vercel preview/production deployments ───────
+// ── CORS — allow localhost + all Vercel/Render deployments ───────
 const VERCEL_PATTERN = /^https:\/\/invertis-feedback-system(-[a-z0-9]+)*\.vercel\.app$/;
+const RENDER_PATTERN = /^https:\/\/invertis-feedback-system(-[a-z0-9]+)*\.onrender\.com$/;
 
-app.use(cors({
+const corsOptions = {
   origin: (origin, callback) => {
     // Allow requests with no origin (server-to-server, curl, Postman, Render health checks)
     if (!origin) return callback(null, true);
 
-    const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
+    const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()) : [];
     
     // Allow localhost if in development
     if (process.env.NODE_ENV !== 'production' && origin.startsWith('http://localhost')) {
       return callback(null, true);
     }
 
-    if (allowedOrigins.includes(origin) || VERCEL_PATTERN.test(origin)) {
+    if (allowedOrigins.includes(origin) || VERCEL_PATTERN.test(origin) || RENDER_PATTERN.test(origin)) {
       return callback(null, true);
     }
 
-    if (process.env.FRONTEND_URL && origin === process.env.FRONTEND_URL) {
+    if (process.env.FRONTEND_URL && origin === process.env.FRONTEND_URL.trim()) {
       return callback(null, true);
     }
 
@@ -50,7 +51,14 @@ app.use(cors({
     callback(new Error(`CORS: origin ${origin} not allowed`));
   },
   credentials: true,
-}));
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+};
+
+app.use(cors(corsOptions));
+// Handle OPTIONS preflight requests correctly
+app.options('*', cors(corsOptions));
+
 app.use(compression());
 app.use(express.json());
 
