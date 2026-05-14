@@ -33,7 +33,7 @@ function StatCard({ icon: Icon, label, value, color, glow }) {
         <Icon size={19} className="text-white" />
       </div>
       <div>
-        <div className="text-2xl font-black text-white tracking-tight">{value ?? '—'}</div>
+        <div className="text-2xl font-black text-[#1D3557] tracking-tight">{value ?? '—'}</div>
         <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-0.5">{label}</div>
       </div>
     </motion.div>
@@ -73,7 +73,7 @@ function AdminDashboard() {
           <div className="h-2 w-2 rounded-full bg-accent-400 shadow-sm shadow-accent-400/50" />
           <span className="text-[10px] font-bold text-accent-400 uppercase tracking-widest">Super Admin</span>
         </div>
-        <h1 className="text-2xl font-black text-white">Control Tower</h1>
+        <h1 className="text-2xl font-black text-[#212529]">Control Tower</h1>
         <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">University-wide system overview and management.</p>
       </div>
 
@@ -95,7 +95,7 @@ function AdminDashboard() {
                 <Icon size={17} style={{ color: glow }} />
               </div>
               <div>
-                <div className="text-sm font-bold text-[#1D3557] group-hover:text-white transition-colors">{label}</div>
+                <div className="text-sm font-bold text-[#1D3557] transition-colors">{label}</div>
                 <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{desc}</div>
               </div>
               <ArrowRight size={14} className="text-slate-600 group-hover:text-slate-600 dark:text-slate-400 transition-colors mt-auto" />
@@ -124,7 +124,7 @@ function HODOverview() {
           <div className="h-2 w-2 rounded-full #E63946 shadow-sm shadow-blue-400/50" />
           <span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Head of Department</span>
         </div>
-        <h1 className="text-2xl font-black text-white">Welcome back, {user?.name?.split(' ')[1] || user?.name}</h1>
+        <h1 className="text-2xl font-black text-[#212529]">Welcome back, {user?.name?.split(' ')[1] || user?.name}</h1>
         <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Manage your department's feedback cycle.</p>
       </div>
 
@@ -137,10 +137,10 @@ function HODOverview() {
               style={{ background: `${glow}20`, border: `1px solid ${glow}40` }}>
               <Icon size={18} style={{ color: glow }} />
             </div>
-            <div>
-              <div className="text-sm font-bold text-[#1D3557] group-hover:text-white">{label}</div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{desc}</div>
-            </div>
+              <div>
+                <div className="text-sm font-bold text-[#1D3557]">{label}</div>
+                <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{desc}</div>
+              </div>
             <ArrowRight size={14} className="text-slate-600 group-hover:text-slate-700 dark:text-slate-300 transition-colors" />
           </motion.button>
         ))}
@@ -186,7 +186,7 @@ function StudentDashboard() {
           <div className="h-2 w-2 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50" />
           <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Student Dashboard</span>
         </div>
-        <h1 className="text-2xl font-black text-white">Hey, {user?.name?.split(' ')[0]} 👋</h1>
+        <h1 className="text-2xl font-black text-[#212529]">Hey, {user?.name?.split(' ')[0]} 👋</h1>
         <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Your section's feedback forms for this semester.</p>
       </div>
 

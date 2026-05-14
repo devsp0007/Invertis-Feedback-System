@@ -172,8 +172,8 @@ export default function Navbar() {
           {user && (
             <div className="hidden md:flex items-center gap-3 mr-1">
               <div className="text-right">
-                <div className="text-xs font-bold text-[var(--text-main)] leading-none">{user.name}</div>
-                {user.student_id && <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-mono-styled">{user.student_id}</div>}
+                <div className="text-xs font-bold text-white leading-none">{user.name}</div>
+                {user.student_id && <div className="text-[10px] text-slate-300 mt-0.5 font-mono-styled">{user.student_id}</div>}
               </div>
               <div className={`flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1.5 rounded-lg border ${role.bg} ${role.color}`}>
                 <RoleIcon size={10} />
@@ -186,7 +186,7 @@ export default function Navbar() {
           <button
             onClick={toggleTheme}
             title="Toggle Theme"
-            className="flex items-center justify-center p-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-amber-400 hover:bg-amber-500/10 border border-white/8 hover:border-amber-500/25 transition-all duration-200 cursor-pointer"
+            className="flex items-center justify-center p-2 rounded-xl text-slate-300 hover:text-amber-400 hover:bg-amber-500/10 border border-white/8 hover:border-amber-500/25 transition-all duration-200 cursor-pointer"
           >
             {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
           </button>
@@ -197,7 +197,7 @@ export default function Navbar() {
               id="change-password-btn"
               onClick={() => setShowChangePwd(true)}
               title="Change Password"
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-bold text-slate-600 dark:text-slate-400 hover:text-primary-400 hover:bg-primary-500/10 border border-white/8 hover:border-primary-500/25 transition-all duration-200 cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-bold text-slate-300 hover:text-primary-400 hover:bg-primary-500/10 border border-white/8 hover:border-primary-500/25 transition-all duration-200 cursor-pointer"
             >
               <KeyRound size={14} />
               <span className="hidden sm:inline">Password</span>
@@ -206,7 +206,7 @@ export default function Navbar() {
 
           <button
             onClick={logout}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-bold text-slate-600 dark:text-slate-400 hover:text-accent-400 hover:bg-accent-500/10 border border-white/8 hover:border-accent-500/25 transition-all duration-200 cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-bold text-slate-300 hover:text-accent-400 hover:bg-accent-500/10 border border-white/8 hover:border-accent-500/25 transition-all duration-200 cursor-pointer"
           >
             <LogOut size={14} />
             <span className="hidden sm:inline">Logout</span>

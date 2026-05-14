@@ -16,7 +16,8 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   max: 20, // Increase max connections for high traffic
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
+  // Increase connection timeout to allow slower DB responses (ms)
+  connectionTimeoutMillis: 30000,
 });
 const adapter = new PrismaPg(pool);
 

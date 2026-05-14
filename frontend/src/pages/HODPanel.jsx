@@ -114,14 +114,14 @@ export default function HODPanel() {
               <LayoutDashboard size={20} className="text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-black text-[var(--text-main)]">HOD Panel</h1>
-              <p className="text-sm text-slate-600 dark:text-slate-400">Manage evaluation forms and departmental portal</p>
+              <h1 className="text-2xl font-black text-[#1D3557]">HOD Panel</h1>
+              <p className="text-sm text-slate-600">Manage evaluation forms and departmental portal</p>
             </div>
           </div>
 
 
           {/* Tabs */}
-          <div className="flex gap-1.5 p-1.5 card rounded-2xl mb-6 w-fit">
+          <div className="flex gap-1.5 p-1.5 card-main rounded-2xl mb-6 w-fit">
             {TABS.map(({ id, label, icon: Icon }) => (
               <button key={id} onClick={() => setTab(id)}
                 className={`flex items-center gap-2 px-5 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${tab === id ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'text-slate-500 dark:text-slate-400 hover:text-[var(--text-main)] hover:hover:bg-black/5 dark:hover:bg-white/5'}`}>
@@ -146,8 +146,8 @@ export default function HODPanel() {
                         { label: 'My Forms', val: stats.myForms, color: 'from-amber-500 to-orange-600' },
                         { label: 'Open Forms', val: stats.openForms, color: 'from-accent-500 to-pink-600' },
                       ].map(({ label, val, color }) => (
-                        <div key={label} className="card rounded-2xl p-5">
-                          <div className="text-2xl font-black text-[var(--text-main)]">{val ?? '—'}</div>
+                        <div key={label} className="card-main rounded-2xl p-5">
+                          <div className="text-2xl font-black text-[#1D3557]">{val ?? '—'}</div>
                           <div className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">{label}</div>
                         </div>
                       ))}
@@ -156,10 +156,10 @@ export default function HODPanel() {
 
                   {/* Portal control */}
                   {portal && (
-                    <div className="card rounded-2xl p-6 flex items-center justify-between">
+                    <div className="card-main rounded-2xl p-6 flex items-center justify-between">
                       <div>
-                        <h3 className="text-base font-bold text-[var(--text-main)]">Department Portal</h3>
-                        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                        <h3 className="text-base font-bold text-[#1D3557]">Department Portal</h3>
+                        <p className="text-sm text-slate-600 mt-1">
                           When closed, students cannot see or submit any feedback forms.
                         </p>
                       </div>
@@ -174,7 +174,7 @@ export default function HODPanel() {
 
               {/* CREATE FORM TAB */}
               {tab === 'create' && (
-                <form onSubmit={handleCreate} className="flex flex-col gap-5 card rounded-2xl p-6">
+                <form onSubmit={handleCreate} className="flex flex-col gap-5 card-main rounded-2xl p-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5">
                       <label className="text-xs font-bold uppercase text-slate-600 dark:text-slate-400 tracking-wider">Section</label>
@@ -241,19 +241,19 @@ export default function HODPanel() {
               {tab === 'forms' && (
                 <div className="flex flex-col gap-4">
                   {forms.length === 0 ? (
-                    <div className="card rounded-2xl p-12 text-center text-slate-600 dark:text-slate-400 text-sm">
+                    <div className="card-main rounded-2xl p-12 text-center text-slate-600 text-sm">
                       No forms created yet. Use "Create Form" to get started.
                     </div>
                   ) : forms.map(f => (
-                    <div key={f.id} className="card rounded-2xl p-5 flex flex-col md:flex-row md:items-center gap-4">
+                    <div key={f.id} className="card-main rounded-2xl p-5 flex flex-col md:flex-row md:items-center gap-4">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           <span className={`text-xs font-bold px-2 py-0.5 rounded-lg border ${statusColor(f.status)}`}>{f.status}</span>
                           <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">{f.responses} responses</span>
                         </div>
-                        <div className="text-sm font-bold text-[var(--text-main)]">{f.title}</div>
-                        <div className="text-xs text-slate-600 dark:text-slate-400 mt-1">{f.section_name} • {f.faculty_name} • {f.course_code}</div>
-                        <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-1">
+                        <div className="text-sm font-bold text-[#1D3557]">{f.title}</div>
+                        <div className="text-xs text-slate-600 mt-1">{f.section_name} • {f.faculty_name} • {f.course_code}</div>
+                        <div className="text-xs text-slate-500 mt-0.5 flex items-center gap-1">
                           <Clock size={11} /> Closes: {new Date(f.closing_time).toLocaleString()}
                         </div>
                       </div>
