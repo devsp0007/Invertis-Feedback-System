@@ -18,7 +18,7 @@ import { Toaster }      from 'sonner';
 export default function App() {
   return (
     <AuthProvider>
-      <Toaster position="top-center" richColors expand={false} closeButton theme="dark" />
+      <Toaster position="top-center" richColors expand={false} closeButton />
       <Router>
         <Routes>
           {/* Public */}

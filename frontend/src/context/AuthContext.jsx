@@ -6,17 +6,12 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [theme, setTheme] = useState(localStorage.getItem('tlfq_theme') || 'dark');
 
   useEffect(() => {
     const root = document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
-    localStorage.setItem('tlfq_theme', theme);
-  }, [theme]);
+    root.classList.remove('dark');
+    localStorage.removeItem('tlfq_theme');
+  }, []);
 
 
   useEffect(() => {
@@ -50,10 +45,8 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  const toggleTheme = () => setTheme(prev => prev === 'light' ? 'dark' : 'light');
-
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, theme, toggleTheme }}>
+    <AuthContext.Provider value={{ user, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
