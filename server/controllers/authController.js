@@ -52,7 +52,7 @@ export const checkStudentId = async (req, res) => {
     }
 
     return res.status(200).json({
-      status: user.status,          // "pending" or "active"
+      status: user.status,
       name: user.name,
       student_id: user.student_id
     });
@@ -79,6 +79,9 @@ export const completeRegistration = async (req, res) => {
     if (!user) return res.status(404).json({ message: 'Student ID not found.' });
     if (user.status === 'active') {
       return res.status(400).json({ message: 'Account already activated. Please login normally.' });
+    }
+    if (user.status !== 'pending') {
+      return res.status(400).json({ message: `Registration is not allowed for ${user.status} accounts.` });
     }
 
     const emailExists = await User.findFirst({ 
@@ -138,6 +141,9 @@ export const login = async (req, res) => {
 
     if (user.status === 'pending') {
       return res.status(403).json({ message: 'ACCOUNT_PENDING', student_id: user.student_id, name: user.name });
+    }
+    if (user.status !== 'active') {
+      return res.status(403).json({ message: 'ACCOUNT_INACTIVE', status: user.status });
     }
 
     const isValid = await bcrypt.compare(password, user.password);

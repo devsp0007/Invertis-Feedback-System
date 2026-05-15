@@ -6,6 +6,9 @@ export const getStudentCourses = async (req, res) => {
     const { id: userId, department_id } = req.user;
     const student = await User.findUnique({ where: { id: userId } });
     if (!student) return res.status(404).json({ message: 'Student not found' });
+    if (student.status !== 'active') {
+      return res.status(403).json({ message: 'Only active students can access feedback forms.' });
+    }
 
     const dept = await Department.findUnique({ where: { id: department_id } });
     if (dept && !dept.portal_open) {
@@ -98,6 +101,11 @@ export const submitResponse = async (req, res) => {
   try {
     const { id: student_id, department_id } = req.user;
     const { tlfq_id, answers, comment } = req.body;
+
+    const student = await User.findUnique({ where: { id: student_id } });
+    if (!student || student.status !== 'active') {
+      return res.status(403).json({ message: 'Only active students can submit feedback.' });
+    }
 
     const dept = await Department.findUnique({ where: { id: department_id } });
     if (dept && !dept.portal_open) {

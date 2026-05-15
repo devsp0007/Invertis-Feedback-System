@@ -49,6 +49,18 @@ export default function AdminPanel() {
 
   useEffect(() => { loadData(); }, []);
 
+  const [currentSession, setCurrentSession] = useState(null);
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await api.get('/sync/session/current');
+        setCurrentSession(res.data.name);
+      } catch (e) {
+        // silent
+      }
+    })();
+  }, []);
+
   const handleCreateTlfq = async (e) => {
     e.preventDefault();
     setError(''); setSuccess('');
@@ -96,10 +108,16 @@ export default function AdminPanel() {
                 <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-600 dark:text-slate-400 font-medium">Design and deploy high-fidelity academic feedback instruments.</p>
               </div>
               <div className="flex gap-3">
-                 <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-6 py-3 rounded-2xl flex items-center gap-3 shadow-sm">
+                  <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-6 py-3 rounded-2xl flex items-center gap-3 shadow-sm">
                     <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
                     <span className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400">Global Repository Sync: Active</span>
-                 </div>
+                  </div>
+                  {currentSession && (
+                   <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-4 py-2 rounded-2xl flex items-center gap-2 shadow-sm">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Session</span>
+                    <span className="text-sm font-black text-slate-800 dark:text-white">{currentSession}</span>
+                   </div>
+                  )}
               </div>
             </div>
 

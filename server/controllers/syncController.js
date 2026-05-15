@@ -1,4 +1,4 @@
-import { User, Course, Faculty, Enrollment, Tlfq, Question, Response, Answer, Department, Section } from '../db.js';
+import { User, Course, Faculty, Enrollment, Tlfq, Question, Response, Answer, Department, Section, AcademicSession } from '../db.js';
 
 export const exportData = async (req, res) => {
   try {
@@ -64,5 +64,23 @@ export const importData = async (req, res) => {
   } catch (err) {
     console.error('Import error:', err);
     return res.status(500).json({ message: 'Error importing and synchronizing data', error: err.message });
+  }
+};
+
+export const getCurrentSession = async (req, res) => {
+  try {
+    let session = await AcademicSession.findFirst({ where: { is_active: true } });
+    if (!session) {
+      // fallback to most recent session
+      const sessions = await AcademicSession.findMany({ orderBy: { start_year: 'desc' }, take: 1 });
+      session = sessions[0] || null;
+    }
+
+    if (!session) return res.status(404).json({ message: 'No academic session found' });
+
+    return res.json({ id: session.id, name: session.name, start_year: session.start_year, end_year: session.end_year, is_active: session.is_active });
+  } catch (err) {
+    console.error('Get current session error:', err);
+    return res.status(500).json({ message: 'Internal Server Error' });
   }
 };
