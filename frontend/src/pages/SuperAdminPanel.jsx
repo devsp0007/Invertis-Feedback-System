@@ -4,7 +4,7 @@ import Sidebar from '../components/Sidebar';
 import api from '../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
-import { Shield, Building2, Users, Plus, Trash2, Check, X, Eye, EyeOff, GraduationCap, Search, UserCheck, Hash, RefreshCcw, AlertTriangle } from 'lucide-react';
+import { Shield, Building2, Users, Plus, Trash2, Check, X, Eye, EyeOff, GraduationCap, Search, UserCheck, Hash, RefreshCcw, AlertTriangle, ArrowUpCircle, History } from 'lucide-react';
 
 const TABS = [
   { id: 'departments', label: 'Departments', icon: Building2 },

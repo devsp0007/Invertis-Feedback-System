@@ -143,60 +143,43 @@ export default function AdminPanel() {
               </div>
             ) : (
               <form onSubmit={handleCreateTlfq} className="flex flex-col gap-5 bg-slate-800 border border-slate-700 rounded-2xl p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-bold uppercase text-slate-600 dark:text-slate-400 tracking-wider">Select Course</label>
-                    <select
-                      value={courseId} onChange={e => setCourseId(e.target.value)}
-                      className="bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-3 text-sm text-[var(--text-main)] focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer"
-                    >
-                      <option value="">Choose Course…</option>
-                      {Object.values(coursesByDept).map(({ name, courses: dCourses }) => (
-                        dCourses.length > 0 && (
+                <div className="relative z-10">
+                  <h2 className="text-lg font-black text-slate-900 dark:text-white mb-6 uppercase tracking-widest flex items-center gap-2">
+                     <div className="h-1.5 w-1.5 rounded-full bg-primary-500" />
+                     Protocol Configuration
+                  </h2>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div className="flex flex-col gap-3">
+                      <label className="text-[10px] font-black uppercase text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.2em] ml-1">Target Course Module</label>
+                      <select
+                        value={courseId} onChange={e => setCourseId(e.target.value)}
+                        className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-4 text-sm text-slate-700 dark:text-[var(--text-main)] font-bold focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all cursor-pointer shadow-inner appearance-none"
+                      >
+                        <option value="">Select Course...</option>
+                        {Object.values(coursesByDept).map(({ name, courses: dCourses }) => (
                           <optgroup key={name} label={`── ${name}`}>
                             {dCourses.map(c => (
                               <option key={c.id} value={c.id}>[{c.code}] {c.name}</option>
                             ))}
                           </optgroup>
-                        )
-                      ))}
-                    </select>
-                  </div>
-                  <div className="relative z-10">
-                    <h2 className="text-lg font-black text-slate-900 dark:text-white mb-6 uppercase tracking-widest flex items-center gap-2">
-                       <div className="h-1.5 w-1.5 rounded-full bg-primary-500" />
-                       Protocol Configuration
-                    </h2>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                      <div className="flex flex-col gap-3">
-                        <label className="text-[10px] font-black uppercase text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.2em] ml-1">Target Course Module</label>
-                        <select
-                          value={courseId} onChange={e => setCourseId(e.target.value)}
-                          className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-4 text-sm text-slate-700 dark:text-[var(--text-main)] font-bold focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all cursor-pointer shadow-inner appearance-none"
-                        >
-                          <option value="">Select Course...</option>
-                          {Object.values(coursesByDept).map(({ name, courses: dCourses }) => (
-                            <optgroup key={name} label={`── ${name}`}>
-                              {dCourses.map(c => (
-                                <option key={c.id} value={c.id}>[{c.code}] {c.name}</option>
-                              ))}
-                            </optgroup>
-                          ))}
-                        </select>
-                      </div>
+                        ))}
+                      </select>
+                    </div>
 
-                      <div className="flex flex-col gap-3">
-                        <label className="text-[10px] font-black uppercase text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.2em] ml-1">Assigned Academic Staff</label>
-                        <select
-                          value={facultyId} onChange={e => setFacultyId(e.target.value)}
-                          className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-4 text-sm text-slate-700 dark:text-[var(--text-main)] font-bold focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all cursor-pointer shadow-inner appearance-none"
-                        >
-                          <option value="">Select Faculty...</option>
-                          {(faculty || []).map(f => (
-                            <option key={f.id} value={f.id}>{f.name} — {f.department_name}</option>
-                          ))}
-                        </select>
-                      </div>
+                    <div className="flex flex-col gap-3">
+                      <label className="text-[10px] font-black uppercase text-slate-600 dark:text-slate-400 dark:text-slate-500 dark:text-slate-400 tracking-[0.2em] ml-1">Assigned Academic Staff</label>
+                      <select
+                        value={facultyId} onChange={e => setFacultyId(e.target.value)}
+                        className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-4 text-sm text-slate-700 dark:text-[var(--text-main)] font-bold focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all cursor-pointer shadow-inner appearance-none"
+                      >
+                        <option value="">Select Faculty...</option>
+                        {(faculty || []).map(f => (
+                          <option key={f.id} value={f.id}>{f.name} — {f.department_name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
 
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-bold uppercase text-slate-600 dark:text-slate-400 tracking-wider">Evaluation Title</label>

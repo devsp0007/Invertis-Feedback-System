@@ -40,10 +40,10 @@ export const AuthProvider = ({ children }) => {
     return res.data.user;
   };
 
-  const logout = () => {
+  function logout() {
     localStorage.removeItem('tlfq_platform_session');
     setUser(null);
-  };
+  }
 
   return (
     <AuthContext.Provider value={{ user, loading, login, logout }}>

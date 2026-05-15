@@ -5,18 +5,59 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── Enums ────────────────────────────────────────────────────────────────────
+
+enum Role {
+  supreme
+  super_admin
+  coordinator
+  hod
+  student
+}
+
+enum Status {
+  pending
+  active
+  inactive
+  archived
+  graduated
+  alumni
+}
+
+enum TeacherType {
+  college_faculty
+  trainer
+}
+
+// ── Models ───────────────────────────────────────────────────────────────────
+
+model AcademicSession {
+  id             String         @id @default(uuid())
+  name           String         @unique
+  start_year     Int
+  end_year       Int
+  is_active      Boolean        @default(false)
+  users          User[]
+  promotionsFrom PromotionLog[] @relation("FromSession")
+  promotionsTo   PromotionLog[] @relation("ToSession")
+
+  @@index([is_active])
 }
 
 model Department {
-  id          String    @id @default(uuid())
-  name        String    @unique
-  code         String    @unique
-  portal_open  Boolean   @default(true)
-  max_semester Int       @default(8)
-  sections    Section[]
-  users       User[]
-  courses     Course[]
-  faculties   Faculty[]
+  id           String         @id @default(uuid())
+  name         String         @unique
+  code         String         @unique
+  portal_open  Boolean        @default(true)
+  max_semester Int            @default(8)
+  sections     Section[]
+  users        User[]
+  courses      Course[]
+  faculties    Faculty[]
+  promotionLogs PromotionLog[]
 }
 
 model Section {
@@ -35,43 +76,29 @@ model Section {
   @@index([department_id])
 }
 
-enum Role {
-  supreme
-  super_admin
-  coordinator
-  hod
-  student
-}
-
-enum Status {
-  pending
-  active
-  alumni
-}
-
 model User {
-  id                 String       @id @default(uuid())
-  name               String
-  email              String?      @unique
-  password           String?
-  role               Role
-  status             Status       @default(active)
-  department_id      String?
-  section_id         String?
-  student_id         String?      @unique
-  unique_feedback_id String?      @unique
-  points             Int          @default(0)
-  batch              String?
-  semester           Int?
-  academic_session_id String?
+  id                    String           @id @default(uuid())
+  name                  String
+  email                 String?          @unique
+  password              String?
+  role                  Role
+  status                Status           @default(active)
+  department_id         String?
+  section_id            String?
+  student_id            String?          @unique
+  unique_feedback_id    String?          @unique
+  points                Int              @default(0)
+  batch                 String?
+  semester              Int?
+  academic_session_id   String?
   last_promotion_log_id String?
-  enrollments        Enrollment[]
-  responses          Response[]
-  tlfqsCreated       Tlfq[]       @relation("TlfqCreator")
-  department         Department?  @relation(fields: [department_id], references: [id])
-  section            Section?     @relation(fields: [section_id], references: [id])
-  academic_session   AcademicSession? @relation(fields: [academic_session_id], references: [id])
-  promotedLogs       PromotionLog[] @relation("PromotionActor")
+  enrollments           Enrollment[]
+  responses             Response[]
+  tlfqsCreated          Tlfq[]           @relation("TlfqCreator")
+  department            Department?      @relation(fields: [department_id], references: [id])
+  section               Section?         @relation(fields: [section_id], references: [id])
+  academic_session      AcademicSession? @relation(fields: [academic_session_id], references: [id])
+  promotedLogs          PromotionLog[]   @relation("PromotionActor")
 
   @@index([role])
   @@index([status])
@@ -82,22 +109,22 @@ model User {
 }
 
 model PromotionLog {
-  id               String          @id @default(uuid())
-  admin            User            @relation("PromotionActor", fields: [admin_id], references: [id])
-  admin_id         String
-  department       Department?     @relation(fields: [department_id], references: [id])
-  department_id    String?
-  from_session     AcademicSession @relation("FromSession", fields: [from_session_id], references: [id])
-  from_session_id  String
-  to_session       AcademicSession @relation("ToSession", fields: [to_session_id], references: [id])
-  to_session_id    String
-  scope            String
-  semesters        String?
-  promoted_count   Int             @default(0)
-  graduated_count  Int             @default(0)
-  skipped_count    Int             @default(0)
-  metadata         Json?
-  promoted_at      DateTime        @default(now())
+  id              String          @id @default(uuid())
+  admin           User            @relation("PromotionActor", fields: [admin_id], references: [id])
+  admin_id        String
+  department      Department?     @relation(fields: [department_id], references: [id])
+  department_id   String?
+  from_session    AcademicSession @relation("FromSession", fields: [from_session_id], references: [id])
+  from_session_id String
+  to_session      AcademicSession @relation("ToSession", fields: [to_session_id], references: [id])
+  to_session_id   String
+  scope           String
+  semesters       String?
+  promoted_count  Int             @default(0)
+  graduated_count Int             @default(0)
+  skipped_count   Int             @default(0)
+  metadata        Json?
+  promoted_at     DateTime        @default(now())
 
   @@index([admin_id])
   @@index([department_id])
@@ -216,25 +243,4 @@ model Answer {
 
   @@index([response_id])
   @@index([question_id])
-}
-
-enum Role {
-  supreme
-  super_admin
-  coordinator
-  hod
-  student
-}
-
-enum Status {
-  pending
-  active
-  inactive
-  archived
-  graduated
-}
-
-enum TeacherType {
-  college_faculty
-  trainer
 }

@@ -6,7 +6,7 @@ import RatingScale from '../components/RatingScale';
 import api from '../services/api';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
-import { ArrowLeft, Send, RefreshCw, Volume2, Mic, CheckCircle2, Lock, GraduationCap, MessageSquare, BookOpen } from 'lucide-react';
+import { ArrowLeft, Send, RefreshCw, Volume2, Mic, CheckCircle2, Lock, GraduationCap, MessageSquare, BookOpen, Users } from 'lucide-react';
 
 export default function TLFQPage() {
   const { id, tlfqId } = useParams();
