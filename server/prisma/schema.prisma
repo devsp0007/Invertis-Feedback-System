@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider   = "prisma-client-js"
   engineType = "binary"
 }
 
@@ -25,12 +25,12 @@ model Section {
   code           String           @unique
   semester       Int
   label          String
-  department     Department       @relation(fields: [department_id], references: [id])
   department_id  String
-  users          User[]
-  sectionFaculty SectionFaculty[]
   enrollments    Enrollment[]
+  department     Department       @relation(fields: [department_id], references: [id])
+  sectionFaculty SectionFaculty[]
   tlfqs          Tlfq[]
+  users          User[]
 
   @@index([department_id])
 }
@@ -56,50 +56,75 @@ model User {
   password           String?
   role               Role
   status             Status       @default(active)
-  department         Department?  @relation(fields: [department_id], references: [id])
   department_id      String?
-  section            Section?     @relation(fields: [section_id], references: [id])
   section_id         String?
   student_id         String?      @unique
   unique_feedback_id String?      @unique
   points             Int          @default(0)
   batch              String?
   semester           Int?
+  academic_session_id String?
+  last_promotion_log_id String?
   enrollments        Enrollment[]
-  tlfqsCreated       Tlfq[]       @relation("TlfqCreator")
   responses          Response[]
+  tlfqsCreated       Tlfq[]       @relation("TlfqCreator")
+  department         Department?  @relation(fields: [department_id], references: [id])
+  section            Section?     @relation(fields: [section_id], references: [id])
+  academic_session   AcademicSession? @relation(fields: [academic_session_id], references: [id])
+  promotedLogs       PromotionLog[] @relation("PromotionActor")
 
   @@index([role])
   @@index([status])
   @@index([department_id])
   @@index([section_id])
+  @@index([academic_session_id])
   @@index([points])
+}
+
+model PromotionLog {
+  id               String          @id @default(uuid())
+  admin            User            @relation("PromotionActor", fields: [admin_id], references: [id])
+  admin_id         String
+  department       Department?     @relation(fields: [department_id], references: [id])
+  department_id    String?
+  from_session     AcademicSession @relation("FromSession", fields: [from_session_id], references: [id])
+  from_session_id  String
+  to_session       AcademicSession @relation("ToSession", fields: [to_session_id], references: [id])
+  to_session_id    String
+  scope            String
+  semesters        String?
+  promoted_count   Int             @default(0)
+  graduated_count  Int             @default(0)
+  skipped_count    Int             @default(0)
+  metadata         Json?
+  promoted_at      DateTime        @default(now())
+
+  @@index([admin_id])
+  @@index([department_id])
+  @@index([from_session_id])
+  @@index([to_session_id])
+  @@index([promoted_at])
 }
 
 model Course {
   id             String           @id @default(uuid())
   name           String
   code           String           @unique
-  department     Department       @relation(fields: [department_id], references: [id])
   department_id  String
-  sectionFaculty SectionFaculty[]
+  department     Department       @relation(fields: [department_id], references: [id])
   enrollments    Enrollment[]
+  sectionFaculty SectionFaculty[]
   tlfqs          Tlfq[]
 
   @@index([department_id])
 }
 
-enum TeacherType {
-  college_faculty
-  trainer
-}
-
 model Faculty {
   id             String           @id @default(uuid())
   name           String
-  department     Department       @relation(fields: [department_id], references: [id])
   department_id  String
   teacher_type   TeacherType      @default(college_faculty)
+  department     Department       @relation(fields: [department_id], references: [id])
   sectionFaculty SectionFaculty[]
   tlfqs          Tlfq[]
 
@@ -108,12 +133,12 @@ model Faculty {
 
 model SectionFaculty {
   id         String  @id @default(uuid())
-  section    Section @relation(fields: [section_id], references: [id])
   section_id String
-  faculty    Faculty @relation(fields: [faculty_id], references: [id])
   faculty_id String
-  course     Course  @relation(fields: [course_id], references: [id])
   course_id  String
+  course     Course  @relation(fields: [course_id], references: [id])
+  faculty    Faculty @relation(fields: [faculty_id], references: [id])
+  section    Section @relation(fields: [section_id], references: [id])
 
   @@index([section_id])
   @@index([faculty_id])
@@ -122,12 +147,12 @@ model SectionFaculty {
 
 model Enrollment {
   id         String  @id @default(uuid())
-  student    User    @relation(fields: [student_id], references: [id])
   student_id String
-  course     Course  @relation(fields: [course_id], references: [id])
   course_id  String
-  section    Section @relation(fields: [section_id], references: [id])
   section_id String
+  course     Course  @relation(fields: [course_id], references: [id])
+  section    Section @relation(fields: [section_id], references: [id])
+  student    User    @relation(fields: [student_id], references: [id])
 
   @@index([student_id])
   @@index([course_id])
@@ -136,19 +161,19 @@ model Enrollment {
 
 model Tlfq {
   id           String     @id @default(uuid())
-  section      Section    @relation(fields: [section_id], references: [id])
   section_id   String
-  course       Course     @relation(fields: [course_id], references: [id])
   course_id    String
-  faculty      Faculty    @relation(fields: [faculty_id], references: [id])
   faculty_id   String
   title        String
   is_active    Boolean    @default(false)
   closing_time DateTime
-  creator      User       @relation("TlfqCreator", fields: [created_by], references: [id])
   created_by   String
   questions    Question[]
   responses    Response[]
+  course       Course     @relation(fields: [course_id], references: [id])
+  creator      User       @relation("TlfqCreator", fields: [created_by], references: [id])
+  faculty      Faculty    @relation(fields: [faculty_id], references: [id])
+  section      Section    @relation(fields: [section_id], references: [id])
 
   @@index([section_id])
   @@index([course_id])
@@ -159,23 +184,23 @@ model Tlfq {
 
 model Question {
   id            String   @id @default(uuid())
-  tlfq          Tlfq     @relation(fields: [tlfq_id], references: [id])
   tlfq_id       String
   question_text String
   answers       Answer[]
+  tlfq          Tlfq     @relation(fields: [tlfq_id], references: [id])
 
   @@index([tlfq_id])
 }
 
 model Response {
   id           String   @id @default(uuid())
-  student      User     @relation(fields: [student_id], references: [id])
   student_id   String
-  tlfq         Tlfq     @relation(fields: [tlfq_id], references: [id])
   tlfq_id      String
   submitted_at String
   comment      String?  @default("")
   answers      Answer[]
+  student      User     @relation(fields: [student_id], references: [id])
+  tlfq         Tlfq     @relation(fields: [tlfq_id], references: [id])
 
   @@index([student_id])
   @@index([tlfq_id])
@@ -183,12 +208,33 @@ model Response {
 
 model Answer {
   id          String   @id @default(uuid())
-  response    Response @relation(fields: [response_id], references: [id])
   response_id String
-  question    Question @relation(fields: [question_id], references: [id])
   question_id String
   rating      Int
+  question    Question @relation(fields: [question_id], references: [id])
+  response    Response @relation(fields: [response_id], references: [id])
 
   @@index([response_id])
   @@index([question_id])
+}
+
+enum Role {
+  supreme
+  super_admin
+  coordinator
+  hod
+  student
+}
+
+enum Status {
+  pending
+  active
+  inactive
+  archived
+  graduated
+}
+
+enum TeacherType {
+  college_faculty
+  trainer
 }

@@ -17,15 +17,129 @@ const pool = new Pool({
   max: 20, // Increase max connections for high traffic
   idleTimeoutMillis: 30000,
   // Increase connection timeout to allow slower DB responses (ms)
-  connectionTimeoutMillis: 30000,
+  connectionTimeoutMillis: 60000,
 });
 const adapter = new PrismaPg(pool);
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+async function bootstrapPromotionSchema() {
+  // Repair databases where the promotion migration was recorded but the tables were later dropped.
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS "AcademicSession" (
+      "id" TEXT NOT NULL,
+      "name" TEXT NOT NULL,
+      "start_year" INTEGER NOT NULL,
+      "end_year" INTEGER NOT NULL,
+      "is_active" BOOLEAN NOT NULL DEFAULT false,
+      CONSTRAINT "AcademicSession_pkey" PRIMARY KEY ("id")
+    );
+  `);
+
+  await pool.query(`
+    CREATE UNIQUE INDEX IF NOT EXISTS "AcademicSession_name_key"
+    ON "AcademicSession"("name");
+  `);
+
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS "AcademicSession_is_active_idx"
+    ON "AcademicSession"("is_active");
+  `);
+
+  await pool.query(`
+    ALTER TABLE "User"
+      ADD COLUMN IF NOT EXISTS "academic_session_id" TEXT,
+      ADD COLUMN IF NOT EXISTS "last_promotion_log_id" TEXT;
+  `);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS "PromotionLog" (
+      "id" TEXT NOT NULL,
+      "admin_id" TEXT NOT NULL,
+      "department_id" TEXT,
+      "from_session_id" TEXT NOT NULL,
+      "to_session_id" TEXT NOT NULL,
+      "scope" TEXT NOT NULL,
+      "semesters" TEXT,
+      "promoted_count" INTEGER NOT NULL DEFAULT 0,
+      "graduated_count" INTEGER NOT NULL DEFAULT 0,
+      "skipped_count" INTEGER NOT NULL DEFAULT 0,
+      "metadata" JSONB,
+      "promoted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      CONSTRAINT "PromotionLog_pkey" PRIMARY KEY ("id")
+    );
+  `);
+
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS "PromotionLog_admin_id_idx" ON "PromotionLog"("admin_id");
+  `);
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS "PromotionLog_department_id_idx" ON "PromotionLog"("department_id");
+  `);
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS "PromotionLog_from_session_id_idx" ON "PromotionLog"("from_session_id");
+  `);
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS "PromotionLog_to_session_id_idx" ON "PromotionLog"("to_session_id");
+  `);
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS "PromotionLog_promoted_at_idx" ON "PromotionLog"("promoted_at");
+  `);
+}
+
+async function withDbRetry(operation, label, attempts = 5) {
+  let lastError;
+  for (let i = 1; i <= attempts; i++) {
+    try {
+      return await operation();
+    } catch (err) {
+      lastError = err;
+      const timeoutLike = err?.code === 'ETIMEDOUT' || /timed out/i.test(err?.message || '');
+      if (!timeoutLike || i === attempts) break;
+
+      const waitMs = i * 1500;
+      console.warn(`[db:init] ${label} timed out (attempt ${i}/${attempts}). Retrying in ${waitMs}ms...`);
+      await sleep(waitMs);
+    }
+  }
+  throw lastError;
+}
 
 export const prisma = new PrismaClient({
   adapter,
   // Only log errors in production to avoid console overhead
   log: process.env.NODE_ENV === 'production' ? ['error'] : ['query', 'info', 'warn', 'error'],
 });
+
+// Wrap model accessors in a retrying proxy to handle transient ETIMEDOUT errors.
+function wrapModel(modelName) {
+  const model = prisma[modelName];
+  if (!model) return model;
+
+  return new Proxy(model, {
+    get(target, prop) {
+      const orig = target[prop];
+      if (typeof orig !== 'function') return orig;
+
+      return async function retryingMethod(...args) {
+        const maxRetries = 3;
+        let attempt = 0;
+        while (true) {
+          try {
+            return await orig.apply(target, args);
+          } catch (err) {
+            const isTimeout = err?.code === 'ETIMEDOUT' || /timed out/i.test(err?.message || '');
+            attempt += 1;
+            if (!isTimeout || attempt > maxRetries) throw err;
+            const waitMs = attempt * 500;
+            console.warn(`[prisma:${modelName}] transient timeout on ${String(prop)}, retry ${attempt}/${maxRetries} in ${waitMs}ms`);
+            await sleep(waitMs);
+          }
+        }
+      };
+    }
+  });
+}
 
 export const FEEDBACK_ID_PREFIX = 'ANO-';
 export const REWARD_POINTS = 10;
@@ -34,24 +148,57 @@ function generateFeedbackId() {
   return FEEDBACK_ID_PREFIX + crypto.randomBytes(3).toString('hex').toUpperCase();
 }
 
-export const {
-  department: Department,
-  section: Section,
-  sectionFaculty: SectionFaculty,
-  course: Course,
-  faculty: Faculty,
-  tlfq: Tlfq,
-  question: Question,
-  response: Response,
-  answer: Answer,
-  user: User,
-  enrollment: Enrollment
-} = prisma;
+export const Department = wrapModel('department');
+export const Section = wrapModel('section');
+export const SectionFaculty = wrapModel('sectionFaculty');
+export const Course = wrapModel('course');
+export const Faculty = wrapModel('faculty');
+export const Tlfq = wrapModel('tlfq');
+export const Question = wrapModel('question');
+export const Response = wrapModel('response');
+export const Answer = wrapModel('answer');
+export const User = wrapModel('user');
+export const Enrollment = wrapModel('enrollment');
+export const AcademicSession = wrapModel('academicSession');
+export const PromotionLog = wrapModel('promotionLog');
+
+function getAcademicYearWindow(date = new Date()) {
+  // Academic year rollover in July: 2026-07 => session 2026-27
+  const year = date.getUTCFullYear();
+  const month = date.getUTCMonth() + 1;
+  const startYear = month >= 7 ? year : year - 1;
+  const endYear = startYear + 1;
+  return {
+    startYear,
+    endYear,
+    name: `${startYear}-${String(endYear).slice(-2)}`,
+  };
+}
 
 export const initDb = async () => {
   if (process.env.SEED_DATA !== 'true') return;
 
   try {
+    await bootstrapPromotionSchema();
+
+    const { startYear, endYear, name: currentSessionName } = getAcademicYearWindow();
+    const currentSession = await withDbRetry(
+      () => AcademicSession.upsert({
+        where: { name: currentSessionName },
+        update: { is_active: true },
+        create: { name: currentSessionName, start_year: startYear, end_year: endYear, is_active: true },
+      }),
+      'academic_session_upsert'
+    );
+
+    await withDbRetry(
+      () => AcademicSession.updateMany({
+        where: { id: { not: currentSession.id }, is_active: true },
+        data: { is_active: false },
+      }),
+      'academic_session_deactivate_others'
+    );
+
     const adminEmail = process.env.ADMIN_EMAIL || 'admin@invertis.edu.in';
     const adminPass = process.env.ADMIN_PASSWORD || 'Admin@2025';
 
@@ -227,6 +374,7 @@ export const initDb = async () => {
             department_id: depts[s.dept].id,
             section_id: s.section.id,
             semester: 3,
+            academic_session_id: currentSession.id,
             batch: '2022-26',
             unique_feedback_id: generateFeedbackId(),
             points: s.status === 'pending' ? 0 : 50

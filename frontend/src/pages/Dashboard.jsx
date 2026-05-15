@@ -8,7 +8,7 @@ import { motion } from 'framer-motion';
 import {
   GraduationCap, Users, BookOpen, Building2, BarChart2,
   ArrowRight, CheckCircle2, Clock, ClipboardList, Shield,
-  PlusCircle, Layers, TrendingUp, Activity
+  PlusCircle, Layers, TrendingUp, Activity, ArrowUpCircle
 } from 'lucide-react';
 
 const PageShell = ({ children }) => (
@@ -44,6 +44,7 @@ function StatCard({ icon: Icon, label, value, color, glow }) {
 function AdminDashboard() {
   const navigate = useNavigate();
   const [stats, setStats] = useState(null);
+  const [promotionOverview, setPromotionOverview] = useState(null);
 
   useEffect(() => {
     api.get('/responses/analytics').then(r => {
@@ -53,11 +54,20 @@ function AdminDashboard() {
         faculty: d.avgRatingPerFaculty?.length ?? 0,
       });
     }).catch(() => {});
+    // also fetch promotion overview for Control Tower
+    api.get('/superadmin/promotion/overview')
+      .then(r => setPromotionOverview(r.data))
+      .catch(() => {});
   }, []);
 
   const cards = [
     { icon: Building2,    label: 'Departments',        value: stats?.depts,   color: 'bg-primary-600', glow: 'rgba(29, 78, 137, 0.5)' },
     { icon: GraduationCap,label: 'Faculty Evaluated',  value: stats?.faculty, color: 'bg-accent-600',  glow: 'rgba(198, 40, 40, 0.5)' },
+  ];
+
+  const promotionCards = [
+    { icon: ArrowUpCircle, label: 'Current Session', value: promotionOverview?.active_session?.name || '—', color: 'bg-emerald-600', glow: 'rgba(16, 185, 129, 0.45)' },
+    { icon: Activity, label: 'Last Promotion', value: promotionOverview?.recent_logs?.[0] ? `${promotionOverview.recent_logs[0].promoted_count} promoted` : 'No history yet', color: 'bg-teal-600', glow: 'rgba(20, 184, 166, 0.45)' },
   ];
 
   const actions = [
@@ -77,11 +87,10 @@ function AdminDashboard() {
         <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">University-wide system overview and management.</p>
       </div>
 
-      {stats && (
-        <div className="grid grid-cols-2 gap-3">
-          {cards.map((c, i) => <StatCard key={i} {...c} />)}
-        </div>
-      )}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {cards.map((c, i) => <StatCard key={`stat-${i}`} {...c} />)}
+        {promotionCards.map((c, i) => <StatCard key={`promo-${i}`} {...c} />)}
+      </div>
 
       <div>
         <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3">Quick Actions</h3>

@@ -17,4 +17,10 @@ router.delete('/users/:id',       guard, deleteUser);
 router.get('/reveal',             guard, revealStudentByAnonId);
 router.post('/semester-change',   guard, semesterChange);
 
+// Academic promotion
+router.get('/promotion/overview', guard, getPromotionOverview);
+router.post('/promotion/preview', guard, previewPromotion);
+router.post('/promotion/execute', guard, executePromotion);
+router.get('/promotion/history', guard, getPromotionHistory);
+
 export default router;

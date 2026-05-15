@@ -10,6 +10,7 @@ const TABS = [
   { id: 'departments', label: 'Departments', icon: Building2 },
   { id: 'hods', label: 'HODs', icon: Users },
   { id: 'coordinators', label: 'Coordinators', icon: Users },
+  { id: 'promotion', label: 'Academic Promotion', icon: ArrowUpCircle },
   { id: 'students', label: 'Student Lookup', icon: GraduationCap },
 ];
 
@@ -31,6 +32,16 @@ export default function SuperAdminPanel() {
   const [staff, setStaff] = useState([]);
   const [students, setStudents] = useState([]);
   const [pagination, setPagination] = useState({ page: 1, limit: 50, total: 0, totalPages: 1 });
+  const [promotionOverview, setPromotionOverview] = useState(null);
+  const [promotionHistory, setPromotionHistory] = useState([]);
+  const [promotionPreview, setPromotionPreview] = useState(null);
+  const [promotionScope, setPromotionScope] = useState('all');
+  const [promotionDepartment, setPromotionDepartment] = useState('');
+  const [promotionSemesters, setPromotionSemesters] = useState([]);
+  const [promotionStudentIds, setPromotionStudentIds] = useState('');
+  const [activateNextSession, setActivateNextSession] = useState(false);
+  const [previewLoading, setPreviewLoading] = useState(false);
+  const [executeLoading, setExecuteLoading] = useState(false);
 
   // Department form
   const [deptName, setDeptName] = useState('');
@@ -69,6 +80,86 @@ export default function SuperAdminPanel() {
   };
 
   useEffect(() => { loadAll(); }, []);
+
+  // Load current academic session for header display
+  const [currentSession, setCurrentSession] = useState(null);
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await api.get('/sync/session/current');
+        setCurrentSession(res.data.name);
+      } catch (e) {
+        // ignore quietly
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (tab !== 'promotion') return;
+    (async () => {
+      try {
+        const [overviewRes, historyRes] = await Promise.all([
+          api.get('/superadmin/promotion/overview'),
+          api.get('/superadmin/promotion/history?page=1&limit=20'),
+        ]);
+        setPromotionOverview(overviewRes.data);
+        setPromotionHistory(historyRes.data.logs || []);
+      } catch (e) {
+        toast.error(e.response?.data?.message || 'Failed to load promotion data.');
+      }
+    })();
+  }, [tab]);
+
+  const getPromotionPayload = () => {
+    const payload = {};
+    if (promotionScope === 'department' && promotionDepartment) {
+      payload.department_id = promotionDepartment;
+    }
+    if (promotionScope === 'semester' && promotionSemesters.length > 0) {
+      payload.semesters = promotionSemesters;
+    }
+    if (promotionScope === 'students') {
+      const ids = promotionStudentIds
+        .split(',')
+        .map(v => v.trim())
+        .filter(Boolean);
+      if (ids.length > 0) payload.student_ids = ids;
+    }
+    return payload;
+  };
+
+  const runPromotionPreview = async () => {
+    setPreviewLoading(true);
+    try {
+      const res = await api.post('/superadmin/promotion/preview', getPromotionPayload());
+      setPromotionPreview(res.data);
+      toast.success('Promotion preview generated.');
+    } catch (e) {
+      toast.error(e.response?.data?.message || 'Failed to generate preview.');
+    } finally {
+      setPreviewLoading(false);
+    }
+  };
+
+  const executePromotion = async () => {
+    setExecuteLoading(true);
+    try {
+      const payload = {
+        ...getPromotionPayload(),
+        confirm: true,
+        activate_next_session: activateNextSession,
+      };
+      const res = await api.post('/superadmin/promotion/execute', payload);
+      toast.success(res.data.message || 'Promotion completed.');
+      await runPromotionPreview();
+      const historyRes = await api.get('/superadmin/promotion/history?page=1&limit=20');
+      setPromotionHistory(historyRes.data.logs || []);
+    } catch (e) {
+      toast.error(e.response?.data?.message || 'Promotion failed.');
+    } finally {
+      setExecuteLoading(false);
+    }
+  };
 
   const createDept = async () => {
     try {
@@ -436,6 +527,195 @@ export default function SuperAdminPanel() {
                             </div>
                           </motion.div>
                         ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* ACADEMIC PROMOTION */}
+                {tab === 'promotion' && (
+                  <div className="flex flex-col gap-6">
+                    <div className="card-main flex flex-col gap-5">
+                      <div className="flex items-center justify-between gap-4 flex-wrap">
+                        <div>
+                          <h3 className="text-lg font-black text-slate-900 dark:text-white">Academic Session Promotion</h3>
+                          <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Preview and promote students in bulk with session rollover and audit logging.</p>
+                        </div>
+                        <div className="text-xs text-slate-600 dark:text-slate-400 font-bold">
+                          Active: <span className="text-primary-600 dark:text-primary-400">{promotionOverview?.active_session?.name || '—'}</span>
+                          {' '}→ Next: <span className="text-primary-600 dark:text-primary-400">{promotionOverview?.next_session?.name || '—'}</span>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div className="flex flex-col gap-2">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-400">Promotion Scope</label>
+                          <Select value={promotionScope} onChange={e => setPromotionScope(e.target.value)}>
+                            <option value="all">All Departments</option>
+                            <option value="department">Specific Department</option>
+                            <option value="semester">Specific Semesters</option>
+                            <option value="students">Selected Students (IDs)</option>
+                          </Select>
+                        </div>
+
+                        {promotionScope === 'department' && (
+                          <div className="flex flex-col gap-2">
+                            <label className="text-[10px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-400">Department</label>
+                            <Select value={promotionDepartment} onChange={e => setPromotionDepartment(e.target.value)}>
+                              <option value="">Select Department…</option>
+                              {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+                            </Select>
+                          </div>
+                        )}
+
+                        {promotionScope === 'semester' && (
+                          <div className="flex flex-col gap-2 md:col-span-2">
+                            <label className="text-[10px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-400">Semesters</label>
+                            <div className="flex flex-wrap gap-2">
+                              {[1, 2, 3, 4, 5, 6, 7, 8].map(sem => (
+                                <button
+                                  key={sem}
+                                  type="button"
+                                  onClick={() => setPromotionSemesters(prev => prev.includes(sem) ? prev.filter(v => v !== sem) : [...prev, sem])}
+                                  className={`px-3 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${promotionSemesters.includes(sem)
+                                    ? 'bg-primary-600 text-white border-primary-600'
+                                    : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700'
+                                  }`}
+                                >
+                                  Sem {sem}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {promotionScope === 'students' && (
+                          <div className="flex flex-col gap-2 md:col-span-2">
+                            <label className="text-[10px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-400">Student User IDs (comma separated)</label>
+                            <Input
+                              type="text"
+                              placeholder="uuid-1, uuid-2, uuid-3"
+                              value={promotionStudentIds}
+                              onChange={e => setPromotionStudentIds(e.target.value)}
+                            />
+                          </div>
+                        )}
+
+                        <div className="flex items-end gap-2 md:justify-end">
+                          <button
+                            onClick={runPromotionPreview}
+                            disabled={previewLoading}
+                            className="px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-widest bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 cursor-pointer"
+                          >
+                            {previewLoading ? 'Loading…' : 'Preview'}
+                          </button>
+                        </div>
+                      </div>
+
+                      <label className="inline-flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-400 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={activateNextSession}
+                          onChange={e => setActivateNextSession(e.target.checked)}
+                          className="h-4 w-4"
+                        />
+                        Mark next academic session as active after promotion
+                      </label>
+                    </div>
+
+                    {promotionPreview && (
+                      <div className="card-main flex flex-col gap-4">
+                        <div className="flex items-center justify-between gap-3 flex-wrap">
+                          <h4 className="font-black text-slate-900 dark:text-white text-sm uppercase tracking-wider">Promotion Preview</h4>
+                          <button
+                            onClick={executePromotion}
+                            disabled={executeLoading || ((promotionPreview.summary?.to_promote || 0) + (promotionPreview.summary?.to_graduate || 0) === 0)}
+                            className="px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-widest bg-primary-600 hover:bg-primary-500 disabled:opacity-50 text-white cursor-pointer"
+                          >
+                            {executeLoading ? 'Processing…' : 'Confirm Promotion'}
+                          </button>
+                        </div>
+
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 p-4">
+                            <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold">Scanned</div>
+                            <div className="text-xl font-black text-[#1D3557] dark:text-white">{promotionPreview.summary?.students_scanned || 0}</div>
+                          </div>
+                          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 p-4">
+                            <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold">To Promote</div>
+                            <div className="text-xl font-black text-[#1D3557] dark:text-white">{promotionPreview.summary?.to_promote || 0}</div>
+                          </div>
+                          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 p-4">
+                            <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold">To Graduate</div>
+                            <div className="text-xl font-black text-[#1D3557] dark:text-white">{promotionPreview.summary?.to_graduate || 0}</div>
+                          </div>
+                          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 p-4">
+                            <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold">Skipped</div>
+                            <div className="text-xl font-black text-[#1D3557] dark:text-white">{promotionPreview.summary?.skipped || 0}</div>
+                          </div>
+                        </div>
+
+                        <div className="rounded-2xl border border-slate-200 dark:border-slate-700 p-4">
+                          <h5 className="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest mb-3">Semester Mapping</h5>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                            {Object.entries(promotionPreview.transitions || {}).map(([k, v]) => (
+                              <div key={k} className="flex justify-between items-center rounded-xl bg-slate-50 dark:bg-slate-900 px-3 py-2">
+                                <span className="font-bold text-slate-700 dark:text-slate-300">{k.replace('->', ' -> ')}</span>
+                                <span className="font-black text-primary-600 dark:text-primary-400">{v}</span>
+                              </div>
+                            ))}
+                            {Object.keys(promotionPreview.transitions || {}).length === 0 && (
+                              <div className="text-slate-500 dark:text-slate-400">No transitions available for the selected scope.</div>
+                            )}
+                          </div>
+                        </div>
+
+                        {Array.isArray(promotionPreview.blockers) && promotionPreview.blockers.length > 0 && (
+                          <div className="rounded-2xl border border-amber-200 dark:border-amber-900/40 bg-amber-50/70 dark:bg-amber-950/20 p-4">
+                            <div className="flex items-center gap-2 text-amber-700 dark:text-amber-300 font-bold text-sm mb-2">
+                              <AlertTriangle size={16} /> Blockers Found
+                            </div>
+                            <p className="text-xs text-amber-700/90 dark:text-amber-300/90">Some students cannot be promoted due to missing next-semester section mapping with same section label.</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="card-main">
+                      <div className="flex items-center gap-2 mb-4">
+                        <History size={16} className="text-primary-500" />
+                        <h4 className="font-black text-slate-900 dark:text-white text-sm uppercase tracking-wider">Promotion History</h4>
+                      </div>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                          <thead>
+                            <tr className="text-left text-slate-500 dark:text-slate-400 text-[10px] uppercase tracking-widest">
+                              <th className="py-2 pr-3">When</th>
+                              <th className="py-2 pr-3">Admin</th>
+                              <th className="py-2 pr-3">Scope</th>
+                              <th className="py-2 pr-3">Session</th>
+                              <th className="py-2 pr-3">Promoted</th>
+                              <th className="py-2 pr-3">Graduated</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {promotionHistory.map(log => (
+                              <tr key={log.id} className="border-t border-slate-200 dark:border-slate-700">
+                                <td className="py-3 pr-3 text-slate-600 dark:text-slate-400">{new Date(log.promoted_at).toLocaleString()}</td>
+                                <td className="py-3 pr-3 text-slate-700 dark:text-slate-300 font-semibold">{log.admin?.name || '—'}</td>
+                                <td className="py-3 pr-3 text-slate-600 dark:text-slate-400">{log.scope}</td>
+                                <td className="py-3 pr-3 text-slate-600 dark:text-slate-400">{log.from_session?.name} → {log.to_session?.name}</td>
+                                <td className="py-3 pr-3 text-slate-700 dark:text-slate-300 font-bold">{log.promoted_count}</td>
+                                <td className="py-3 pr-3 text-slate-700 dark:text-slate-300 font-bold">{log.graduated_count}</td>
+                              </tr>
+                            ))}
+                            {promotionHistory.length === 0 && (
+                              <tr>
+                                <td className="py-4 text-slate-500 dark:text-slate-400" colSpan={6}>No promotion history yet.</td>
+                              </tr>
+                            )}
+                          </tbody>
+                        </table>
                       </div>
                     </div>
                   </div>
