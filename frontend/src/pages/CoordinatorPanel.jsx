@@ -55,8 +55,9 @@ function Btn({ children, variant = 'primary', ...props }) {
 // ── Departments Tab ──────────────────────────────────────────────────────────
 function DepartmentsTab({ departments, onRefresh }) {
   const [name, setName] = useState(''); const [code, setCode] = useState('');
+  const [maxSemester, setMaxSemester] = useState(8);
   const create = async () => {
-    try { await api.post('/coordinator/departments', { name, code }); setName(''); setCode(''); onRefresh(); toast.success('Department created successfully.'); }
+    try { await api.post('/coordinator/departments', { name, code, max_semester: maxSemester }); setName(''); setCode(''); setMaxSemester(8); onRefresh(); toast.success('Department created successfully.'); }
     catch (e) { toast.error(e.response?.data?.message || 'Failed to create department.'); }
   };
   const del = async (id) => {
@@ -67,9 +68,19 @@ function DepartmentsTab({ departments, onRefresh }) {
     <div className="flex flex-col gap-4">
       <Card>
         <h3 className="text-sm font-bold text-[var(--text-main)] mb-3">Add Department</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
           <div className="flex flex-col gap-1"><Label>Name</Label><Input value={name} onChange={e => setName(e.target.value)} placeholder="B.Tech Computer Science" /></div>
           <div className="flex flex-col gap-1"><Label>Code</Label><Input value={code} onChange={e => setCode(e.target.value.toUpperCase())} placeholder="BCS" /></div>
+          <div className="flex flex-col gap-1">
+            <Label>Duration (Semesters)</Label>
+            <Select value={maxSemester} onChange={e => setMaxSemester(Number(e.target.value))}>
+              <option value={2}>2 Semesters</option>
+              <option value={4}>4 Semesters</option>
+              <option value={6}>6 Semesters</option>
+              <option value={8}>8 Semesters</option>
+              <option value={10}>10 Semesters</option>
+            </Select>
+          </div>
           <div className="flex items-end"><Btn onClick={create}><Plus size={16} /> Create</Btn></div>
         </div>
       </Card>
@@ -78,7 +89,10 @@ function DepartmentsTab({ departments, onRefresh }) {
           <Card key={d.id} className="flex items-center justify-between">
             <div>
               <div className="text-sm font-bold text-[var(--text-main)]">{d.name}</div>
-              <div className="text-xs text-slate-500 dark:text-slate-400 font-mono mt-0.5">{d.code}</div>
+              <div className="flex items-center gap-2 mt-0.5">
+                <div className="text-xs text-slate-500 dark:text-slate-400 font-mono">{d.code}</div>
+                <div className="text-[10px] bg-slate-500/10 text-slate-500 dark:text-slate-400 px-1.5 py-0.5 rounded font-bold">{d.max_semester || 8} Sems</div>
+              </div>
             </div>
             <Btn variant="danger" onClick={() => del(d.id)}><Trash2 size={14} /></Btn>
           </Card>
