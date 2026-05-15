@@ -140,6 +140,10 @@ export const login = async (req, res) => {
       return res.status(403).json({ message: 'ACCOUNT_PENDING', student_id: user.student_id, name: user.name });
     }
 
+    if (user.status === 'alumni') {
+      return res.status(403).json({ message: 'Alumni accounts can no longer access the feedback portal.' });
+    }
+
     const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) return res.status(401).json({ message: 'Incorrect password.' });
 

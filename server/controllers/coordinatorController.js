@@ -14,9 +14,15 @@ export const getDepartments = async (req, res) => {
 
 export const createDepartment = async (req, res) => {
   try {
-    const { name, code } = req.body;
+    const { name, code, max_semester } = req.body;
     if (!name || !code) return res.status(400).json({ message: 'name and code required' });
-    const dept = await Department.create({ data: { name, code } });
+    const dept = await Department.create({ 
+      data: { 
+        name, 
+        code, 
+        max_semester: max_semester ? Number(max_semester) : 8 
+      } 
+    });
     return res.status(201).json(dept);
   } catch (err) {
     if (err.code === 'P2002') return res.status(400).json({ message: 'Department with that name/code already exists.' });

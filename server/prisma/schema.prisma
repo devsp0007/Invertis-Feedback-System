@@ -10,8 +10,9 @@ datasource db {
 model Department {
   id          String    @id @default(uuid())
   name        String    @unique
-  code        String    @unique
-  portal_open Boolean   @default(true)
+  code         String    @unique
+  portal_open  Boolean   @default(true)
+  max_semester Int       @default(8)
   sections    Section[]
   users       User[]
   courses     Course[]
@@ -21,7 +22,7 @@ model Department {
 model Section {
   id             String           @id @default(uuid())
   name           String
-  code           String
+  code           String           @unique
   semester       Int
   label          String
   department     Department       @relation(fields: [department_id], references: [id])
@@ -45,6 +46,7 @@ enum Role {
 enum Status {
   pending
   active
+  alumni
 }
 
 model User {

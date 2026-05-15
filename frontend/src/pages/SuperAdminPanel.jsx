@@ -4,7 +4,7 @@ import Sidebar from '../components/Sidebar';
 import api from '../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
-import { Shield, Building2, Users, Plus, Trash2, Check, X, Eye, EyeOff, GraduationCap, Search, UserCheck, Hash } from 'lucide-react';
+import { Shield, Building2, Users, Plus, Trash2, Check, X, Eye, EyeOff, GraduationCap, Search, UserCheck, Hash, RefreshCcw, AlertTriangle } from 'lucide-react';
 
 const TABS = [
   { id: 'departments', label: 'Departments', icon: Building2 },
@@ -35,6 +35,7 @@ export default function SuperAdminPanel() {
   // Department form
   const [deptName, setDeptName] = useState('');
   const [deptCode, setDeptCode] = useState('');
+  const [deptMaxSemester, setDeptMaxSemester] = useState(8);
 
   // HOD form
   const [hodName, setHodName] = useState('');
@@ -71,8 +72,8 @@ export default function SuperAdminPanel() {
 
   const createDept = async () => {
     try {
-      await api.post('/coordinator/departments', { name: deptName, code: deptCode });
-      setDeptName(''); setDeptCode('');
+      await api.post('/coordinator/departments', { name: deptName, code: deptCode, max_semester: deptMaxSemester });
+      setDeptName(''); setDeptCode(''); setDeptMaxSemester(8);
       loadAll(); toast.success('Department created.');
     } catch (e) { toast.error(e.response?.data?.message || 'Failed.'); }
   };
@@ -112,6 +113,21 @@ export default function SuperAdminPanel() {
     });
   };
 
+  const handleSemesterChange = async () => {
+    if (!window.confirm("⚠️ ATTENTION: This will increment every student's semester by 1 and CLEAR ALL faculty assignments. This action CANNOT be undone. Proceed?")) return;
+    
+    try {
+      toast.loading('Processing semester change...');
+      const res = await api.post('/superadmin/semester-change');
+      toast.dismiss();
+      toast.success(res.data.message);
+      loadAll();
+    } catch (e) {
+      toast.dismiss();
+      toast.error(e.response?.data?.message || 'Semester change failed.');
+    }
+  };
+
   const hods = staff.filter(s => s.role === 'hod');
   const coords = staff.filter(s => s.role === 'coordinator');
 
@@ -134,15 +150,25 @@ export default function SuperAdminPanel() {
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-8 max-w-6xl">
             
             {/* Header */}
-            <div className="flex items-center gap-4">
-              <div className="h-14 w-14 bg-gradient-to-br from-accent-500 to-accent-600 rounded-2xl flex items-center justify-center shadow-lg shadow-accent-500/20 flex-shrink-0">
-                <Shield size={28} className="text-white" />
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 w-full">
+                <div className="flex items-center gap-4">
+                  <div className="h-14 w-14 bg-gradient-to-br from-accent-500 to-accent-600 rounded-2xl flex items-center justify-center shadow-lg shadow-accent-500/20 flex-shrink-0">
+                    <Shield size={28} className="text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl font-black text-[var(--text-main)]">User Management</h1>
+                    <p className="text-sm text-slate-600 dark:text-slate-400 mt-1 font-medium">Create and manage departments, HODs, coordinators & student records</p>
+                  </div>
+                </div>
+
+                <button 
+                  onClick={handleSemesterChange}
+                  className="flex items-center gap-3 px-6 py-3.5 bg-amber-500 hover:bg-amber-600 text-white font-black rounded-2xl text-[11px] uppercase tracking-widest transition-all shadow-lg shadow-amber-500/20 active:scale-95 group"
+                >
+                  <RefreshCcw size={16} className="group-hover:rotate-180 transition-transform duration-500" />
+                  Semester Change
+                </button>
               </div>
-              <div>
-                <h1 className="text-3xl font-black text-[var(--text-main)]">User Management</h1>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mt-1 font-medium">Create and manage departments, HODs, coordinators & student records</p>
-              </div>
-            </div>
 
             {/* Tabs */}
             <div className="flex gap-2 border-b border-slate-200 dark:border-slate-800 flex-wrap overflow-x-auto">
@@ -176,6 +202,16 @@ export default function SuperAdminPanel() {
                         <div className="flex flex-col gap-2">
                           <label className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Code</label>
                           <Input type="text" placeholder="BCS" value={deptCode} onChange={e => setDeptCode(e.target.value.toUpperCase())} />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <label className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Course Duration (Semesters)</label>
+                          <Select value={deptMaxSemester} onChange={e => setDeptMaxSemester(Number(e.target.value))}>
+                            <option value={2}>2 Semesters (1 Year)</option>
+                            <option value={4}>4 Semesters (2 Years)</option>
+                            <option value={6}>6 Semesters (3 Years)</option>
+                            <option value={8}>8 Semesters (4 Years)</option>
+                            <option value={10}>10 Semesters (5 Years)</option>
+                          </Select>
                         </div>
                         <div className="flex items-end">
                           <button type="submit" className="w-full bg-primary-600 hover:bg-primary-500 text-white py-4 font-black rounded-2xl text-xs uppercase tracking-widest transition-all shadow-lg shadow-primary-500/20 cursor-pointer active:scale-95">
@@ -219,8 +255,13 @@ export default function SuperAdminPanel() {
                                 <h3 className="font-black text-slate-900 dark:text-white text-base truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
                                   {d.name}
                                 </h3>
-                                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 dark:bg-slate-800/50 rounded-lg text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest border border-slate-200/50 dark:border-slate-700/50 mt-1.5">
-                                  {d.code}
+                                <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 dark:bg-slate-800/50 rounded-lg text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest border border-slate-200/50 dark:border-slate-700/50">
+                                    {d.code}
+                                  </div>
+                                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 dark:bg-slate-800/50 rounded-lg text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest border border-slate-200/50 dark:border-slate-700/50">
+                                    {d.max_semester || 8} Sems
+                                  </div>
                                 </div>
                               </div>
                             </div>
